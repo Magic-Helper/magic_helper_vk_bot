@@ -21,3 +21,12 @@ mypy = "^0.982"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[mypy]
+python_version = 3.10
+check_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+ignore_duplicate = true
+exclude = 'test*'
