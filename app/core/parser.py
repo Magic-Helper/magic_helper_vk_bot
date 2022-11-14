@@ -3,7 +3,8 @@ import re
 from loguru import logger
 
 from app.core.constants import REGEX_PATTERNS
-from app.core.typedefs import StartedCheck
+from app.core.typedefs import StartedCheck, Nickname
+from app.core.cmd_args import StopCheckArgs, BanCheckArgs
 
 
 class MessageParser:
@@ -39,5 +40,48 @@ class MagicRecordMessageParser(MessageParser):
         steamid = self.parse(REGEX_PATTERNS.STEAMID, message, 'SteamID')
         return StartedCheck(moder_vk=moder_vk, nickname=nickname, server=server, steamid=steamid)
 
+    def parse_end_check(self, message: str) -> Nickname:
+        """Parses a message about a stoped check.
+
+        Args:
+            message (str): A message to parse.
+
+        """
+        logger.debug(f"Parsing stoped check from {message}")
+
+        nickname = self.parse(REGEX_PATTERNS.NICKNAME, message, 'Nickname')
+        return nickname
+    
+    
+
+
+class ArgsParser:
+    """Represents a args parser."""
+
+    def parse_cc(self, args: list[str]) -> StopCheckArgs:
+        """Parses a stop check args.
+
+        Args:
+            args (list[str]): A list of args.
+
+        """
+        logger.debug(f"Parsing stop check args from {args}")
+        server = int(args[0])
+        steamid = int(args[1])
+        return StopCheckArgs(server=server, steamid=steamid)
+
+    def parse_ban(self, args: list[str]) -> BanCheckArgs:
+        """Parses a ban check args.
+
+        Args:
+            args (list[str]): A list of args.
+
+        """
+        logger.debug(f"Parsing ban check args from {args}")
+        server = int(args[0])
+        steamid = int(args[1])
+        reason = args[2]
+        return BanCheckArgs(server=server, steamid=steamid, reason=reason)
 
 record_message_parser = MagicRecordMessageParser()
+args_parser = ArgsParser()
