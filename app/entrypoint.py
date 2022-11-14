@@ -1,0 +1,43 @@
+from aiohttp import web
+from loguru import logger
+from vkbottle import Bot
+from vkbottle.callback import BotCallback
+
+from app import routes
+from app.context import AppContext
+from app.core import settings
+from app.handlers import magic_records_labeler
+
+message_bot_labelers = (magic_records_labeler,)
+
+
+async def create_app(cmd_bot: Bot, message_bot: Bot) -> web.Application:
+    logger.debug('Creating app...')
+    app = web.Application()
+
+    ctx = AppContext()
+    ctx.cmd_bot = cmd_bot
+    ctx.message_bot = message_bot
+
+    app.on_startup.append(ctx.on_startup)
+    app.on_shutdown.append(ctx.on_shutdown)
+
+    # Setup webhook
+    routes.setup_webhook(app, ctx)
+
+    return app
+
+
+async def create_cmd_bot() -> Bot:
+    logger.debug('Creating cmd bot...')
+    callback = BotCallback(url=settings.SERVER_URL, title=settings.SERVER_TITLE)
+    return Bot(token=settings.VK_TOKEN, callback=callback)
+
+
+async def create_message_bot() -> Bot:
+    logger.debug('Creating message bot...')
+    callback = BotCallback(url=settings.SERVER_URL, title=settings.SERVER_TITLE)
+    bot = Bot(token=settings.VK_TOKEN, callback=callback)
+    for custom_labeler in message_bot_labelers:
+        bot.labeler.load(custom_labeler)
+    return bot
