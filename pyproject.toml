@@ -15,6 +15,7 @@ asyncpg = "^0.26.0"
 pydantic = "^1.10.2"
 aiohttp = "^3.8.3"
 pendulum = "^2.1.2"
+rust-eac-information = {git = "https://github.com/MaHryCT3/rust-eac-infromation.git"}
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.1.3"

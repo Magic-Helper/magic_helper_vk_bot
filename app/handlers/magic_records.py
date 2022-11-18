@@ -5,9 +5,7 @@ from typing import TYPE_CHECKING
 from vkbottle.bot import BotLabeler, rules
 
 from app.core import constants, record_message_parser, args_parser
-from app.core.typedefs import StartedCheck
-from app.core.custom_rules import FromUserIdRule, SearchRegexRule, TextInMessage, MyCommandRule
-from app.handlers import StorageControllersRule
+from app.core.custom_rules import FromUserIdRule, TextInMessage, StorageControllersRule
 
 if TYPE_CHECKING:
     from vkbottle.bot import Message

@@ -115,3 +115,14 @@ class ChecksStorage:
         stage_data.stage = stage
 
         self.__memory_storage.update(steamid, nickname, stage_data)
+    
+    async def get_moder_checks(self, moder_vk: int):
+        """Get checks for moder.
+
+        Args:
+            moder_vk (int): Moder vk id.
+
+        Returns:
+            list[Check]: List of checks.
+        """
+        return await crud.check.get_moder_checks(session, moder_vk=moder_vk)

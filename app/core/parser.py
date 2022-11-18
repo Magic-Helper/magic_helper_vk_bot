@@ -1,11 +1,14 @@
+from typing import TYPE_CHECKING
 import re
 
 from loguru import logger
 
 from app.core.constants import REGEX_PATTERNS
 from app.core.typedefs import StartedCheck, Nickname
-from app.core.cmd_args import StopCheckArgs, BanCheckArgs
+from app.core.cmd_args import StopCheckArgs, BanCheckArgs, GetChecksArgs
 
+if TYPE_CHECKING:
+    from vkbottle.bot import Message
 
 class MessageParser:
     """Represents a base message parser."""
@@ -82,6 +85,17 @@ class ArgsParser:
         steamid = int(args[1])
         reason = args[2]
         return BanCheckArgs(server=server, steamid=steamid, reason=reason)
+    
+    def parse_checks(self, message: 'Message') -> GetChecksArgs:
+        """Parses a get checks args.
+
+        Args:
+            message (Message): A message to parse.
+
+        """
+        logger.debug(f"Parsing get checks args from {message}")
+        moder_vk = message.from_id
+        return GetChecksArgs(moder_vk=moder_vk)
 
 record_message_parser = MagicRecordMessageParser()
 args_parser = ArgsParser()

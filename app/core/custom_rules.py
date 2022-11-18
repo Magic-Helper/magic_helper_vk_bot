@@ -3,6 +3,17 @@ from typing import Union, Optional
 
 from vkbottle.bot import rules
 
+from app.services.storage import MemoryStorage
+from app.services.storage.controller import ChecksStorage
+
+
+class StorageControllersRule(rules.ABCRule):
+    async def check(self, *args, **kwargs) -> dict:
+        return {
+            'checks_storage': ChecksStorage(),
+            'memory_storage': MemoryStorage(),
+        }
+        
 class TextInMessage(rules.ABCRule[rules.BaseMessageMin]):
 
     def __init__(self, text: Union[str, list[str]]) -> None:
@@ -70,4 +81,31 @@ class MyCommandRule(rules.ABCRule[rules.BaseMessageMin]):
                 elif self.args_count and self.sep in event.text:
                     args = event.text[text_length_with_sep:].split(self.sep, maxsplit=self.args_count)
                     return {"args": args} if len(args) == self.args_count and all(args) else False
+        return False
+
+
+class CommandListRule(rules.ABCRule[rules.BaseMessageMin]):
+    def __init__(
+        self,
+        command_text: list[str],
+        prefixes: Optional[list[str]] = None,
+        args_count: int = 0,
+        sep: str = " ",
+    ):
+        self.command_text = command_text
+        self.args_count = args_count
+        self.prefixes = prefixes or rules.DEFAULT_PREFIXES
+        self.sep = sep
+
+    async def check(self, event: rules.BaseMessageMin) -> Union[dict, bool]:
+        for prefix in self.prefixes:
+            text_length = len(prefix + self.command_text)
+            text_length_with_sep = text_length + len(self.sep)
+            for command in self.command_text:
+                if event.text.startswith(prefix + command):
+                    if not self.args_count and len(event.text) == text_length:
+                        return True
+                    elif self.args_count and self.sep in event.text:
+                        args = event.text[text_length_with_sep:].split(self.sep, maxsplit=self.args_count)
+                        return {"args": args} if len(args) == self.args_count and all(args) else False
         return False
