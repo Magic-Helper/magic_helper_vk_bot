@@ -1,11 +1,13 @@
 from typing import TYPE_CHECKING
+
 from vkbottle.bot import BotLabeler
 
-from app.core.custom_rules import StorageControllersRule, CommandListRule
 from app.core import args_parser
+from app.core.custom_rules import CommandListRule, StorageControllersRule
 
 if TYPE_CHECKING:
     from vkbottle.bot import Message
+
     from app.services.storage.controller import ChecksStorage
 
 

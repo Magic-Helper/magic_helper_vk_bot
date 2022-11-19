@@ -1,5 +1,5 @@
 import re
-from typing import Union, Optional
+from typing import Optional, Union
 
 from vkbottle.bot import rules
 
@@ -13,13 +13,13 @@ class StorageControllersRule(rules.ABCRule):
             'checks_storage': ChecksStorage(),
             'memory_storage': MemoryStorage(),
         }
-        
-class TextInMessage(rules.ABCRule[rules.BaseMessageMin]):
 
+
+class TextInMessage(rules.ABCRule[rules.BaseMessageMin]):
     def __init__(self, text: Union[str, list[str]]) -> None:
         if isinstance(text, str):
             text = [text]
-        
+
         self.text = text
 
     async def check(self, event: rules.BaseMessageMin) -> bool:
@@ -27,6 +27,7 @@ class TextInMessage(rules.ABCRule[rules.BaseMessageMin]):
             if text not in event.text:
                 return False
         return True
+
 
 class SearchRegexRule(rules.ABCRule[rules.BaseMessageMin]):
     def __init__(self, regexp: Union[str, list[str], re.Pattern, list[re.Pattern]]):
@@ -61,7 +62,7 @@ class MyCommandRule(rules.ABCRule[rules.BaseMessageMin]):
         command_text: Union[str, tuple[str, int]],
         prefixes: Optional[list[str]] = None,
         args_count: int = 0,
-        sep: str = " ",
+        sep: str = ' ',
     ):
         self.prefixes = prefixes or rules.DEFAULT_PREFIXES
         if isinstance(command_text, str):
@@ -78,9 +79,11 @@ class MyCommandRule(rules.ABCRule[rules.BaseMessageMin]):
             if event.text.startswith(prefix + self.command_text):
                 if not self.args_count and len(event.text) == text_length:
                     return True
-                elif self.args_count and self.sep in event.text:
-                    args = event.text[text_length_with_sep:].split(self.sep, maxsplit=self.args_count)
-                    return {"args": args} if len(args) == self.args_count and all(args) else False
+                if self.args_count and self.sep in event.text:
+                    args = event.text[text_length_with_sep:].split(
+                        self.sep, maxsplit=self.args_count
+                    )
+                    return {'args': args} if len(args) == self.args_count and all(args) else False
         return False
 
 
@@ -90,7 +93,7 @@ class CommandListRule(rules.ABCRule[rules.BaseMessageMin]):
         command_text: list[str],
         prefixes: Optional[list[str]] = None,
         args_count: int = 0,
-        sep: str = " ",
+        sep: str = ' ',
     ):
         self.command_text = command_text
         self.args_count = args_count
@@ -105,7 +108,11 @@ class CommandListRule(rules.ABCRule[rules.BaseMessageMin]):
                 if event.text.startswith(prefix + command):
                     if not self.args_count and len(event.text) == text_length:
                         return True
-                    elif self.args_count and self.sep in event.text:
-                        args = event.text[text_length_with_sep:].split(self.sep, maxsplit=self.args_count)
-                        return {"args": args} if len(args) == self.args_count and all(args) else False
+                    if self.args_count and self.sep in event.text:
+                        args = event.text[text_length_with_sep:].split(
+                            self.sep, maxsplit=self.args_count
+                        )
+                        return (
+                            {'args': args} if len(args) == self.args_count and all(args) else False
+                        )
         return False

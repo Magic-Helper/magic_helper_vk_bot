@@ -6,14 +6,14 @@ from loguru import logger
 from app.core import constants
 from app.core.typedefs import CheckStage, StageData, StartedCheck
 from app.core.utils import singleton
-from app.services.storage import MemoryStorage, crud
+from app.services.storage import crud
+from app.services.storage.memory_storage import CheckMemoryStorage
 from app.services.storage.schemas import CheckCreate, CheckUpdate
 from app.services.storage.session import session
-from app.services.storage.memory_storage import CheckMemoryStorage
 
 if TYPE_CHECKING:
+    from app.core.typedefs import Nickname, Steamid
     from app.services.storage.models import Check
-    from app.core.typedefs import Steamid, Nickname
 
 
 @singleton
@@ -41,12 +41,17 @@ class ChecksStorage:
         check = await crud.check.create(session, obj_in=obj_in)
 
         # Create check in memory
-        stage_data = StageData(nickname=check_info.nickname, steamid=check_info.steamid, stage=CheckStage.PROCESS, db_row=check.id)
+        stage_data = StageData(
+            nickname=check_info.nickname,
+            steamid=check_info.steamid,
+            stage=CheckStage.PROCESS,
+            db_row=check.id,
+        )
         self.__memory_storage.update(check_info.steamid, check_info.nickname, stage_data)
 
         return check
 
-    async def end_check(self, nickname: 'Nickname', is_ban: bool = False):
+    async def end_check(self, nickname: 'Nickname', is_ban: bool = False) -> None:
         """Update check in database.
 
         Args:
@@ -80,7 +85,7 @@ class ChecksStorage:
         stage_data = self.__memory_storage.pop(nickname)
 
         await crud.check.remove(session, id=stage_data.db_row)
-    
+
     def stoping_check(self, steamid: 'Steamid') -> None:
         """Update check data to stop in memory.
 
@@ -90,7 +95,7 @@ class ChecksStorage:
         """
         nickname = self.__memory_storage.get(steamid).nickname
         self.update_stage(steamid, nickname, CheckStage.STOPING)
-    
+
     def canceling_check(self, steamid: 'Steamid') -> None:
         """Update check data to cancel in memory.
 
@@ -115,7 +120,7 @@ class ChecksStorage:
         stage_data.stage = stage
 
         self.__memory_storage.update(steamid, nickname, stage_data)
-    
+
     async def get_moder_checks(self, moder_vk: int):
         """Get checks for moder.
 

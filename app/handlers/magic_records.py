@@ -1,11 +1,13 @@
-# Обработчик сообщений от бота магик раст отчетов
-
 from typing import TYPE_CHECKING
 
 from vkbottle.bot import BotLabeler, rules
 
-from app.core import constants, record_message_parser, args_parser
-from app.core.custom_rules import FromUserIdRule, TextInMessage, StorageControllersRule
+from app.core import args_parser, constants, record_message_parser
+from app.core.custom_rules import (
+    FromUserIdRule,
+    StorageControllersRule,
+    TextInMessage,
+)
 
 if TYPE_CHECKING:
     from vkbottle.bot import Message
@@ -31,7 +33,7 @@ async def stop_check(message: 'Message', checks_storage: 'ChecksStorage', args) 
 @labeler.chat_message(rules.CommandRule('cc3', args_count=2))
 async def cancel_check(message: 'Message', checks_storage: 'ChecksStorage', args) -> None:
     check_info = args_parser.parse_cc(args)
-    await checks_storage.canceling_check(check_info.steamid)   
+    await checks_storage.canceling_check(check_info.steamid)
 
 
 @labeler.chat_message(TextInMessage('больше не проверяется.'))
@@ -44,10 +46,3 @@ async def end_check(message: 'Message', checks_storage: 'ChecksStorage') -> None
 async def ban_check(message: 'Message', checks_storage: 'ChecksStorage') -> None:
     check_info = record_message_parser.parse_end_check(message.text)
     await checks_storage.end_check(check_info, is_ban=True)
-
-
-
-
-
-# @labeler.chat_message(SearchRegexRule(r'(?<=\nИгрок бездействует )\d+(?= секунд)'))
-

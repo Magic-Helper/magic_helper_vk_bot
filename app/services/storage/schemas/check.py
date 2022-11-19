@@ -1,7 +1,9 @@
-from typing import Optional
-from datetime import datetime
+from typing import TYPE_CHECKING, Optional
 
 from pydantic import BaseModel
+
+if TYPE_CHECKING:
+    from datetime import datetime
 
 
 class CheckBase(BaseModel):

@@ -23,4 +23,3 @@ class GetChecksArgs:
     """Represents a get checks args."""
 
     moder_vk: int
-    

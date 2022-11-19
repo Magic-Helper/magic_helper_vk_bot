@@ -1,18 +1,14 @@
 from eac_info.model import EACInfo
 
-
-__all__ = ['EACView']
+__all__ = ['EacView']
 
 
 class EacView:
-
     def __init__(self, eac_info: EACInfo):
         self.eac_info = eac_info
-    
 
     def __repr__(self) -> str:
         return self._get_eac_view()
-
 
     def _get_eac_view(self) -> str:
         """Return text for user message with eac information.
@@ -38,12 +34,13 @@ class EacView:
 
 if __name__ == '__main__':
     from eac_info.model import EACInfo
+
     eac_info = EACInfo(
         steamid='76561198000000000',
         is_ban=True,
         days_since_ban=100,
         post_link='https://twitter.com/SomeUser/status/1234567890',
-        nexus_link='https://www.nexusmods.com/skyrimspecialedition/users/1234567890'
+        nexus_link='https://www.nexusmods.com/skyrimspecialedition/users/1234567890',
     )
     eac_view = EacView(eac_info)
     a = eac_view

@@ -1,10 +1,10 @@
-from typing import TypeAlias
-
 from dataclasses import dataclass
 from enum import Enum
+from typing import TypeAlias
 
 Steamid: TypeAlias = int
 Nickname: TypeAlias = str
+
 
 class CheckStage(Enum):
     """Enum for check stages"""
@@ -12,7 +12,6 @@ class CheckStage(Enum):
     PROCESS = 1
     STOPING = 2
     CANCELING = 3
-    # BANNING = 4
 
 
 @dataclass
@@ -22,9 +21,10 @@ class StageData:
     db_row: int
     stage: CheckStage
 
+
 @dataclass
 class PlayerData:
-    nickname: str = None
+    nickname: Nickname = None
 
 
 @dataclass

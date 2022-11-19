@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import select, func
+from sqlalchemy import func, select
 
 from app.services.storage.crud.base_crud import CRUDBase
 from app.services.storage.models import Check
@@ -23,6 +23,6 @@ class CRUDCheck(CRUDBase[Check, CheckCreate, CheckUpdate]):
         """
         query = select(self.model).where(self.model.moder_vk == moder_vk)
         result = await db.scalars(query)
-        return result.
+
 
 check = CRUDCheck(Check)
