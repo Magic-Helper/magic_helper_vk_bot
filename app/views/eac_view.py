@@ -12,8 +12,7 @@ class EacView:
 
     def _get_eac_view(self) -> str:
         """Return text for user message with eac information.
-        Args:
-            eac_info: eac info received from eac info package
+
         Return:
             text for user message
         """

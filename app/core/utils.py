@@ -11,5 +11,5 @@ def singleton(class_):
 
 
 def get_dict_from_model(model) -> dict:
-    """Get dict from model."""
+    """Get dict from sqlalchemy model."""
     return {c.name: getattr(model, c.name) for c in model.__table__.columns}

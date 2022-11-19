@@ -4,7 +4,7 @@ from eac_info import get_eac_info
 from eac_info.exceptions import CantGetEacInfo, SteamIsNotFound
 from vkbottle.bot import BotLabeler
 
-from app.core.custom_rules import CommandListRule
+from app.helpers.custom_rules import CommandListRule
 from app.views import EacView
 
 if TYPE_CHECKING:

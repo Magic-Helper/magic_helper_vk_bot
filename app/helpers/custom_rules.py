@@ -1,8 +1,10 @@
 import re
-from typing import Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
+from vkbottle import API
 from vkbottle.bot import rules
 
+from app.core import settings
 from app.services.storage import MemoryStorage
 from app.services.storage.controller import ChecksStorage
 
@@ -116,3 +118,8 @@ class CommandListRule(rules.ABCRule[rules.BaseMessageMin]):
                             {'args': args} if len(args) == self.args_count and all(args) else False
                         )
         return False
+
+
+class GetVKApiRule(rules.ABCRule[rules.BaseMessageMin]):
+    async def check(self, *args, **kwargs) -> dict:
+        return {'vk_api': API(settings.VK_TOKEN)}

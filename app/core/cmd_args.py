@@ -16,10 +16,3 @@ class BanCheckArgs:
     server: int
     steamid: int
     reason: str
-
-
-@dataclass
-class GetChecksArgs:
-    """Represents a get checks args."""
-
-    moder_vk: int

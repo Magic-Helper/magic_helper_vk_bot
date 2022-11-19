@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from loguru import logger
 
-from app.core.cmd_args import BanCheckArgs, GetChecksArgs, StopCheckArgs
+from app.core.cmd_args import BanCheckArgs, StopCheckArgs
 from app.core.constants import REGEX_PATTERNS
 from app.core.typedefs import Nickname, StartedCheck
 
@@ -83,17 +83,6 @@ class ArgsParser:
         steamid = int(args[1])
         reason = args[2]
         return BanCheckArgs(server=server, steamid=steamid, reason=reason)
-
-    def parse_checks(self, message: 'Message') -> GetChecksArgs:
-        """Parses a get checks args.
-
-        Args:
-            message (Message): A message to parse.
-
-        """
-        logger.debug(f'Parsing get checks args from {message}')
-        moder_vk = message.from_id
-        return GetChecksArgs(moder_vk=moder_vk)
 
 
 record_message_parser = MagicRecordMessageParser()

@@ -23,42 +23,15 @@ class MemoryStorage(Generic[StorageKey, StorageValue]):
     def delete(self, key: StorageKey) -> None:
         del self.storage[key]
 
-    def pop(self, key: StorageKey) -> dict[StorageKey, StorageValue]:
+    def pop(self, key: StorageKey) -> StorageValue:
         return self.storage.pop(key)
 
 
 @singleton
-class CheckMemoryStorage(MemoryStorage[Union['Steamid', 'Nickname'], 'StageData']):
-    def update(self, steamid: 'Steamid', nickname: 'Nickname', value: 'StageData') -> None:
-        """Update storage with steamid and nickname keys.
+class StageDataMemoryStorage(MemoryStorage['Steamid', 'StageData']):
+    pass
 
-        Args:
-            steamid (Steamid): Steamid of player.
-            nickname (Nickname): Nickname of player.
-            value (StageData): Stage data.
-        """
-        self.storage[steamid] = value
-        self.storage[nickname] = value
 
-    def delete(self, nickname: 'Nickname') -> None:
-        """Delete storage by nickname.
-
-        Args:
-            nickname (Nickname): Nickname of player.
-        """
-        steamid = self.get(nickname).steamid
-        del self.storage[steamid]
-        del self.storage[nickname]
-
-    def pop(self, nickname: 'Nickname') -> 'StageData':
-        """Pop storage by nickname.
-
-        Args:
-            nickname (Nickname): Nickname of player.
-
-        Returns:
-            StageData: Stage data.
-        """
-        data = self.storage.pop(nickname)
-        del self.storage[data.steamid]
-        return data
+@singleton
+class NicknamesMemoryStorage(MemoryStorage['Nickname', 'Steamid']):
+    pass

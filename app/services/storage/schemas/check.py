@@ -9,8 +9,8 @@ if TYPE_CHECKING:
 class CheckBase(BaseModel):
     steamid: int
     moder_vk: int
-    start_time: datetime
-    end_time: Optional[datetime] = None
+    start_time: 'datetime'
+    end_time: Optional['datetime'] = None
     server_number: int | None = None
     is_ban: bool = False
 
@@ -22,7 +22,7 @@ class CheckCreate(CheckBase):
 class CheckUpdate(CheckBase):
     steamid: int | None = None
     moder_vk: int | None = None
-    start_time: Optional[datetime] = None
+    start_time: Optional['datetime'] = None
 
 
 class CheckInDBBase(CheckBase):
