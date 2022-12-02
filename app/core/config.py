@@ -15,6 +15,11 @@ class Settings(BaseSettings):
 
     SQLALCHEMY_DATABASE_URI: PostgresDsn | None = None
 
+    MAGIC_STATS_API_LINK: str
+    MAGIC_MODERS_API_LINK: str
+
+    RCC_API_KEY: str
+
     @validator('SQLALCHEMY_DATABASE_URI', pre=True)
     def assemble_db_connection(cls, v: str | None, values: dict[str, Any]) -> PostgresDsn:
         if isinstance(v, str):
