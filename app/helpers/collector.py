@@ -6,13 +6,26 @@ if TYPE_CHECKING:
     from vkbottle import API
 
     from app.core.typedefs import TimeInterval
-    from app.services.storage.controller import ChecksStorage
+    from app.services.storage.controller import ChecksStorageController
 
 
 class DataCollector:
     async def collect_checks_info(
-        self, time_interval: 'TimeInterval', checks_storage: 'ChecksStorage', vk_api: 'API'
-    ) -> ModerChecksInformation:
+        self,
+        time_interval: 'TimeInterval',
+        checks_storage: 'ChecksStorageController',
+        vk_api: 'API',
+    ) -> list[ModerChecksInformation]:
+        """Collect checks information.
+
+        Args:
+            time_interval (TimeInterval): Time interval.
+            checks_storage (ChecksStorageController): Checks storage controller.
+            vk_api (API): VK API.
+
+        Returns:
+            list[ModerChecksInformation]: List of moder checks information.
+        """
         moders = await checks_storage.get_moders()
         checks_info = []
         for moder_vk in moders:

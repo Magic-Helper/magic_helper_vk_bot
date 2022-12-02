@@ -5,15 +5,20 @@ from vkbottle import API
 from vkbottle.bot import rules
 
 from app.core import settings
-from app.services.storage import MemoryStorage
-from app.services.storage.controller import ChecksStorage
+from app.services.storage.controller import ChecksStorage, OnCheckController
+from app.services.storage.memory_storage import OnCheckStorage
 
 
-class StorageControllersRule(rules.ABCRule):
+class CheckStorageRule(rules.Rule):
+    """
+    Rule for getting CheckStorage from message
+    """
+    async def check(self, *args, )
+
+class OnCheckControllerRule(rules.ABCRule):
     async def check(self, *args, **kwargs) -> dict:
         return {
-            'checks_storage': ChecksStorage(),
-            'memory_storage': MemoryStorage(),
+            'on_check_storage': OnCheckController(),
         }
 
 
@@ -59,6 +64,11 @@ class FromUserIdRule(rules.ABCRule[rules.BaseMessageMin]):
 
 
 class MyCommandRule(rules.ABCRule[rules.BaseMessageMin]):
+    """Represents a edited message rule with a custom check function.
+
+    This rule is checks if args >= args_count
+    """
+
     def __init__(
         self,
         command_text: Union[str, tuple[str, int]],
@@ -85,7 +95,7 @@ class MyCommandRule(rules.ABCRule[rules.BaseMessageMin]):
                     args = event.text[text_length_with_sep:].split(
                         self.sep, maxsplit=self.args_count
                     )
-                    return {'args': args} if len(args) == self.args_count and all(args) else False
+                    return {'args': args} if len(args) >= self.args_count and all(args) else False
         return False
 
 

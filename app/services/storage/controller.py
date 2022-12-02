@@ -4,13 +4,15 @@ import pendulum
 from loguru import logger
 
 from app.core import constants
-from app.core.typedefs import CheckStage, StageData, StartedCheck, TimeInterval
+from app.core.typedefs import (
+    CheckStage,
+    OnCheckData,
+    StartedCheck,
+    TimeInterval,
+)
 from app.core.utils import singleton
 from app.services.storage import crud
-from app.services.storage.memory_storage import (
-    NicknamesMemoryStorage,
-    StageDataMemoryStorage,
-)
+from app.services.storage.memory_storage import OnCheckMemoryStorage
 from app.services.storage.schemas import CheckCreate, CheckUpdate
 from app.services.storage.session import get_session
 
@@ -19,11 +21,9 @@ if TYPE_CHECKING:
     from app.services.storage.models import Check
 
 
-@singleton
-class ChecksStorage:
+class OnCheckController:
     def __init__(self) -> None:
-        self.__stage_data_storage = StageDataMemoryStorage()
-        self.__nicknames_storage = NicknamesMemoryStorage()
+        self.__on_check_storage = OnCheckMemoryStorage()
 
     async def new_check(self, check_info: StartedCheck) -> 'Check':
         """Create new check in database and in memory.
@@ -46,13 +46,14 @@ class ChecksStorage:
             check = await crud.check.create(session, obj_in=obj_in)
 
         # Create check info in memory
-        stage_data = StageData(
+        on_check_data = OnCheckData(
             steamid=check_info.steamid,
             stage=CheckStage.PROCESS,
             db_row=check.id,
         )
-        self.__stage_data_storage.update(check_info.steamid, stage_data)
-        self.__nicknames_storage.update(check_info.nickname, check_info.steamid)
+        self.__on_check_storage.set_on_check(
+            check_info.steamid, check_info.nickname, on_check_data
+        )
 
         return check
 
@@ -65,10 +66,9 @@ class ChecksStorage:
         """
         logger.debug(f'Updating check in database for {nickname}')
 
-        steamid = self.__nicknames_storage.pop(nickname)
-        stage_data = self.__stage_data_storage.pop(steamid)
+        on_check_data = self.__on_check_storage.get_data_by_nickname(nickname)
 
-        if stage_data.stage == CheckStage.CANCELING:
+        if on_check_data.stage == CheckStage.CANCELING:
             logger.debug(f'Check for {nickname} was canceled')
             return await self.delete_check(nickname)
 
@@ -78,7 +78,7 @@ class ChecksStorage:
         )
 
         async with get_session() as session:
-            check = await crud.check.get(session, id=stage_data.db_row)
+            check = await crud.check.get(session, id=on_check_data.db_row)
             await crud.check.update(session, db_obj=check, obj_in=obj_in)
 
     async def delete_check(self, nickname: 'Nickname') -> None:
@@ -89,17 +89,18 @@ class ChecksStorage:
         """
         logger.debug(f'Deleting check from database and memory for {nickname}')
 
-        steamid = self.__nicknames_storage.pop(nickname)
-        stage_data = self.__stage_data_storage.pop(steamid)
+        on_check_data = self.__on_check_storage.get_data_by_nickname(nickname)
 
         async with get_session() as session:
-            await crud.check.remove(session, id=stage_data.db_row)
+            await crud.check.remove(session, id=on_check_data.db_row)
+
+        self.__on_check_storage.delete_on_check(nickname)
 
     def stoping_check(self, steamid: 'Steamid') -> None:
         """Update check data to stop in memory.
 
         Args:
-            nickname (str): Nickname of player.
+            steamid (int): steamid of player.
 
         """
         self.update_stage(steamid, CheckStage.STOPING)
@@ -108,7 +109,7 @@ class ChecksStorage:
         """Update check data to cancel in memory.
 
         Args:
-            nickname (str): Nickname of player.
+            steamid (int): steamid of player.
 
         """
         self.update_stage(steamid, CheckStage.CANCELING)
@@ -118,15 +119,25 @@ class ChecksStorage:
 
         Args:
             steamid: Steamid of player.
-            nickname (str): Nickname of player.
             stage (CheckStage): New stage of check.
         """
         logger.debug(f'Updating stage for {steamid} to {stage}')
 
-        stage_data = self.__stage_data_storage.get(steamid)
-        stage_data.stage = stage
+        self.__on_check_storage.change_state(steamid, stage)
 
-        self.__stage_data_storage.update(steamid, stage_data)
+
+class ChecksStorageController:
+    """Represents controller for checks storage.
+
+    Methods:
+        get_moder_checks_count(moder_vk: int, time_interval: TimeInterval) -> list[Check]
+            Returns checks for moder.
+        get_moders(time_interval: TimeInterval) -> list[int]
+            Returns moders.
+        get_multi_checks_information(moders_vk: list[int], time_interval: TimeInterval) -> list[Check]
+            Returns checks for moders.
+
+    """
 
     async def get_moder_checks_count(self, moder_vk: int, time_interval: TimeInterval):
         """Get checks for moder.

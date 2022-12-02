@@ -29,7 +29,7 @@ class TimeInterval:
 
 
 @dataclass
-class StageData:
+class OnCheckData:
     nickname: Nickname
     db_row: int
     stage: CheckStage
