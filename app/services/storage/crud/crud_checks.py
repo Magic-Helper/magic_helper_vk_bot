@@ -72,5 +72,18 @@ class CRUDCheck(CRUDBase[Check, CheckCreate, CheckUpdate]):
         result = await db.execute(query)
         return result.scalars().all()
 
+    async def is_steamid_exists(self, db: 'AsyncSession', steamid: int) -> bool:
+        """Check if steamid exists.
+
+        Args:
+            db (AsyncSession): Database session.
+            steamid (int): Steamid.
+
+        Returns:
+            bool: True if steamid exists, False otherwise.
+        """
+        query = select(self.model.id).where(self.model.steamid == steamid)
+        result = await db.execute(query)
+        return result.first() is not None
 
 check = CRUDCheck(Check)

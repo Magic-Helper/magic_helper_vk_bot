@@ -178,3 +178,15 @@ class ChecksStorageController:
             for moder in moders_vk:
                 info.append(await crud.check.get_moder_checks_count(session, moder, time_interval))
         return info
+
+    async def is_player_checked(self, steamid: 'Steamid') -> bool:
+        """Check is player is already was checked.
+
+        Args:
+            steamid (int): Steamid of player.
+
+        Returns:
+            bool: is player is already was checked
+        """
+        async with get_session() as session:
+            return await crud.check.is_steamid_exists(session, steamid)
