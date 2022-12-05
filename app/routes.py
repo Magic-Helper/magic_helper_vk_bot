@@ -14,7 +14,7 @@ async def handler(request: web.Request, ctx: 'AppContext') -> web.Response:
     try:
         data: dict = await request.json()
     except Exception:
-        logger.error(f'Error when trying to get event data {await request.text}')
+        logger.error(f'Error when trying to get event data {await request.text()}')
         return web.Response(text='Nice try :)', status=403)
 
     if not (data.get('secret') == settings.SECRET_KEY):
