@@ -5,7 +5,7 @@ from vkbottle.bot import BotLabeler
 from app.helpers import data_collector, time_assistant
 from app.helpers.custom_rules import (
     CommandListRule,
-    GetVKApiRule,
+    GetVKAPIRule,
     OnCheckControllerRule,
 )
 from app.views import CheckView
@@ -23,7 +23,7 @@ labeler.auto_rules = [OnCheckControllerRule()]
 
 
 @labeler.message(
-    GetVKApiRule(), CommandListRule(['checks', 'проверки', 'сруслы'], prefixes=['/', '.'])
+    GetVKAPIRule(), CommandListRule(['checks', 'проверки', 'сруслы'], prefixes=['/', '.'])
 )
 async def get_checks(
     message: 'Message', on_check_storage: 'ChecksStorageController', vk_api: 'API'

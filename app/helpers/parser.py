@@ -31,10 +31,10 @@ class MessageParser:
 
 class MagicRecordMessageParser(MessageParser):
     def parse_started_check(self, message: str) -> StartedCheck:
-        """Parses a message about a started check.
+        """Parse information from message about checks start.
 
         Args:
-            message (str): A message to parse.
+            message (str): A message from magic records.
 
         """
         logger.debug(f'Parsing started check from {message}')
@@ -45,7 +45,7 @@ class MagicRecordMessageParser(MessageParser):
         return StartedCheck(moder_vk=moder_vk, nickname=nickname, server=server, steamid=steamid)
 
     def parse_end_check(self, message: str) -> Nickname:
-        """Parses a message about a stoped check.
+        """Parse information from message about checks is end.
 
         Args:
             message (str): A message to parse.
@@ -57,27 +57,17 @@ class MagicRecordMessageParser(MessageParser):
 
 
 class ArgsParser:
-    """Represents a args parser."""
+    """Represents a args parser. Helps to parse args from a message."""
 
     def parse_cc(self, args: list[str]) -> StopCheckArgs:
-        """Parses a stop check args.
-
-        Args:
-            args (list[str]): A list of args.
-
-        """
+        """Parses a stop check args. Args must be in format: server, steamid, reason."""
         logger.debug(f'Parsing stop check args from {args}')
         server = int(args[0])
         steamid = int(args[1])
         return StopCheckArgs(server=server, steamid=steamid)
 
     def parse_ban(self, args: list[str]) -> BanCheckArgs:
-        """Parses a ban check args.
-
-        Args:
-            args (list[str]): A list of args.
-
-        """
+        """Parses a ban check args. Args must be in format: server, steamid, reason."""
         logger.debug(f'Parsing ban check args from {args}')
         server = int(args[0])
         steamid = int(args[1])

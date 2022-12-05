@@ -1,9 +1,8 @@
 from typing import Optional
 
+from pendulum import DateTime
 from pydantic import BaseModel, Field, root_validator, validator
-from pendulum import DateTime, from_timestamp
 
-from app.core import constants
 from app.services.validators import get_datetime_object
 
 
@@ -16,11 +15,11 @@ class PlayerStats(BaseModel):
     nickname: str = Field(None, alias='name')
 
     @root_validator(pre=True)
-    def get_kd(cls, values):
-        if values['d_player'] == 0:
+    def get_kd(cls, values: dict):
+        if values.get('d_player') == 0:
             values['kd'] = 0
         else:
-            values['kd'] = values['kp_total'] / values['d_player']
+            values['kd'] = values.get('kp_total', 0) / values.get('d_player', 1)
         return values
 
 

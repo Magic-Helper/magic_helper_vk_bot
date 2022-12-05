@@ -1,12 +1,12 @@
-from typing import TYPE_CHECKING, Union
 import asyncio
+from typing import TYPE_CHECKING, Union
 
-from aiohttp import TCPConnector, ClientSession
+from aiohttp import ClientSession, TCPConnector
 from loguru import logger
 
-from app.services.RCC.models import RCCPlayer, RCCBaseResponse
-from app.services.base_api import BaseAPI
 from app.core import settings
+from app.services.base_api import BaseAPI
+from app.services.RCC.models import RCCBaseResponse, RCCPlayer
 
 if TYPE_CHECKING:
     from yarl import URL

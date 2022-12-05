@@ -29,18 +29,3 @@ class EacView:
         body += f'Твиттер: {self.eac_info.post_link}\n'
         body += f'Nexus: {self.eac_info.nexus_link}'
         return body
-
-
-if __name__ == '__main__':
-    from eac_info.model import EACInfo
-
-    eac_info = EACInfo(
-        steamid='76561198000000000',
-        is_ban=True,
-        days_since_ban=100,
-        post_link='https://twitter.com/SomeUser/status/1234567890',
-        nexus_link='https://www.nexusmods.com/skyrimspecialedition/users/1234567890',
-    )
-    eac_view = EacView(eac_info)
-    a = eac_view
-    print(a)

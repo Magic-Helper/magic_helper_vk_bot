@@ -1,13 +1,13 @@
 import asyncio
 from typing import TYPE_CHECKING
 
+import pendulum
 from loguru import logger
 from pydantic import parse_obj_as
-import pendulum
 
-from app.core import settings, constants
+from app.core import constants, settings
 from app.services.base_api import BaseAPI
-from app.services.magic_rust.models import PlayerStats, Player
+from app.services.magic_rust.models import Player, PlayerStats
 
 if TYPE_CHECKING:
     from app.core.typedefs import Steamid
@@ -57,7 +57,7 @@ class MagicRustAPI(BaseAPI):
         logger.debug(response)
         if response:
             return PlayerStats(**response)
-        return None
+        return PlayerStats(steamid=steamid)
 
     async def get_server_players_stats(self, server_number: int) -> list[PlayerStats]:
         """Get server players stats from Magic Rust stats API.

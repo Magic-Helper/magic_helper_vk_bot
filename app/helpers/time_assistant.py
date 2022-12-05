@@ -6,7 +6,7 @@ from app.core.typedefs import TimeInterval
 
 class TimeAssistant:
     def get_current_work_time(self) -> TimeInterval:
-        """Get current work time.
+        """Get current work time interval. Like 10.01.2021 - 10.02.2021
 
         Returns:
             TimeInterval: Current work time.
@@ -17,13 +17,10 @@ class TimeAssistant:
         return TimeInterval(start=start, end=end)
 
     def _get_time_start(self, date: pendulum.DateTime) -> pendulum.DateTime:
-        """Get start time.
+        """Get start time interval for work time.
 
-        Args:
-            date (pendulum.DateTime): Date.
-
-        Returns:
-            pendulum.DateTime: Start time.
+        If date is bigger then constants.DAY_WORK_MOUNTH_END then return this mounth
+        else return last mounth.
         """
         if date.day <= constants.DAY_WORK_MONTH_END:
             date = date.subtract(months=1)

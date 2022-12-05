@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Union, Callable, Any
+from typing import TYPE_CHECKING, Any, Callable, Union
 
 from aiohttp import ClientSession, TCPConnector
 from loguru import logger

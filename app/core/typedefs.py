@@ -1,16 +1,21 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import TYPE_CHECKING, TypeAlias
+from typing import TypeAlias
 
-if TYPE_CHECKING:
-    from pendulum import DateTime
+from pendulum import DateTime
 
 Steamid: TypeAlias = int
 Nickname: TypeAlias = str
 
 
 class CheckStage(Enum):
-    """Enum for check stages"""
+    """Enum for check stages
+
+    Attributes:
+        PROCCESS: Check is in proccess
+        STOPING: Check is stoping
+        CANCELING: Check is canceling
+    """
 
     PROCESS = 1
     STOPING = 2
@@ -19,10 +24,15 @@ class CheckStage(Enum):
 
 @dataclass
 class TimeInterval:
-    """Dataclass for time interval"""
+    """Dataclass for time interval
 
-    start: 'DateTime'
-    end: 'DateTime'
+    Args:
+        start (DateTime): Start of time interval
+        end (DateTime): End of time interval
+    """
+
+    start: DateTime
+    end: DateTime
 
     def __repr__(self) -> str:
         return f'{self.start} - {self.end}'
@@ -30,14 +40,17 @@ class TimeInterval:
 
 @dataclass
 class OnCheckData:
+    """Dataclass for on check data
+
+    Args:
+        nickname (Nickname): Player nickname
+        db_row: (int): Row in database
+        stage (CheckStage): Check stage
+    """
+
     nickname: Nickname
     db_row: int
     stage: CheckStage
-
-
-@dataclass
-class PlayerData:
-    nickname: Nickname = None
 
 
 @dataclass
@@ -59,6 +72,14 @@ class StartedCheck:
 
 @dataclass
 class Moderator:
+    """Dataclass for moderator information.
+
+    Args:
+        name (str): A name of a moderator.
+        surname (str): A surname of a moderator.
+        vk_id (int): A VK ID of a moderator.
+    """
+
     vk_id: int
     name: str
     surname: str

@@ -5,15 +5,11 @@ from vkbottle import API
 from vkbottle.bot import rules
 
 from app.core import settings
-from app.services.storage.controller import ChecksStorage, OnCheckController
-from app.services.storage.memory_storage import OnCheckStorage
+from app.helpers.filtres import PlayerFilter
+from app.services.magic_rust.MR_api import MagicRustAPI
+from app.services.RCC.RCC_api import RustCheatCheckAPI
+from app.services.storage.controller import OnCheckController
 
-
-class CheckStorageRule(rules.Rule):
-    """
-    Rule for getting CheckStorage from message
-    """
-    async def check(self, *args, )
 
 class OnCheckControllerRule(rules.ABCRule):
     async def check(self, *args, **kwargs) -> dict:
@@ -100,6 +96,8 @@ class MyCommandRule(rules.ABCRule[rules.BaseMessageMin]):
 
 
 class CommandListRule(rules.ABCRule[rules.BaseMessageMin]):
+    """Rule for find a list of command in messsage"""
+
     def __init__(
         self,
         command_text: list[str],
@@ -130,6 +128,24 @@ class CommandListRule(rules.ABCRule[rules.BaseMessageMin]):
         return False
 
 
-class GetVKApiRule(rules.ABCRule[rules.BaseMessageMin]):
+class GetVKAPIRule(rules.ABCRule[rules.BaseMessageMin]):
     async def check(self, *args, **kwargs) -> dict:
         return {'vk_api': API(settings.VK_TOKEN)}
+
+
+class GetMagicRustAPIRule(rules.ABCRule[rules.BaseMessageMin]):
+    async def check(self, *args, **kwargs) -> dict:
+        return {'magic_rust_api': MagicRustAPI()}
+
+
+class GetRustCheatCheckAPIRule(rules.ABCRule[rules.BaseMessageMin]):
+    async def check(self, *args, **kwargs) -> dict:
+        return {'rcc_api': RustCheatCheckAPI()}
+
+
+class GetPlayerFilterRule(rules.ABCRule[rules.BaseMessageMin]):
+    def __init__(self, by_kd: float | None, by_check_on_magic: None | bool = False) -> None:
+        """"""
+
+    async def check(self, *args, **kwargs) -> dict:
+        return {'player_filter': settings.PLAYER_FILTER}
