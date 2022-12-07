@@ -5,7 +5,7 @@ services:
     container_name: postgres
     volumes:
       - pg-data:/var/lib/postgresql/data
-    env_file: ./env.prod
+    env_file: .env.prod
     ports:
       - 5432:5432
     networks:
@@ -22,6 +22,18 @@ services:
     networks:
       - magic_helper_network
 
+  nginx:
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+    container_name: nginx_webhook
+    depends_on:
+      - webhook
+    ports:
+      - 80:80
+    networks:
+      - magic_helper_network
+
 networks:
   magic_helper_network:
     driver: bridge
@@ -29,4 +41,5 @@ networks:
 
 volumes:
   pg-data:
+
 
