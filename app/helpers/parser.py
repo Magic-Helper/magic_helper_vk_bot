@@ -38,10 +38,10 @@ class MagicRecordMessageParser(MessageParser):
 
         """
         logger.debug(f'Parsing started check from {message}')
-        moder_vk = self.parse(REGEX_PATTERNS.VK_ID, message, 'Moder VK ID')
+        moder_vk = int(self.parse(REGEX_PATTERNS.VK_ID, message, 'Moder VK ID'))
         nickname = self.parse(REGEX_PATTERNS.NICKNAME, message, 'Nickname')
-        server = self.parse(REGEX_PATTERNS.SERVER_NUMBER, message, 'Server number')
-        steamid = self.parse(REGEX_PATTERNS.STEAMID, message, 'SteamID')
+        server = int(self.parse(REGEX_PATTERNS.SERVER_NUMBER, message, 'Server number'))
+        steamid = int(self.parse(REGEX_PATTERNS.STEAMID, message, 'SteamID'))
         return StartedCheck(moder_vk=moder_vk, nickname=nickname, server=server, steamid=steamid)
 
     def parse_end_check(self, message: str) -> Nickname:

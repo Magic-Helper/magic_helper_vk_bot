@@ -13,8 +13,8 @@ if TYPE_CHECKING:
 labeler = BotLabeler()
 
 
-@labeler.message(CommandListRule(['eac', 'иак', 'уфс'], prefixes=['/', '.']))
-async def eac(message: 'Message', args) -> None:
+@labeler.message(CommandListRule(['eac', 'иак', 'уфс'], prefixes=['/', '.'], args_count=1))
+async def get_eac_info_(message: 'Message', args) -> None:
     steamid = args[0]
     try:
         eac_info = await get_eac_info(steamid)
@@ -25,4 +25,4 @@ async def eac(message: 'Message', args) -> None:
     else:
         msg = EacView(eac_info)
 
-    await message.answer(msg)
+    await message.answer(msg, dont_parse_links=True)

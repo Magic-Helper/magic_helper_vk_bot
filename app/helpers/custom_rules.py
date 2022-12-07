@@ -1,21 +1,17 @@
 import re
-from typing import TYPE_CHECKING, Optional, Union
+from typing import Optional, Union, Any
 
 from vkbottle import API
 from vkbottle.bot import rules
 
 from app.core import settings
-from app.helpers.filtres import PlayerFilter
 from app.services.magic_rust.MR_api import MagicRustAPI
 from app.services.RCC.RCC_api import RustCheatCheckAPI
-from app.services.storage.controller import OnCheckController
-
-
-class OnCheckControllerRule(rules.ABCRule):
-    async def check(self, *args, **kwargs) -> dict:
-        return {
-            'on_check_storage': OnCheckController(),
-        }
+from app.services.storage.controller import (
+    ChecksStorageController,
+    OnCheckController,
+)
+from app.services.storage.memory_storage import RCCDataMemoryStorage
 
 
 class TextInMessage(rules.ABCRule[rules.BaseMessageMin]):
@@ -112,20 +108,42 @@ class CommandListRule(rules.ABCRule[rules.BaseMessageMin]):
 
     async def check(self, event: rules.BaseMessageMin) -> Union[dict, bool]:
         for prefix in self.prefixes:
-            text_length = len(prefix + self.command_text)
+            used_command = self._find_used_command(event.text)
+            text_length = len(prefix + used_command)
             text_length_with_sep = text_length + len(self.sep)
             for command in self.command_text:
                 if event.text.startswith(prefix + command):
                     if not self.args_count and len(event.text) == text_length:
                         return True
-                    if self.args_count and self.sep in event.text:
+                    if self.args_count:
                         args = event.text[text_length_with_sep:].split(
                             self.sep, maxsplit=self.args_count
                         )
-                        return (
-                            {'args': args} if len(args) == self.args_count and all(args) else False
-                        )
+                        return {'args': args} if all(args) else {}
         return False
+
+    def _find_used_command(self, text: str) -> str:
+        for prefix in self.prefixes:
+            for command in self.command_text:
+                if text.startswith(prefix + command):
+                    return command
+        return ''
+
+
+class CommandWithDefaultArgsRule(rules.ABCRule[rules.BaseMessageMin]):
+    def __init__(
+        self,
+        command_text: list[str],
+        prefixes: Optional[list[str]] = None,
+        args_count: int = 0,
+        default_args: Optional[dict[str, Any]] = None,
+        sep: str = ' ',
+    ) -> None:
+        self.command_text = command_text
+        self.args_count = args_count
+        self.prefixes = prefixes or rules.DEFAULT_PREFIXES
+        self.sep = sep
+        self.default_args = default_args or {}
 
 
 class GetVKAPIRule(rules.ABCRule[rules.BaseMessageMin]):
@@ -143,9 +161,18 @@ class GetRustCheatCheckAPIRule(rules.ABCRule[rules.BaseMessageMin]):
         return {'rcc_api': RustCheatCheckAPI()}
 
 
-class GetPlayerFilterRule(rules.ABCRule[rules.BaseMessageMin]):
-    def __init__(self, by_kd: float | None, by_check_on_magic: None | bool = False) -> None:
-        """"""
-
+class GetChecksStorageControllerRule(rules.ABCRule[rules.BaseMessageMin]):
     async def check(self, *args, **kwargs) -> dict:
-        return {'player_filter': settings.PLAYER_FILTER}
+        return {'checks_storage': ChecksStorageController()}
+
+
+class GetOnCheckControllerRule(rules.ABCRule[rules.BaseMessageMin]):
+    async def check(self, *args, **kwargs) -> dict:
+        return {
+            'on_check_storage': OnCheckController(),
+        }
+
+
+class GetRCCDataMemoryStorageRule(rules.ABCRule[rules.BaseMessageMin]):
+    async def check(self, *args, **kwargs) -> dict:
+        return {'rcc_data_storage': RCCDataMemoryStorage()}

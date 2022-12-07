@@ -4,6 +4,7 @@ from app.core.utils import singleton
 
 if TYPE_CHECKING:
     from app.core.typedefs import CheckStage, Nickname, OnCheckData, Steamid
+    from app.services.RCC.models import RCCPlayer
 
 
 @singleton
@@ -64,3 +65,31 @@ class OnCheckMemoryStorage:
         if steamid:
             del self._on_check[steamid]
             del self._nicknames_to_steamids[nickname]
+
+
+@singleton
+class RCCDataMemoryStorage:
+    def __init__(self) -> None:
+        self._players: dict['Steamid', 'RCCPlayer'] = {}
+        self._players_data_exists: set['Steamid'] = set()
+
+    def get_player(self, steamid: 'Steamid') -> 'RCCPlayer':
+        return self._players.get(steamid)
+
+    def get_players(self, steamids: list['Steamid']) -> list['RCCPlayer']:
+        return [self._players.get(steamid) for steamid in steamids]
+
+    def add_player(self, player: 'RCCPlayer') -> None:
+        self._players[player.steamid] = player
+        self._players_data_exists.add(player.steamid)
+
+    def add_players(self, players: list['RCCPlayer']) -> None:
+        for player in players:
+            self.add_player(player)
+
+    def get_players_data_exists(self) -> set['Steamid']:
+        return self._players_data_exists
+
+    def clear_data(self) -> None:
+        self._players.clear()
+        self._players_data_exists.clear()

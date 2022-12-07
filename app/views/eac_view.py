@@ -1,7 +1,5 @@
 from eac_info.model import EACInfo
 
-__all__ = ['EacView']
-
 
 class EacView:
     def __init__(self, eac_info: EACInfo):

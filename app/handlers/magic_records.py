@@ -1,13 +1,12 @@
 from typing import TYPE_CHECKING
 
-from vkbottle.bot import BotLabeler, rules
+from vkbottle.bot import BotLabeler
 
 from app.core import constants
-from app.helpers import args_parser, record_message_parser
+from app.helpers import record_message_parser
 from app.helpers.custom_rules import (
     FromUserIdRule,
-    MyCommandRule,
-    OnCheckControllerRule,
+    GetOnCheckControllerRule,
     TextInMessage,
 )
 
@@ -18,25 +17,13 @@ if TYPE_CHECKING:
 
 labeler = BotLabeler()
 # Parse only messages from magic records group
-labeler.auto_rules = [FromUserIdRule(constants.VK_RECORDS_GROUP_ID), OnCheckControllerRule()]
+labeler.auto_rules = [FromUserIdRule(constants.VK_RECORDS_GROUP_ID), GetOnCheckControllerRule()]
 
 
 @labeler.chat_message(TextInMessage('вызван на проверку.'))
 async def start_check(message: 'Message', on_check_storage: 'OnCheckController') -> None:
     check_info = record_message_parser.parse_started_check(message.text)
     await on_check_storage.new_check(check_info)
-
-
-@labeler.chat_message(MyCommandRule('cc2', args_count=2))
-async def stop_check(message: 'Message', on_check_storage: 'OnCheckController', args) -> None:
-    check_info = args_parser.parse_cc(args)
-    await on_check_storage.stoping_check(check_info.steamid)
-
-
-@labeler.chat_message(MyCommandRule('cc3', args_count=2))
-async def cancel_check(message: 'Message', on_check_storage: 'OnCheckController', args) -> None:
-    check_info = args_parser.parse_cc(args)
-    await on_check_storage.canceling_check(check_info.steamid)
 
 
 @labeler.chat_message(TextInMessage('больше не проверяется.'))

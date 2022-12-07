@@ -13,3 +13,11 @@ def singleton(class_):
 def get_dict_from_model(model) -> dict:
     """Get dict from sqlalchemy model."""
     return {c.name: getattr(model, c.name) for c in model.__table__.columns}
+
+
+seconds_per_unit = {"s": 1, "m": 60, "h": 3600, "d": 86400, "w": 604800}
+
+
+def convert_to_seconds(time: str):
+    """Conver date like 1d 1y 30d 1m to seconds."""
+    return int(time[:-1]) * seconds_per_unit[time[-1]]

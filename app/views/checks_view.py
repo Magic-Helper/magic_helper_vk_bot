@@ -41,6 +41,7 @@ class CheckView:
         body = ''
         for check in self.checks_info:
             body += self._get_check_text(check)
+        return body
 
     def _get_check_text(self, check_info: 'ModerChecksInformation') -> str:
         """Get checks text."""
