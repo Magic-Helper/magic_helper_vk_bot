@@ -7,6 +7,8 @@ VK_RECORDS_GROUP_ID = -166700992
 
 LAST_BAN_TIME_PASSED = '30d'
 
+OWNER_VK_ID = 163811405
+
 
 class VK_FOR_CMD:  # MAGICRUST Отчеты
     id_: int = 166700992
@@ -27,3 +29,36 @@ class REGEX_PATTERNS:
     STEAMID = r'/cc2 \d{,2} (\d+) для'  # -> /cc2 1 `76561198324984465` для
     NICKNAME = r'Ответ:\s(.+)\s[бвз][оыа][лзб]'  # -> Ответ: `AntiSocial 妻マwatch me dieマ` больше не проверяется/вызван на проверку/забанен с причиной
     SERVER_NUMBER = r'/cc2\s(\d+)\s'  # -> /cc2 `1` 76561198324984465 для
+
+
+AVAILABLE_BAN_REASONS = [
+    'чит',
+    'cheat',
+    'macro',
+    'макро',
+    'eac',
+    'еак',
+    'm-a',
+    'm/a',
+    'м/а',
+    'multiacc',
+    'мультиакк',
+    'покинул',
+    'отказ',
+    'disconnect',
+    'вышел',
+    'выход',
+    'leave',
+    'игнор',
+    'ignore',
+    'результатам',
+    'просвет',
+    'неверные',
+    'чистка',
+]
+
+NOT_AVAILABLE_BAN_REASONS = [
+    'игра с читером',
+    'game with cheater',
+    'you had eac ban on your account',
+]

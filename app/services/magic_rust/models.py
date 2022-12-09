@@ -29,7 +29,7 @@ class Player(BaseModel):
     nickname: str
     server_number: int = Field(..., alias='server')
     first_join: DateTime = Field(..., alias='firstjoin')
-    vk: int
+    vk: Optional[int] = None
     stats: Optional[PlayerStats] = None
 
     # validators

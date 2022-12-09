@@ -1,12 +1,16 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
+import pendulum
 from loguru import logger
 
+from app.core import constants
 from app.services.storage.controller import ChecksStorageController
 
 if TYPE_CHECKING:
+    from pendulum import DateTime
+
     from app.services.magic_rust.models import Player
-    from app.services.RCC.models import RCCPlayer
+    from app.services.RCC.models import RCCBan, RCCCheck, RCCPlayer
 
 
 class PlayerFilter:
@@ -79,3 +83,134 @@ class PlayerFilter:
             bool: True if player's kd is greater than self.by_kd, False otherwise.
         """
         return player.stats.kd >= self.by_kd
+
+
+class RCCPlayerFilter:
+    def __init__(
+        self,
+        by_seconds_passed_after_ban: Optional['DateTime'] = None,
+        by_check_on_magic_after_last_ban: bool = True,
+        by_reason: bool = True,
+    ):
+        """
+        RCCPlayer filter.
+
+        The filter is used to filter RCCPlayers by different parameters.
+        Players can be filtered by last ban time passed, by check on magic, by not cheat ban
+
+        Args:
+            by_seconds_passed_after_ban (DateTime, optional): Filter by last ban time passed. Defaults to None.
+            by_check_on_magic_after_last_ban (bool, optional): Filter if after last ban he was checked on magic. Defaults to False. If True will intialize ChecksStorageController.
+            by_reason (bool, optional): Filter if ban reason is 2+ 3+ or some like this. Defaults to False.
+        """
+        self._player_filter = []
+        self._ban_filters = [self._filter_by_active_ban]
+
+        if by_seconds_passed_after_ban:
+            self._ban_filters.append(self._filter_by_last_ban_time_passed)
+            self.seconds_passed_after_ban = by_seconds_passed_after_ban
+
+        if by_check_on_magic_after_last_ban:
+            self._player_filter.append(self._filter_by_not_checked_on_magic_after_last_ban)
+
+        if by_reason:
+            self._ban_filters.append(self._filter_by_reason)
+
+    def execute(self, players: list['RCCPlayer']) -> list['RCCPlayer']:
+        """Execute filters.
+
+        Args:
+            players (list[RCCPlayer]): List of players.
+
+        Returns:
+            list[RCCPlayer]: List of filtered players.
+        """
+        new_players = []
+        for player in players:
+            filtred_player = self._filter(player)
+            if filtred_player:
+                new_players.append(filtred_player)
+        return new_players
+
+    def _filter(self, player: 'RCCPlayer') -> Optional['RCCPlayer']:
+        logger.debug(f'Filtering player {player.steamid}')
+        if not player.bans:
+            return None
+
+        for method in self._player_filter:
+            if not method(player):
+                logger.debug(f'Player {player.steamid} was filtered by {method.__name__} method')
+                return None
+
+        filtred_player_bans = list(filter(self._filter_bans, player.bans))
+        if not filtred_player_bans:
+            return None
+        player.bans = filtred_player_bans
+
+        return player
+
+    def _filter_bans(self, ban: 'RCCBan') -> bool:
+        for method in self._ban_filters:
+            if not method(ban):
+                logger.debug(f'Player {ban} was filtered by {method.__name__} method')
+                return False
+
+        return True
+
+    def _filter_by_not_checked_on_magic_after_last_ban(self, player: 'RCCPlayer') -> bool:
+        if not player.checks:
+            return True
+
+        last_ban = max(player.bans, key=lambda ban: ban.ban_date)
+        for check in player.checks:
+            if check.server_name == 'MagicRust' or check.server_name == 'MAGIC RUST':
+                if check.date >= last_ban.ban_date:
+                    return False
+        return True
+
+    def _filter_by_last_ban_time_passed(self, ban: 'RCCBan') -> bool:
+        """Filter by last ban time passed.
+
+        Args:
+            ban (RCCBan): Ban object.
+
+        Returns:
+            bool: True if ban time is greater than self.by_last_ban_time_passed, False otherwise.
+        """
+        available_date = pendulum.now(tz=constants.TIMEZONE).subtract(
+            seconds=self.seconds_passed_after_ban
+        )
+        logger.debug(
+            f'Filter by last ban time passed: {ban.ban_date}, {available_date}, {ban.ban_date >= available_date}'
+        )
+        return ban.ban_date >= available_date
+
+    def _filter_by_reason(self, ban: 'RCCBan') -> bool:
+        """Filter by reason.
+
+        Args:
+            ban (RCCBan): Ban object.
+
+        Returns:
+            bool: True if ban reason is not 2+ 3+ or some like this, False otherwise.
+        """
+        for part_of_available_reason in constants.AVAILABLE_BAN_REASONS:
+            if (
+                part_of_available_reason in ban.reason.lower()
+                and ban.reason.lower() not in constants.NOT_AVAILABLE_BAN_REASONS
+            ):
+                return True
+        logger.debug(f'Filter by reason: {ban.reason}')
+        return False
+
+    def _filter_by_active_ban(self, ban: 'RCCBan') -> bool:
+        """Filter by active ban.
+
+        Args:
+            ban (RCCBan): Ban object.
+
+        Returns:
+            bool: True if ban is active, False otherwise.
+        """
+        logger.debug(f'Filter by active ban: {ban.active}')
+        return ban.active

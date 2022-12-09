@@ -11,8 +11,8 @@ from app.handlers import (
     magic_records_cmd_labeler,
     magic_records_labeler,
     other_cmd_labeler,
-    players_cmd_labeler,
     owner_cmd_labeler,
+    players_cmd_labeler,
 )
 
 message_bot_labelers = (magic_records_labeler,)

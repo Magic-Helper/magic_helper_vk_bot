@@ -1,5 +1,5 @@
 import re
-from typing import Optional, Union, Any
+from typing import Any, Optional, Union
 
 from vkbottle import API
 from vkbottle.bot import rules

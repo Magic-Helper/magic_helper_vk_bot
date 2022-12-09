@@ -20,7 +20,7 @@ class RustCheatCheckAPI(BaseAPI):
     API_KEY = settings.RCC_API_KEY
 
     def __init__(self) -> None:
-        self._session = ClientSession(connector=TCPConnector(limit=70))
+        self._session = ClientSession(connector=TCPConnector(limit=5, limit_per_host=5))
         self._session.headers.update({'User-Agent': settings.SERVER_TITLE})
 
     async def api_request(
@@ -47,6 +47,7 @@ class RustCheatCheckAPI(BaseAPI):
             params.update({'action': api_action})
             params.update({'key': self.API_KEY})
 
+        logger.debug(f'RCC API request: {api_url} {http_method} {params}')
         response = await super().api_request(
             api_url, http_method=http_method, params=params, data=data
         )

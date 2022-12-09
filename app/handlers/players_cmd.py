@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
-from vkbottle.bot import BotLabeler
 from loguru import logger
+from vkbottle.bot import BotLabeler
 
 from app.core import constants
 from app.core.utils import convert_to_seconds
@@ -9,10 +9,10 @@ from app.helpers.collector import data_collector
 from app.helpers.custom_rules import (
     CommandListRule,
     GetMagicRustAPIRule,
-    GetRustCheatCheckAPIRule,
     GetRCCDataMemoryStorageRule,
+    GetRustCheatCheckAPIRule,
 )
-from app.helpers.filtres import PlayerFilter
+from app.helpers.filtres import PlayerFilter, RCCPlayerFilter
 from app.views import NewPlayersView
 
 if TYPE_CHECKING:
@@ -64,9 +64,18 @@ async def get_banned_players(
     time_passed_seconds = convert_to_seconds(time_passed)
 
     online_players = await magic_rust_api.get_online_players()
-    banned_online_players = await data_collector.collect_rcc_data_and_caching(
+    rcc_online_players = await data_collector.collect_rcc_data_and_caching(
         online_players, rcc_api, rcc_data_storage
     )
-    logger.debug(f'Banned players collected count {len(banned_online_players)}')
-    for player in banned_online_players:
-        print(player)
+    logger.debug(f'Banned players collected count {len(rcc_online_players)}')
+
+    rcc_players_filter = RCCPlayerFilter(by_seconds_passed_after_ban=time_passed_seconds)
+    filtered_rcc_players = rcc_players_filter.execute(rcc_online_players)
+    logger.debug(f'Banned players filtered count {len(filtered_rcc_players)}')
+
+    sorted_players = sorted(
+        filtered_rcc_players, key=lambda player: len(player.bans), reverse=True
+    )
+
+    steamids = [player.steamid for player in sorted_players]
+    await message.answer(steamids)
