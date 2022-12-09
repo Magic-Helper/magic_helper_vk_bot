@@ -12,11 +12,13 @@ ENV PROJECT_HOME=/home/MagicHelper/vk_bot
 RUN mkdir -p ${PROJECT_HOME}
 WORKDIR ${PROJECT_HOME}
 
+COPY ./alembic/ ./alembic/
 COPY ./docker/ ./docker/
 COPY ./app/ ./app/
 COPY ./poetry.lock .
 COPY ./pyproject.toml .
 COPY ./Makefile .
+COPY ./alembic.ini .
 
 RUN chmod +x ${PROJECT_HOME}/docker/bot/entrypoint.sh
 

@@ -102,3 +102,4 @@ class RCCDataMemoryStorage:
     def clear_data(self) -> None:
         self._players.clear()
         self._steamids_data_exists.clear()
+        self._steamids_with_no_data.clear()
