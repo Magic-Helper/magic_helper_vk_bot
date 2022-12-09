@@ -26,9 +26,9 @@ services:
     build:
       context: .
       dockerfile: ./docker/nginx/Dockerfile
-    container_name: nginx_webhook
+    container_name: nginx_bot
     depends_on:
-      - webhook
+      - bot
     ports:
       - 80:80
     networks:

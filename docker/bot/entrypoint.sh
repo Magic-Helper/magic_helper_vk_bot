@@ -2,4 +2,4 @@
 make run-migration
 
 # Run bot
-python app 
+python -m app 
