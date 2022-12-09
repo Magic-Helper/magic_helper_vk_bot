@@ -16,12 +16,13 @@ from loguru import logger
 
 from app.core import settings
 from app.entrypoint import create_app, create_cmd_bot, create_message_bot
-from app.services.storage import OnCheckMemoryStorage
+from app.services.storage.memory_storage import OnCheckMemoryStorage, RCCDataMemoryStorage
 from app.services.storage.controller import OnCheckController
 
 # Создано просто чтобы чистилщик мусора не удалил
 memory_storage = OnCheckMemoryStorage()
 check_storage = OnCheckController()
+rcc_data_storage = RCCDataMemoryStorage()
 
 
 event_loop = asyncio.new_event_loop()

@@ -21,9 +21,11 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from app.services.storage import base_class  # noqa
+from app.services.storage.base import Base, Check  # noqa
 
-target_metadata = base_class.Base.metadata
+from app.services.storage.base_class import Base
+
+target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
