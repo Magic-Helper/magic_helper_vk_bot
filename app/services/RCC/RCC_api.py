@@ -1,7 +1,6 @@
-import asyncio
 from typing import TYPE_CHECKING, Union
 
-from aiohttp import ClientSession, TCPConnector, ClientTimeout
+from aiohttp import ClientSession, ClientTimeout, TCPConnector
 from loguru import logger
 
 from app.core import settings
@@ -21,9 +20,8 @@ class RustCheatCheckAPI(BaseAPI):
 
     def __init__(self) -> None:
         self._session = ClientSession(
-            connector=TCPConnector(limit=5, limit_per_host=5), timeout=ClientTimeout(total=20 * 60)
+            connector=TCPConnector(limit=5, limit_per_host=5), timeout=ClientTimeout(total=30 * 60)
         )
-        self._session.headers.update({'User-Agent': settings.SERVER_TITLE})
 
     async def api_request(
         self,
@@ -53,6 +51,9 @@ class RustCheatCheckAPI(BaseAPI):
         response = await super().api_request(api_url, http_method=http_method, params=params, data=data)
         logger.debug(f'RCC API response: {response}')
 
+        if not response:
+            return None
+
         if response.get('status', 'error') == 'error':
             return None
 
@@ -66,15 +67,6 @@ class RustCheatCheckAPI(BaseAPI):
         if not response:
             return None
         return RCCPlayer(**response)
-
-    async def get_rcc_players(self, steamids: list['Steamid']) -> list[RCCPlayer] | None:
-        """Get players info from RCC."""
-        tasks = []
-        for steamid in steamids:
-            task = asyncio.ensure_future(self.get_rcc_player(steamid))
-            tasks.append(task)
-        rcc_players = await asyncio.gather(*tasks)
-        return rcc_players
 
     async def give_checker_accesss(
         self, player_steamid: 'Steamid', moder_steamid: 'Steamid' = 0

@@ -28,11 +28,11 @@ check_storage = OnCheckController()
 rcc_data_storage = RCCDataMemoryStorage()
 
 
-event_loop = asyncio.new_event_loop()
+event_loop = asyncio.get_event_loop()
 
 cmd_bot = event_loop.run_until_complete(create_cmd_bot())
 message_bot = event_loop.run_until_complete(create_message_bot())
 app = event_loop.run_until_complete(create_app(cmd_bot, message_bot))
 
 logger.info('Starting server...')
-web.run_app(app, port=settings.PORT)
+web.run_app(app, port=settings.PORT, loop=event_loop)

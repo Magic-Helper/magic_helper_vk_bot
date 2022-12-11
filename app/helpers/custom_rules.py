@@ -1,5 +1,5 @@
 import re
-from typing import Any, Optional, Union
+from typing import Optional, Union
 
 from vkbottle import API
 from vkbottle.bot import rules
@@ -84,9 +84,7 @@ class MyCommandRule(rules.ABCRule[rules.BaseMessageMin]):
                 if not self.args_count and len(event.text) == text_length:
                     return True
                 if self.args_count and self.sep in event.text:
-                    args = event.text[text_length_with_sep:].split(
-                        self.sep, maxsplit=self.args_count
-                    )
+                    args = event.text[text_length_with_sep:].split(self.sep, maxsplit=self.args_count)
                     return {'args': args} if len(args) >= self.args_count and all(args) else False
         return False
 
@@ -116,9 +114,7 @@ class CommandListRule(rules.ABCRule[rules.BaseMessageMin]):
                     if not self.args_count and len(event.text) == text_length:
                         return True
                     if self.args_count:
-                        args = event.text[text_length_with_sep:].split(
-                            self.sep, maxsplit=self.args_count
-                        )
+                        args = event.text[text_length_with_sep:].split(self.sep, maxsplit=self.args_count)
                         return {'args': args} if all(args) else {}
         return False
 
@@ -128,22 +124,6 @@ class CommandListRule(rules.ABCRule[rules.BaseMessageMin]):
                 if text.startswith(prefix + command):
                     return command
         return ''
-
-
-class CommandWithDefaultArgsRule(rules.ABCRule[rules.BaseMessageMin]):
-    def __init__(
-        self,
-        command_text: list[str],
-        prefixes: Optional[list[str]] = None,
-        args_count: int = 0,
-        default_args: Optional[dict[str, Any]] = None,
-        sep: str = ' ',
-    ) -> None:
-        self.command_text = command_text
-        self.args_count = args_count
-        self.prefixes = prefixes or rules.DEFAULT_PREFIXES
-        self.sep = sep
-        self.default_args = default_args or {}
 
 
 class GetVKAPIRule(rules.ABCRule[rules.BaseMessageMin]):

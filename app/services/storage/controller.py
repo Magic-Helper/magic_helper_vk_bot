@@ -40,6 +40,7 @@ class OnCheckController:
             steamid=check_info.steamid,
             moder_vk=check_info.moder_vk,
             start_time=pendulum.now(constants.TIMEZONE),
+            server_number=check_info.server,
         )
         async with get_session() as session:
             check = await crud.check.create(session, obj_in=obj_in)

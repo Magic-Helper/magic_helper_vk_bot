@@ -4,23 +4,17 @@ from loguru import logger
 from vkbottle.bot import BotLabeler
 
 from app.core import constants
-from app.core.utils import convert_to_seconds
-from app.helpers.collector import data_collector
-from app.helpers.custom_rules import (
-    CommandListRule,
-    GetMagicRustAPIRule,
-    GetRCCDataMemoryStorageRule,
-    GetRustCheatCheckAPIRule,
-)
+from app.core.exceptions import CantGetTimePassed
+from app.helpers.custom_rules import CommandListRule, GetMagicRustAPIRule
 from app.helpers.filtres import PlayerFilter, RCCPlayerFilter
-from app.views import NewPlayersView, StatsPlayersView
+from app.helpers.parser import args_parser
+from app.helpers.rcc_manager import rcc_manager
+from app.views import NewPlayersView, RCCPlaeyrsView, StatsPlayersView
 
 if TYPE_CHECKING:
     from vkbottle.bot import Message
 
     from app.services.magic_rust.MR_api import MagicRustAPI
-    from app.services.RCC.RCC_api import RustCheatCheckAPI
-    from app.services.storage.memory_storage import RCCDataMemoryStorage
 
 
 labeler = BotLabeler()
@@ -49,7 +43,7 @@ async def get_big_kd_players(message: 'Message', magic_rust_api: 'MagicRustAPI',
     if args:
         kd = float(args[0])
     else:
-        kd = constants.BIG_KD
+        kd = constants.DEFAULT_BIG_KD
 
     players = await magic_rust_api.get_online_players()
     players_with_stats = await magic_rust_api.fill_stats_for_players(players)
@@ -64,31 +58,33 @@ async def get_big_kd_players(message: 'Message', magic_rust_api: 'MagicRustAPI',
 @labeler.message(
     CommandListRule(['bans', 'баны', 'ифты'], prefixes=['/', '.'], args_count=1),
     GetMagicRustAPIRule(),
-    GetRustCheatCheckAPIRule(),
-    GetRCCDataMemoryStorageRule(),
 )
 async def get_banned_players(
     message: 'Message',
     magic_rust_api: 'MagicRustAPI',
-    rcc_api: 'RustCheatCheckAPI',
-    rcc_data_storage: 'RCCDataMemoryStorage',
     args: list = None,
 ):
-    if not args:
-        time_passed = constants.LAST_BAN_TIME_PASSED
-    else:
-        time_passed = args[0]
-    time_passed_seconds = convert_to_seconds(time_passed)
+    try:
+        time_passed = args_parser.parse_time_passed(args)
+    except CantGetTimePassed:
+        return await message.answer('Не правильно указано время. Используйте формат 30s, 30m, 30h, 30d, 30w, 2y.')
 
-    online_players = await magic_rust_api.get_online_players()
-    rcc_online_players = await data_collector.collect_rcc_data_and_caching(online_players, rcc_api, rcc_data_storage)
-    logger.debug(f'Banned players collected count {len(rcc_online_players)}')
+    try:
+        online_players = await magic_rust_api.get_online_players()
+    except Exception as e:
+        logger.exception(e)
+        return await message.answer('Ошибка при получении игроков на сервере.')
+    online_players_steamids = [player.steamid for player in online_players]
 
-    rcc_players_filter = RCCPlayerFilter(by_seconds_passed_after_ban=time_passed_seconds)
-    filtered_rcc_players = rcc_players_filter.execute(rcc_online_players)
-    logger.debug(f'Banned players filtered count {len(filtered_rcc_players)}')
+    try:
+        rcc_players = await rcc_manager.get_rcc_players_and_cache(online_players_steamids)
+    except Exception as e:
+        logger.exception(e)
+        return await message.answer('Ошибка при получении данных с RCC.')
+
+    rcc_players_filter = RCCPlayerFilter(by_seconds_passed_after_ban=time_passed)
+    filtered_rcc_players = rcc_players_filter.execute(rcc_players)
 
     sorted_players = sorted(filtered_rcc_players, key=lambda player: len(player.bans), reverse=True)
 
-    steamids = [player.steamid for player in sorted_players]
-    await message.answer(steamids)
+    await message.answer(RCCPlaeyrsView(sorted_players))

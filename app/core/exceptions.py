@@ -1,0 +1,2 @@
+class CantGetTimePassed(Exception):
+    pass

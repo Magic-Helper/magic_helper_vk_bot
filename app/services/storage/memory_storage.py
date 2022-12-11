@@ -69,8 +69,7 @@ class OnCheckMemoryStorage:
 class RCCDataMemoryStorage:
     def __init__(self) -> None:
         self._players: dict['Steamid', 'RCCPlayer'] = {}
-        self._steamids_data_exists: set['Steamid'] = set()
-        self._steamids_with_no_data: set['Steamid'] = set()
+        self._cached_steamids: set['Steamid'] = set()
 
     def get_player(self, steamid: 'Steamid') -> 'RCCPlayer':
         return self._players.get(steamid)
@@ -81,23 +80,19 @@ class RCCDataMemoryStorage:
     def add_player(self, player: 'RCCPlayer') -> None:
         self._players[player.steamid] = player
 
-    def add_players_with_exists_data(self, steamids: list['Steamid']) -> None:
-        self._steamids_data_exists.update(steamids)
-
-    def add_players_with_no_data(self, steamids: list['Steamid']) -> None:
-        self._steamids_with_no_data.update(steamids)
-
     def add_players(self, players: list['RCCPlayer']) -> None:
         for player in players:
             self.add_player(player)
 
-    def get_players_data_exists(self) -> set['Steamid']:
-        return self._steamids_data_exists
+    def get_steamids_with_data(self) -> list['Steamid']:
+        return list(self._players.keys())
 
-    def get_players_with_no_data(self) -> set['Steamid']:
-        return self._steamids_with_no_data
+    def get_cached_steamids(self) -> set['Steamid']:
+        return self._cached_steamids
+
+    def add_cached_steamids(self, steamids: list['Steamid']) -> None:
+        self._cached_steamids.update(steamids)
 
     def clear_data(self) -> None:
         self._players.clear()
-        self._steamids_data_exists.clear()
-        self._steamids_with_no_data.clear()
+        self._cached_steamids.clear()

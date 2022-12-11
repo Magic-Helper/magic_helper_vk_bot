@@ -2,9 +2,12 @@ import re
 
 from loguru import logger
 
+from app.core import constants
 from app.core.cmd_args import BanCheckArgs, StopCheckArgs
 from app.core.constants import REGEX_PATTERNS
+from app.core.exceptions import CantGetTimePassed
 from app.core.typedefs import Nickname, StartedCheck
+from app.core.utils import convert_to_seconds
 
 
 class MessageParser:
@@ -69,6 +72,14 @@ class ArgsParser:
         steamid = int(args[1])
         reason = args[2]
         return BanCheckArgs(server=server, steamid=steamid, reason=reason)
+
+    def parse_time_passed(self, args: list[str] | None) -> int:
+        try:
+            if args is None:
+                return convert_to_seconds(constants.DEFAULT_TIME_PASSED)
+            return convert_to_seconds(args[0])
+        except Exception as e:
+            raise CantGetTimePassed(e)
 
 
 record_message_parser = MagicRecordMessageParser()

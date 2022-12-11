@@ -39,7 +39,7 @@ class BaseAPI:
         try:
             return await response.json(content_type=None)
         except Exception as e:
-            message = str(e) + str(params)
+            message = str(e) + str(params) + str(response)
             logger.error(message)
             return None
 
@@ -50,7 +50,7 @@ class BaseAPI:
         http_method: str = 'GET',
         params: dict | None = None,
         data: dict | None = None,
-    ) -> dict:
+    ) -> dict | ModuleNotFoundError:
         """Make a request to API and return JSON response.
 
         Args:
