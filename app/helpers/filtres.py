@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from pendulum import DateTime
 
     from app.services.magic_rust.models import Player
-    from app.services.RCC.models import RCCBan, RCCCheck, RCCPlayer
+    from app.services.RCC.models import RCCBan, RCCPlayer
 
 
 class PlayerFilter:
@@ -26,7 +26,8 @@ class PlayerFilter:
 
         Args:
             by_kd (float | None, optional): Filter by kd. Defaults to None.
-            by_check_on_magic (bool, optional): Filter by check on magic. Defaults to False. If True will intialize ChecksStorageController.
+            by_check_on_magic (bool, optional): Filter by check on magic. Defaults to False.
+                If True will intialize ChecksStorageController.
         """
         self._sync_filters = []
         self._async_filters = []
@@ -100,7 +101,8 @@ class RCCPlayerFilter:
 
         Args:
             by_seconds_passed_after_ban (DateTime, optional): Filter by last ban time passed. Defaults to None.
-            by_check_on_magic_after_last_ban (bool, optional): Filter if after last ban he was checked on magic. Defaults to False. If True will intialize ChecksStorageController.
+            by_check_on_magic_after_last_ban (bool, optional): Filter if after last ban he was checked on magic.
+                Defaults to False. If True will intialize ChecksStorageController.
             by_reason (bool, optional): Filter if ban reason is 2+ 3+ or some like this. Defaults to False.
         """
         self._player_filter = []
@@ -177,9 +179,7 @@ class RCCPlayerFilter:
         Returns:
             bool: True if ban time is greater than self.by_last_ban_time_passed, False otherwise.
         """
-        available_date = pendulum.now(tz=constants.TIMEZONE).subtract(
-            seconds=self.seconds_passed_after_ban
-        )
+        available_date = pendulum.now(tz=constants.TIMEZONE).subtract(seconds=self.seconds_passed_after_ban)
         logger.debug(
             f'Filter by last ban time passed: {ban.ban_date}, {available_date}, {ban.ban_date >= available_date}'
         )
@@ -197,7 +197,7 @@ class RCCPlayerFilter:
         for part_of_available_reason in constants.AVAILABLE_BAN_REASONS:
             if (
                 part_of_available_reason in ban.reason.lower()
-                and ban.reason.lower() not in constants.NOT_AVAILABLE_BAN_REASONS
+                and ban.reason.lower() not in constants.NOT_AVAILABLE_BAN_REASONS  # noqa: W503
             ):
                 return True
         logger.debug(f'Filter by reason: {ban.reason}')

@@ -1,14 +1,10 @@
 import re
-from typing import TYPE_CHECKING
 
 from loguru import logger
 
 from app.core.cmd_args import BanCheckArgs, StopCheckArgs
 from app.core.constants import REGEX_PATTERNS
 from app.core.typedefs import Nickname, StartedCheck
-
-if TYPE_CHECKING:
-    from vkbottle.bot import Message
 
 
 class MessageParser:

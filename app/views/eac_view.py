@@ -1,4 +1,7 @@
-from eac_info.model import EACInfo
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from eac_info.model import EACInfo
 
 
 class EacView:

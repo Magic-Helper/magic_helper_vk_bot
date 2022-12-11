@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import TypeAlias
 
-from pendulum import DateTime
+from pendulum import DateTime  # noqa: TC002
 
 Steamid: TypeAlias = int
 Nickname: TypeAlias = str

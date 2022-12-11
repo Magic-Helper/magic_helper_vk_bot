@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from app.core.utils import singleton
 
@@ -17,7 +17,7 @@ class OnCheckMemoryStorage:
 
     Attributes:
         _on_check: A dictionary that stores data about users who are currently in the process of checking.
-        _nicknames_to_steamids: A dictionary that stores the relationship between the nickname and the steamid of the user.
+        _nicknames_to_steamids: A dictionary that stores the relationship between the nickname and the steamid of the user.  # noqa: E501
 
     Methods:
         get_on_check(steamid: 'Steamid') -> 'OnCheckData':
@@ -44,9 +44,7 @@ class OnCheckMemoryStorage:
     def get_data_by_steamid(self, steamid: 'Steamid') -> 'OnCheckData':
         return self._on_check.get(steamid)
 
-    def set_on_check(
-        self, steamid: 'Steamid', nickname: 'Nickname', on_check_data: 'OnCheckData'
-    ) -> None:
+    def set_on_check(self, steamid: 'Steamid', nickname: 'Nickname', on_check_data: 'OnCheckData') -> None:
         self._on_check[steamid] = on_check_data
         self._nicknames_to_steamids[nickname] = steamid
 

@@ -15,7 +15,7 @@ def get_dict_from_model(model) -> dict:
     return {c.name: getattr(model, c.name) for c in model.__table__.columns}
 
 
-seconds_per_unit = {"s": 1, "m": 60, "h": 3600, "d": 86400, "w": 604800}
+seconds_per_unit = {'s': 1, 'm': 60, 'h': 3600, 'd': 86400, 'w': 604800}
 
 
 def convert_to_seconds(time: str):

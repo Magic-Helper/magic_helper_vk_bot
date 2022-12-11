@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import TYPE_CHECKING
 
 from pendulum import DateTime
 from pydantic import BaseModel, Field, validator

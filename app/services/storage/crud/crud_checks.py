@@ -36,9 +36,7 @@ class CRUDCheck(CRUDBase[Check, CheckCreate, CheckUpdate]):
         )
         return await session.scalars(query).all()
 
-    async def get_moder_checks_count(
-        self, db: 'AsyncSession', moder_vk: int, time_interval: 'TimeInterval'
-    ) -> int:
+    async def get_moder_checks_count(self, db: 'AsyncSession', moder_vk: int, time_interval: 'TimeInterval') -> int:
         """Get checks for moder.
 
         Args:
@@ -85,5 +83,6 @@ class CRUDCheck(CRUDBase[Check, CheckCreate, CheckUpdate]):
         query = select(self.model.id).where(self.model.steamid == steamid)
         result = await db.execute(query)
         return result.first() is not None
+
 
 check = CRUDCheck(Check)

@@ -10,7 +10,6 @@ from app.core.typedefs import (
     StartedCheck,
     TimeInterval,
 )
-from app.core.utils import singleton
 from app.services.storage import crud
 from app.services.storage.memory_storage import OnCheckMemoryStorage
 from app.services.storage.schemas import CheckCreate, CheckUpdate
@@ -51,9 +50,7 @@ class OnCheckController:
             stage=CheckStage.PROCESS,
             db_row=check.id,
         )
-        self.__on_check_storage.set_on_check(
-            check_info.steamid, check_info.nickname, on_check_data
-        )
+        self.__on_check_storage.set_on_check(check_info.steamid, check_info.nickname, on_check_data)
         return check
 
     async def end_check(self, nickname: 'Nickname', is_ban: bool = False) -> None:
@@ -148,9 +145,7 @@ class ChecksStorageController:
             list[Check]: List of checks.
         """
         async with get_session() as session:
-            return await crud.check.get_moder_checks_count(
-                session, moder_vk=moder_vk, time_interval=time_interval
-            )
+            return await crud.check.get_moder_checks_count(session, moder_vk=moder_vk, time_interval=time_interval)
 
     async def get_moders(self) -> list[int]:
         """Get moders.
@@ -161,9 +156,7 @@ class ChecksStorageController:
         async with get_session() as session:
             return await crud.check.get_moders(session)
 
-    async def get_multi_checks_information(
-        self, moders_vk: list[int], time_interval: TimeInterval
-    ):
+    async def get_multi_checks_information(self, moders_vk: list[int], time_interval: TimeInterval):
         """Get checks for moder.
 
         Args:
