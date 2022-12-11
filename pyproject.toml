@@ -37,11 +37,11 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.isort]
 multi_line_output = 3
-skip_glob=[".git/*", ".venv/*", ".vscode/*", "__pycache__", "*.pyc"]
+skip_glob=[".git/*", ".venv/*", ".vscode/*", "__pycache__", "*.pyc", "alembic/*", "alembic/versions/*", ".env*"]
 include_trailing_comma = true
 
 
 [tool.black]
 skip-string-normalization = true
-line-length = 99
+line-length = 120
 exclude = '(\.git|\.venv|\.vscode|\.env*)'

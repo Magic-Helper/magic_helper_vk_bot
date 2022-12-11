@@ -1,4 +1,4 @@
 [flake8]
-max-line-length=99
-exclude=.venv/, .git/, __init__.py, alembic/, config.py, __main__.py, schemas/,
+max-line-length=120
+exclude=.venv/, .git/, __init__.py, alembic/, config.py, __main__.py, *schemas/*, models.py,
 ignore = R503, R504
