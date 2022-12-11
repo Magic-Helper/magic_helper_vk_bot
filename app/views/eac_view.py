@@ -5,7 +5,7 @@ if TYPE_CHECKING:
 
 
 class EacView:
-    def __init__(self, eac_info: EACInfo):
+    def __init__(self, eac_info: 'EACInfo'):
         self.eac_info = eac_info
 
     def __repr__(self) -> str:
