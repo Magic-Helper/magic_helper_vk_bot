@@ -16,38 +16,27 @@ labeler = BotLabeler()
 labeler.auto_rules = [rules.FromPeerRule(constants.OWNER_VK_ID)]
 
 
-@labeler.message(
-    rules.CommandRule('rcc_data_info', prefixes=['/', '.']), GetRCCDataMemoryStorageRule()
-)
-async def get_rcc_memory_storage_info(
-    message: 'Message', rcc_data_storage: 'RCCDataMemoryStorage'
-) -> None:
+@labeler.message(rules.CommandRule('rcc_data_info', prefixes=['/', '.']), GetRCCDataMemoryStorageRule())
+async def get_rcc_memory_storage_info(message: 'Message', rcc_data_storage: 'RCCDataMemoryStorage') -> None:
     """Handle /rcc_data_info command and send info about rcc_data_storage to chat"""
     size = f'Размер рцц хранилища: {asizeof.asizeof(rcc_data_storage) / 1024 / 1024:.2f} мб\n'
     count_players = f'Количество игроков в хранилище: {len(rcc_data_storage._players)}\n'
-    count_steamids = (
-        f'Количество steamids в хранилище: {len(rcc_data_storage._steamids_data_exists)}\n'
-    )
-    msg = size + count_players + count_steamids
+    count_steamids_with_data = f'Количество steamids c данными: {len(rcc_data_storage._steamids_data_exists)}\n'
+    count_steamids_no_data = f'Количество steamids без данных: {len(rcc_data_storage._steamids_with_no_data)}\n'
+    msg = size + count_players + count_steamids_with_data + count_steamids_no_data
     logger.debug(msg)
     await message.answer(msg)
 
 
-@labeler.message(
-    rules.CommandRule('rcc_data_steamids', prefixes=['/', '.']), GetRCCDataMemoryStorageRule()
-)
-async def get_rcc_data_steamids(
-    message: 'Message', rcc_data_storage: 'RCCDataMemoryStorage'
-) -> None:
+@labeler.message(rules.CommandRule('rcc_data_steamids', prefixes=['/', '.']), GetRCCDataMemoryStorageRule())
+async def get_rcc_data_steamids(message: 'Message', rcc_data_storage: 'RCCDataMemoryStorage') -> None:
     """Handle /rcc_data_steamids command and send all steamids to chat"""
     steamids = rcc_data_storage.get_players_data_exists()
     logger.debug(steamids)
     await message.answer(f'Стиайдишники для которых есть инфа{steamids}')
 
 
-@labeler.message(
-    rules.CommandRule('rcc_data_clear', prefixes=['/', '.']), GetRCCDataMemoryStorageRule()
-)
+@labeler.message(rules.CommandRule('rcc_data_clear', prefixes=['/', '.']), GetRCCDataMemoryStorageRule())
 async def clear_rcc_data(message: 'Message', rcc_data_storage: 'RCCDataMemoryStorage') -> None:
     """Handle /rcc_data_clear command and clear rcc data storage"""
     rcc_data_storage.clear_data()
