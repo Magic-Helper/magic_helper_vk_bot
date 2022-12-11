@@ -30,11 +30,15 @@ async def handler(request: web.Request, ctx: 'AppContext') -> web.Response:
         logger.debug('Bad group_id')
         return web.Response(text='Nice try :)', status=403)
 
+    from_id = data.get('object', {}).get('message', {}).get('from_id')  # )))))))))))))))))))))
+
     if group_id == constants.VK_FOR_CMD.id_:  # MAGICRUST Отчеты
         logger.debug('Got event for cmd bot')
         asyncio.get_running_loop().create_task(ctx.cmd_bot.process_event(data))
 
-    elif group_id == constants.VK_FOR_MESSAGE.id_:  # MAGIC HELPER
+    elif (
+        group_id == constants.VK_FOR_MESSAGE.id_ and from_id in constants.VK_FOR_MESSAGE.available_users
+    ):  # MAGIC HELPER
         logger.debug('Got event for message bot')
         asyncio.get_running_loop().create_task(ctx.message_bot.process_event(data))
 
