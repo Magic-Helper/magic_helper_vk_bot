@@ -22,9 +22,8 @@ async def get_rcc_memory_storage_info(message: 'Message', rcc_data_storage: 'RCC
     """Handle /rcc_data_info command and send info about rcc_data_storage to chat"""
     size = f'Размер рцц хранилища: {asizeof.asizeof(rcc_data_storage) / 1024 / 1024:.2f} мб\n'
     count_players = f'Количество игроков в хранилище: {len(rcc_data_storage._players)}\n'
-    count_steamids_with_data = f'Количество steamids c данными: {len((rcc_data_storage._players.keys()))}\n'
     count_steamids_no_data = f'Общее количество steamids: {len(rcc_data_storage._cached_steamids)}\n'
-    msg = size + count_players + count_steamids_with_data + count_steamids_no_data
+    msg = size + count_players + count_steamids_no_data
     logger.debug(msg)
     await message.answer(msg)
 
