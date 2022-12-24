@@ -34,7 +34,7 @@ class REGEX_PATTERNS:
     SERVER_NUMBER = r'/cc2\s(\d+)\s'  # -> /cc2 `1` 76561198324984465 для
 
 
-AVAILABLE_BAN_REASONS = [
+AVAILABLE_BAN_REASONS: list[str] = [
     'чит',
     'cheat',
     'macro',
@@ -60,8 +60,22 @@ AVAILABLE_BAN_REASONS = [
     'чистка',
 ]
 
-NOT_AVAILABLE_BAN_REASONS = [
+NOT_AVAILABLE_BAN_REASONS: list[str] = [
     'игра с читером',
     'game with cheater',
     'you had eac ban on your account',
+]
+
+
+RUST_SERVERS_NAME: list[str] = [
+    'MAGIC',
+    'MR',
+    'GRAND',
+    'TRAVELER',
+    'ULTIMATE',
+    'ROOM',
+    'BEARZ',
+    'BRO',
+    'ORION',
+    'FUNRUST',
 ]
