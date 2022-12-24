@@ -33,7 +33,7 @@ class RCCCheck(BaseModel):
 class RCCBan(BaseModel):
     ban_id: int | None = Field(None, alias='banID')
     reason: str
-    server_name = str = Field('Без Названия', alias='serverName')
+    server_name: str = Field('Без названия', alias='serverName')
     OVH_server_id: int = Field(0, alias='OVHServerID')
     ban_date: DateTime = Field(..., alias='banDate')
     unban_date: DateTime | int = Field(0, alias='unbanDate')
