@@ -51,7 +51,8 @@ class MagicRecordMessageParser(MessageParser):
 
         """
         logger.debug(f'Parsing stoped check from {message}')
-        self.parse(REGEX_PATTERNS.NICKNAME, message, 'Nickname')
+
+        return self.parse(REGEX_PATTERNS.NICKNAME, message, 'Nickname')
 
 
 class MagicReportsMessageParser(MessageParser):

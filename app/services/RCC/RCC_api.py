@@ -48,7 +48,7 @@ class RustCheatCheckAPI(BaseAPI):
             params.update({'key': self.API_KEY})
 
         logger.debug(f'RCC API request: {api_url} {http_method} {params}')
-        response = await super().api_request(api_url, http_method=http_method, params=params, data=data)
+        response = await self.request_json(url=api_url, http_method=http_method, params=params, data=data)
         logger.debug(f'RCC API response: {response}')
 
         if not response:
