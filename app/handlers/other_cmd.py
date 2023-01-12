@@ -19,6 +19,10 @@ labeler = BotLabeler()
 @labeler.message(CommandListRule(['eac', 'иак', 'уфс'], prefixes=['/', '.'], args_count=1))
 async def get_eac_info_(message: 'Message', args) -> None:
     steamid = args[0]
+    return await message.answer(
+        f'Из-за нестабильных ответов, лушче пользуйтесь просто сайтом: \nhttps://www.nexusonline.co.uk/bans/profile/?id={steamid}'
+    )
+
     try:
         eac_info = await get_eac_info(steamid)
         logger.info(f'Получена информация об аккаунте {steamid}: {eac_info}')
