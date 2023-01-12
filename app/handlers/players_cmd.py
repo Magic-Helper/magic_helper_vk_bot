@@ -9,7 +9,7 @@ from app.helpers.custom_rules import CommandListRule, GetMagicRustAPIRule
 from app.helpers.filtres import PlayerFilter, RCCPlayerFilter
 from app.helpers.parser import args_parser
 from app.helpers.rcc_manager import rcc_manager
-from app.views import NewPlayersView, RCCPlaeyrsView, StatsPlayersView
+from app.views import NewPlayersView, RCCPlayersView, KDPlayersView, PlayerStatsView
 
 if TYPE_CHECKING:
     from vkbottle.bot import Message
@@ -38,7 +38,7 @@ async def get_new_players(message: 'Message', magic_rust_api: 'MagicRustAPI') ->
     return await message.answer(NewPlayersView(sorted_players))
 
 
-@labeler.message(CommandListRule(['stats', 'стата', 'ыефеы'], prefixes=['/', '.'], args_count=1), GetMagicRustAPIRule())
+@labeler.message(CommandListRule(['кд', 'kd', 'лв'], prefixes=['/', '.'], args_count=1), GetMagicRustAPIRule())
 async def get_big_kd_players(message: 'Message', magic_rust_api: 'MagicRustAPI', args: list | None = None) -> None:
     if args:
         kd = float(args[0])
@@ -52,7 +52,7 @@ async def get_big_kd_players(message: 'Message', magic_rust_api: 'MagicRustAPI',
 
     filtered_players = await player_filter.execute(players_with_stats)
     sorted_players = sorted(filtered_players, key=lambda player: player.stats.kd, reverse=True)
-    return await message.answer(StatsPlayersView(sorted_players, kd))
+    return await message.answer(KDPlayersView(sorted_players, kd))
 
 
 @labeler.message(
@@ -67,7 +67,7 @@ async def get_banned_players(
     try:
         time_passed = args_parser.parse_time_passed(args)
     except CantGetTimePassed:
-        return await message.answer('Не правильно указано время. Используйте формат 30s, 30m, 30h, 30d, 30w, 2y.')
+        return await message.answer('Неправильно указано время. Используйте формат 30s, 30m, 30h, 30d, 30w, 2y.')
 
     try:
         online_players = await magic_rust_api.get_online_players()
@@ -87,4 +87,20 @@ async def get_banned_players(
 
     sorted_players = sorted(filtered_rcc_players, key=lambda player: len(player.bans), reverse=True)
 
-    await message.answer(RCCPlaeyrsView(sorted_players))
+    await message.answer(RCCPlayersView(sorted_players))
+
+
+@labeler.message(
+    CommandListRule(['stats', 'стата', 'ыефеы'], prefixes=['/', '.'], args_count=2),
+    GetMagicRustAPIRule(),
+)
+async def get_player_stats(
+    message: 'Message',
+    magic_rust_api: 'MagicRustAPI',
+    args: list = None,
+):
+    if not args or len(args) != 2:
+        return await message.answer('Вывод статистики игрока.\n/stats [сервер] [steamid]')
+    get_stats_args = args_parser.parse_get_stats(args)
+    stats = await magic_rust_api.get_player_stats(server_number=get_stats_args.server, steamid=get_stats_args.steamid)
+    return await message.answer(PlayerStatsView(stats))

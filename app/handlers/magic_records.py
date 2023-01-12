@@ -13,7 +13,7 @@ from app.helpers.custom_rules import (
 if TYPE_CHECKING:
     from vkbottle.bot import Message
 
-    from app.services.storage.controller import OnCheckController
+    from app.services.storage.check_controller import OnCheckController
 
 labeler = BotLabeler()
 # Parse only messages from magic records group

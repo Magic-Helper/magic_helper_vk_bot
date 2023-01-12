@@ -3,7 +3,7 @@ from typing import Optional
 from pendulum import DateTime
 from pydantic import BaseModel, Field, root_validator, validator
 
-from app.services.validators import get_datetime_object
+from app.core.validators import get_datetime_object
 
 
 class PlayerStats(BaseModel):

@@ -16,3 +16,14 @@ class BanCheckArgs:
     server: int
     steamid: int
     reason: str
+
+
+@dataclass
+class GetStatsArgs:
+    """
+    server: int
+    steamid: int
+    """
+
+    server: int
+    steamid: int

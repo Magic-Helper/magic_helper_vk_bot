@@ -1,14 +1,14 @@
-import pendulum
-
 from typing import TYPE_CHECKING
+
+import pendulum
 
 from app.core import constants
 
 if TYPE_CHECKING:
-    from app.services.RCC.models import RCCPlayer, RCCBan
+    from app.services.RCC.models import RCCBan, RCCPlayer
 
 
-class RCCPlaeyrsView:
+class RCCPlayersView:
     def __init__(self, rcc_players: list['RCCPlayer']):
         self.rcc_players = rcc_players
 
@@ -60,4 +60,4 @@ class RCCPlaeyrsView:
         today = pendulum.today()
         time_after_ban = today.diff(ban_date)
         days_after_ban = time_after_ban.days
-        return f'{days_after_ban} дней'
+        return f'{days_after_ban} д'

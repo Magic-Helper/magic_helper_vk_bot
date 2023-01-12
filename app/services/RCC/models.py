@@ -4,7 +4,7 @@ from pendulum import DateTime
 from pydantic import BaseModel, Field, validator
 
 from app.core.typedefs import Steamid
-from app.services.validators import get_datetime_object
+from app.core.validators import get_datetime_object
 
 
 class RCCResponseStatus(Enum):

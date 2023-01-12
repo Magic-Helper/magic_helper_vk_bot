@@ -1,4 +1,4 @@
-DAY_WORK_MONTH_END = 9
+DAY_WORK_MONTH_END = 8
 TIMEZONE = 'Europe/Moscow'
 STRING_DATE_FORMAT = 'DD.MM.YYYY'
 
@@ -32,6 +32,10 @@ class REGEX_PATTERNS:
     STEAMID = r'/cc2 \d{,2} (\d+) для'  # -> /cc2 1 `76561198324984465` для
     NICKNAME = r'Ответ:\s(.+)\s[бвз][оыа][лзб]'  # -> Ответ: `AntiSocial 妻マwatch me dieマ` больше не проверяется/вызван на проверку/забанен с причиной # noqa
     SERVER_NUMBER = r'/cc2\s(\d+)\s'  # -> /cc2 `1` 76561198324984465 для
+    NICKNAME_IN_REPORT = r'Игрок (.+) предоставил '
+
+
+USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0'
 
 
 AVAILABLE_BAN_REASONS: list[str] = [
@@ -78,4 +82,7 @@ RUST_SERVERS_NAME: list[str] = [
     'BRO',
     'ORION',
     'FUNRUST',
+    'BOLOTO',
+    'MAGMA',
+    'TOFFS',
 ]

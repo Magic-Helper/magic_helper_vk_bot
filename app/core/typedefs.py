@@ -3,6 +3,9 @@ from enum import Enum
 from typing import TypeAlias
 
 from pendulum import DateTime  # noqa: TC002
+from pydantic import BaseModel, validator
+
+from app.core.validators import validate_discord
 
 Steamid: TypeAlias = int
 Nickname: TypeAlias = str
@@ -99,3 +102,20 @@ class ModerChecksInformation:
 
     moderator: Moderator
     checks_count: int
+
+
+class GetDiscord(BaseModel):
+    """Pydantic model for get discord message.
+
+    Args:
+        nickname (str): A nickname of a player.
+        discord (str): A discord of a player.
+        moder_vk_id (int): A VK ID of a moderator.
+    """
+
+    nickname: str
+    discord: str
+    moder_vk_id: int
+
+    # validators
+    _validate_discord = validator('discord', pre=True, allow_reuse=True)(validate_discord)

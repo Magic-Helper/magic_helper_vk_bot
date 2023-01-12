@@ -40,7 +40,30 @@ class MagicRustAPI(BaseAPI):
     STATS_API_LINK: str = settings.MAGIC_STATS_API_LINK
     MODERS_API_LINK: str = settings.MAGIC_MODERS_API_LINK
 
-    async def get_player_stats(self, steamid: 'Steamid', server_number: int) -> PlayerStats | None:
+    async def api_request(
+        self,
+        api_url: str,
+        api_method: str | None = None,
+        http_method: str = 'GET',
+        params: dict | None = None,
+        data: dict | None = None,
+    ) -> dict | None:
+        """Make a request to API and return JSON response.
+
+        Args:
+            api_method (str): API method.
+            http_method (str, optional): HTTP method. Defaults to 'GET'.
+            params (dict, optional): Parameters. Defaults to None.
+            data (dict, optional): Data. Defaults to None.
+
+        Returns:
+            dict: JSON response.
+        """
+        if api_method:
+            api_url = api_url + api_method
+        return await self.request_json(api_url, http_method, params, data)
+
+    async def get_player_stats(self, steamid: 'Steamid', server_number: int) -> PlayerStats:
         """Get player stats from Magic Rust stats API.
 
         Args:
@@ -54,7 +77,7 @@ class MagicRustAPI(BaseAPI):
         params = {'server': server_id, 'steamid': steamid}
         method = 'getPlayerStat.php'
         response = await self.api_request(self.STATS_API_LINK, method, params=params)
-        logger.debug(response)
+        logger.debug('Player {steamid} stats answer: {answer}', steamid=steamid, answer=response)
         if response:
             return PlayerStats(**response)
         return PlayerStats(steamid=steamid)
@@ -82,7 +105,9 @@ class MagicRustAPI(BaseAPI):
         """
         api_method = 'getPlayersList.php'
         response = await self.api_request(self.MODERS_API_LINK, api_method)
-        return parse_obj_as(list[Player], response)
+        players = parse_obj_as(list[Player], response)
+        logger.debug('Online players: {players}', players=players)
+        return players
 
     async def get_online_new_players(self, days: int = 7) -> list[Player]:
         """Get online new players from Magic Rust moders API.
@@ -95,7 +120,9 @@ class MagicRustAPI(BaseAPI):
         """
         players_online = await self.get_online_players()
         time_delta = pendulum.now(tz=constants.TIMEZONE).subtract(days=days)
-        return list(filter(lambda player: player.first_join >= time_delta, players_online))
+        new_players = list(filter(lambda player: player.first_join >= time_delta, players_online))
+        logger.debug('Online new players: {players}', players=new_players)
+        return new_players
 
     async def get_player_stats_by_player_info(self, player_info: Player) -> list[Player]:
         """Get player stats by player info.

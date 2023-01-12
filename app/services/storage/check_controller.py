@@ -78,6 +78,8 @@ class OnCheckController:
             check = await crud.check.get(session, id=on_check_data.db_row)
             await crud.check.update(session, db_obj=check, obj_in=obj_in)
 
+        self.__on_check_storage.delete_on_check(nickname)
+
     async def delete_check(self, nickname: 'Nickname') -> None:
         """Delete check from database and from memory.
 
@@ -121,6 +123,10 @@ class OnCheckController:
         logger.debug(f'Updating stage for {steamid} to {stage}')
 
         self.__on_check_storage.change_state(steamid, stage)
+
+    def get_steamid_by_nickname(self, nickname: 'Nickname') -> 'Steamid':
+        """Get steamid by nickname."""
+        return self.__on_check_storage.get_steamid_by_nickname(nickname)
 
 
 class ChecksStorageController:

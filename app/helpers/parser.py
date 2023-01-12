@@ -3,10 +3,10 @@ import re
 from loguru import logger
 
 from app.core import constants
-from app.core.cmd_args import BanCheckArgs, StopCheckArgs
+from app.core.cmd_args import BanCheckArgs, StopCheckArgs, GetStatsArgs
 from app.core.constants import REGEX_PATTERNS
 from app.core.exceptions import CantGetTimePassed
-from app.core.typedefs import Nickname, StartedCheck
+from app.core.typedefs import GetDiscord, Nickname, StartedCheck
 from app.core.utils import convert_to_seconds
 
 
@@ -51,8 +51,16 @@ class MagicRecordMessageParser(MessageParser):
 
         """
         logger.debug(f'Parsing stoped check from {message}')
+        self.parse(REGEX_PATTERNS.NICKNAME, message, 'Nickname')
 
-        return self.parse(REGEX_PATTERNS.NICKNAME, message, 'Nickname')
+
+class MagicReportsMessageParser(MessageParser):
+    def parse_get_discord(self, message: str) -> GetDiscord:
+        logger.debug(f'Parsing get discord message from {message}')
+        nickname = self.parse(REGEX_PATTERNS.NICKNAME_IN_REPORT, message, 'Nickname')
+        discord = message.split('\n')[1]
+        moder_vk_id = int(self.parse(REGEX_PATTERNS.VK_ID, message, 'Moder VK ID'))
+        return GetDiscord(nickname=nickname, discord=discord, moder_vk_id=moder_vk_id)
 
 
 class ArgsParser:
@@ -81,6 +89,15 @@ class ArgsParser:
         except Exception as e:
             raise CantGetTimePassed(e)
 
+    def parse_get_stats(self, args: list[str]) -> GetStatsArgs:
+        server = args[0]
+        steamid = args[1]
+        return GetStatsArgs(
+            server=int(server),
+            steamid=int(steamid),
+        )
+
 
 record_message_parser = MagicRecordMessageParser()
 args_parser = ArgsParser()
+reports_message_parser = MagicReportsMessageParser()

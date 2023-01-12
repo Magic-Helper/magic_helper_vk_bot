@@ -1,6 +1,7 @@
+from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Union
 
-from aiohttp import ClientSession, TCPConnector
+from aiohttp import ClientResponse, ClientSession, TCPConnector
 from loguru import logger
 
 from app.core import settings
@@ -9,7 +10,7 @@ if TYPE_CHECKING:
     from yarl import URL
 
 
-class BaseAPI:
+class BaseAPI(ABC):
     """Represents a base API."""
 
     def __init__(self) -> None:
@@ -22,6 +23,7 @@ class BaseAPI:
         http_method: str,
         params: dict | None = None,
         data: dict | None = None,
+        json: dict | None = None,
         encoding: str = 'utf-8',
     ) -> dict | None:
         """Make a request to API and return JSON response.
@@ -35,7 +37,7 @@ class BaseAPI:
         Returns:
             dict: JSON response.
         """
-        response = await self._session.request(http_method, url, params=params, data=data)
+        response = await self._session.request(http_method, url, params=params, data=data, json=json)
         try:
             return await response.json(content_type=None)
         except Exception as e:
@@ -43,31 +45,28 @@ class BaseAPI:
             logger.error(message)
             return None
 
-    async def api_request(
+    async def raw_request(
         self,
-        api_url: Union[str, 'URL'],
-        api_method: str | None = None,
+        url: str,
         http_method: str = 'GET',
         params: dict | None = None,
         data: dict | None = None,
-    ) -> dict | ModuleNotFoundError:
-        """Make a request to API and return JSON response.
+        json: dict | None = None,
+    ) -> ClientResponse:
+        async with self._session.request(http_method, url, params=params, data=data, json=json) as response:
+            await response.read()
+        return response
 
-        Args:
-            api_method (str): API method.
-            http_method (str, optional): HTTP method. Defaults to 'GET'.
-            params (dict, optional): Parameters. Defaults to None.
-            data (dict, optional): Data. Defaults to None.
-
-        Returns:
-            dict: JSON response.
-        """
-        if api_method:
-            api_url = api_url + api_method
-        return await self.request_json(api_url, http_method, params, data)
+    @abstractmethod
+    async def api_request(
+        self,
+        http_method: str = 'GET',
+        api_method: str | None = None,
+        params: dict | None = None,
+        data: dict | None = None,
+        json: dict | None = None,
+    ) -> dict | None:
+        ...
 
     def __del__(self):
-        if not self._session.closed:
-            if self._session._connector is not None and self._session._connector_owner:
-                self._session._connector._close()
-            self._session._connector = None
+        self._session._connector._close()

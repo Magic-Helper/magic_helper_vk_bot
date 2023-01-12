@@ -4,7 +4,7 @@ import pendulum
 from loguru import logger
 
 from app.core import constants
-from app.services.storage.controller import ChecksStorageController
+from app.services.storage.check_controller import ChecksStorageController
 
 if TYPE_CHECKING:
     from pendulum import DateTime
