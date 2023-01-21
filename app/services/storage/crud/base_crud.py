@@ -35,9 +35,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         """
         return await db.get(self.model, id)
 
-    async def get_multi(
-        self, db: 'AsyncSession', *, offset: int = 0, limit: int = 100
-    ) -> list[ModelType]:
+    async def get_multi(self, db: 'AsyncSession', *, offset: int = 0, limit: int = 100) -> list[ModelType]:
         """
         Get multiple model instances from database, may use for pagination
         Args:
@@ -67,9 +65,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         await db.refresh(db_obj)
         return db_obj
 
-    async def update(
-        self, db: 'AsyncSession', *, db_obj: ModelType, obj_in: UpdateSchemaType
-    ) -> ModelType:
+    async def update(self, db: 'AsyncSession', *, db_obj: ModelType, obj_in: UpdateSchemaType) -> ModelType:
         """
         Update a model instance in database
         Args:
@@ -101,13 +97,3 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         await db.delete(obj)
         await db.commit()
         return obj
-
-    def _map_result_foo(self, row) -> list[ModelType]:
-        """
-        Map result to model instances
-        Args:
-            result: List of model instances
-        Returns:
-            List of model instances
-        """
-        return self.model(**row)

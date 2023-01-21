@@ -5,7 +5,7 @@ if TYPE_CHECKING:
 
 
 class KDPlayersView:
-    def __init__(self, players: list['Player'], kd):
+    def __init__(self, players: list['Player'], kd: float):
         self.players = players
         self.kd = kd
 

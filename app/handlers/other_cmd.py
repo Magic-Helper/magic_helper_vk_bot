@@ -1,7 +1,5 @@
-import asyncio
 from typing import TYPE_CHECKING
 
-from aiohttp import ClientSession
 from eac_info import get_eac_info
 from eac_info.exceptions import CantGetEacInfo, SteamIsNotFound
 from loguru import logger
@@ -17,10 +15,10 @@ labeler = BotLabeler()
 
 
 @labeler.message(CommandListRule(['eac', 'иак', 'уфс'], prefixes=['/', '.'], args_count=1))
-async def get_eac_info_(message: 'Message', args) -> None:
+async def get_eac_info_(message: 'Message', args: list) -> None:
     steamid = args[0]
     return await message.answer(
-        f'Из-за нестабильных ответов, лушче пользуйтесь просто сайтом: \nhttps://www.nexusonline.co.uk/bans/profile/?id={steamid}'
+        f'Из-за нестабильных ответов, лушче пользуйтесь просто сайтом: \nhttps://www.nexusonline.co.uk/bans/profile/?id={steamid}'  # noqa
     )
 
     try:

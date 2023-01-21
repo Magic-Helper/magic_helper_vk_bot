@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from app.core.utils import singleton
 
@@ -17,7 +17,8 @@ class OnCheckMemoryStorage:
 
     Attributes:
         _on_check: A dictionary that stores data about users who are currently in the process of checking.
-        _nicknames_to_steamids: A dictionary that stores the relationship between the nickname and the steamid of the user.  # noqa: E501
+        _nicknames_to_steamids: A dictionary that stores the relationship between the nickname and
+        the steamid of the user.  # noqa: E501
 
     Methods:
         get_on_check(steamid: 'Steamid') -> 'OnCheckData':
@@ -41,7 +42,7 @@ class OnCheckMemoryStorage:
         self._on_check: dict['Steamid', 'OnCheckData'] = {}
         self._nicknames_to_steamids: dict['Nickname', 'Steamid'] = {}
 
-    def get_data_by_steamid(self, steamid: 'Steamid') -> 'OnCheckData':
+    def get_data_by_steamid(self, steamid: 'Steamid') -> Optional['OnCheckData']:
         return self._on_check.get(steamid)
 
     def set_on_check(self, steamid: 'Steamid', nickname: 'Nickname', on_check_data: 'OnCheckData') -> None:
@@ -51,11 +52,13 @@ class OnCheckMemoryStorage:
     def change_state(self, steamid: 'Steamid', stage: 'CheckStage') -> None:
         self._on_check[steamid].stage = stage
 
-    def get_data_by_nickname(self, nickname: 'Nickname') -> 'OnCheckData':
+    def get_data_by_nickname(self, nickname: 'Nickname') -> Optional['OnCheckData']:
         steamid = self._nicknames_to_steamids.get(nickname)
+        if steamid is None:
+            return None
         return self._on_check.get(steamid)
 
-    def get_steamid(self, nickname: 'Nickname') -> 'Steamid':
+    def get_steamid(self, nickname: 'Nickname') -> Optional['Steamid']:
         return self._nicknames_to_steamids.get(nickname)
 
     def delete_on_check(self, nickname: 'Nickname') -> None:
@@ -71,11 +74,11 @@ class RCCDataMemoryStorage:
         self._players: dict['Steamid', 'RCCPlayer'] = {}
         self._cached_steamids: set['Steamid'] = set()
 
-    def get_player(self, steamid: 'Steamid') -> 'RCCPlayer':
+    def get_player(self, steamid: 'Steamid') -> Optional['RCCPlayer']:
         return self._players.get(steamid)
 
     def get_players(self, steamids: list['Steamid']) -> list['RCCPlayer']:
-        return [self._players.get(steamid) for steamid in steamids]
+        return [self._players.get(steamid) for steamid in steamids]  # type: ignore [misc]
 
     def add_player(self, player: 'RCCPlayer') -> None:
         self._players[player.steamid] = player

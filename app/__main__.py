@@ -2,13 +2,13 @@ import argparse
 import asyncio
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--test", type=bool, default=False)
+parser.add_argument('--test', type=bool, default=False)
 
 args = parser.parse_args()
 if args.test:
     from dotenv import load_dotenv
 
-    load_dotenv(".env.dev")
+    load_dotenv('.env.dev')
 
 
 from aiohttp import web

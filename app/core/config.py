@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     RCC_API_KEY: str
 
     @validator('SQLALCHEMY_DATABASE_URI', pre=True)
-    def assemble_db_connection(cls, v: str | None, values: dict[str, Any]) -> PostgresDsn:
+    def assemble_db_connection(cls, v: str | None, values: dict[str, Any]) -> PostgresDsn | str:
         if isinstance(v, str):
             return v
         return PostgresDsn.build(

@@ -9,7 +9,7 @@ from app.helpers.custom_rules import CommandListRule, GetMagicRustAPIRule
 from app.helpers.filtres import PlayerFilter, RCCPlayerFilter
 from app.helpers.parser import args_parser
 from app.helpers.rcc_manager import rcc_manager
-from app.views import NewPlayersView, RCCPlayersView, KDPlayersView, PlayerStatsView
+from app.views import KDPlayersView, NewPlayersView, PlayerStatsView, RCCPlayersView
 
 if TYPE_CHECKING:
     from vkbottle.bot import Message
@@ -62,8 +62,8 @@ async def get_big_kd_players(message: 'Message', magic_rust_api: 'MagicRustAPI',
 async def get_banned_players(
     message: 'Message',
     magic_rust_api: 'MagicRustAPI',
-    args: list = None,
-):
+    args: list = None,  # type: ignore
+) -> None:
     try:
         time_passed = args_parser.parse_time_passed(args)
     except CantGetTimePassed:
@@ -85,7 +85,7 @@ async def get_banned_players(
     rcc_players_filter = RCCPlayerFilter(by_seconds_passed_after_ban=time_passed)
     filtered_rcc_players = rcc_players_filter.execute(rcc_players)
 
-    sorted_players = sorted(filtered_rcc_players, key=lambda player: len(player.bans), reverse=True)
+    sorted_players = sorted(filtered_rcc_players, key=lambda player: len(player.bans), reverse=True)  # type: ignore[arg-type]
 
     await message.answer(RCCPlayersView(sorted_players))
 
@@ -97,10 +97,10 @@ async def get_banned_players(
 async def get_player_stats(
     message: 'Message',
     magic_rust_api: 'MagicRustAPI',
-    args: list = None,
-):
+    args: list = None,  # type: ignore
+) -> None:
     if not args or len(args) != 2:
         return await message.answer('Вывод статистики игрока.\n/stats [сервер] [steamid]')
     get_stats_args = args_parser.parse_get_stats(args)
     stats = await magic_rust_api.get_player_stats(server_number=get_stats_args.server, steamid=get_stats_args.steamid)
-    return await message.answer(PlayerStatsView(stats))
+    await message.answer(PlayerStatsView(stats))

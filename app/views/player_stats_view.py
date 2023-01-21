@@ -21,7 +21,7 @@ class PlayerStatsView:
         text = cap + '\n\n' + body
         return text
 
-    def _get_cap(self):
+    def _get_cap(self) -> str:
         cap = f'Статистика игрока {self.player_stats.nickname}:'
         return cap
 

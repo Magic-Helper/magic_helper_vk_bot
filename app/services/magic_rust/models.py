@@ -15,7 +15,7 @@ class PlayerStats(BaseModel):
     nickname: str = Field(None, alias='name')
 
     @root_validator(pre=True)
-    def get_kd(cls, values: dict):
+    def get_kd(cls, values: dict) -> dict:
         if values.get('d_player') == 0:
             values['kd'] = 0
         else:

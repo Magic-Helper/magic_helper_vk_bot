@@ -17,7 +17,7 @@ SessionLocal = sessionmaker(
 
 
 @asynccontextmanager
-async def get_session():
+async def get_session() -> AsyncSession:
     """Context manager for session."""
     session = SessionLocal()
     try:

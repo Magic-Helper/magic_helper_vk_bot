@@ -24,7 +24,6 @@ class BaseAPI(ABC):
         params: dict | None = None,
         data: dict | None = None,
         json: dict | None = None,
-        encoding: str = 'utf-8',
     ) -> dict | None:
         """Make a request to API and return JSON response.
 

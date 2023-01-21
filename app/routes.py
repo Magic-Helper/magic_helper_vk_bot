@@ -55,8 +55,8 @@ def setup_webhook(app: web.Application, ctx: 'AppContext') -> None:
     )
 
 
-def wrap_handler(handler, context: 'AppContext'):  # type: ignore
-    async def wrapper(request: web.Request):  # type: ignore
+def wrap_handler(handler, context: 'AppContext'):  # noqa
+    async def wrapper(request: web.Request):  # noqa
         return await handler(request, context)
 
     return wrapper

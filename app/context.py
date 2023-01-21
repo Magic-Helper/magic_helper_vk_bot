@@ -9,8 +9,8 @@ class AppContext:
         self.cmd_bot: Bot = None
         self.message_bot: Bot = None
 
-    async def on_startup(self, app=None) -> None:  # type: ignore
+    async def on_startup(self, app=None) -> None:  # noqa
         pass
 
-    async def on_shutdown(self, app=None) -> None:  # type: ignore
+    async def on_shutdown(self, app=None) -> None:  # noqa
         pass

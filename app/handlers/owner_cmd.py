@@ -31,7 +31,7 @@ async def get_rcc_memory_storage_info(message: 'Message', rcc_data_storage: 'RCC
 @labeler.message(rules.CommandRule('rcc_data_steamids', prefixes=['/', '.']), GetRCCDataMemoryStorageRule())
 async def get_rcc_data_steamids(message: 'Message', rcc_data_storage: 'RCCDataMemoryStorage') -> None:
     """Handle /rcc_data_steamids command and send all steamids to chat"""
-    steamids = rcc_data_storage.get_players_data_exists()
+    steamids = rcc_data_storage.get_cached_steamids()
     logger.debug(steamids)
     await message.answer(f'Стиайдишники для которых есть инфа{steamids}')
 

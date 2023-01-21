@@ -4,6 +4,7 @@ import pendulum
 from loguru import logger
 
 from app.core import constants
+from app.core.exceptions import DontFoundCheckByRowID
 from app.core.typedefs import (
     CheckStage,
     OnCheckData,
@@ -16,6 +17,8 @@ from app.services.storage.schemas import CheckCreate, CheckUpdate
 from app.services.storage.session import get_session
 
 if TYPE_CHECKING:
+    from sqlalchemy.ext.asyncio import AsyncSession
+
     from app.core.typedefs import Nickname, Steamid
     from app.services.storage.models import Check
 
@@ -75,7 +78,7 @@ class OnCheckController:
         )
 
         async with get_session() as session:
-            check = await crud.check.get(session, id=on_check_data.db_row)
+            check = await self._get_check_or_raise(session, on_check_data.db_row)
             await crud.check.update(session, db_obj=check, obj_in=obj_in)
 
         self.__on_check_storage.delete_on_check(nickname)
@@ -124,9 +127,15 @@ class OnCheckController:
 
         self.__on_check_storage.change_state(steamid, stage)
 
-    def get_steamid_by_nickname(self, nickname: 'Nickname') -> 'Steamid':
+    def get_on_check_data_by_nickname(self, nickname: 'Nickname') -> OnCheckData | None:
         """Get steamid by nickname."""
-        return self.__on_check_storage.get_steamid_by_nickname(nickname)
+        return self.__on_check_storage.get_data_by_nickname(nickname)
+
+    async def _get_check_or_raise(self, session: 'AsyncSession', db_row: int) -> Check:
+        check = await crud.check.get(session, id=db_row)
+        if not check:
+            raise DontFoundCheckByRowID
+        return check
 
 
 class ChecksStorageController:
@@ -142,7 +151,7 @@ class ChecksStorageController:
 
     """
 
-    async def get_moder_checks_count(self, moder_vk: int, time_interval: TimeInterval):
+    async def get_moder_checks_count(self, moder_vk: int, time_interval: TimeInterval) -> int:
         """Get checks for moder.
 
         Args:
@@ -163,14 +172,14 @@ class ChecksStorageController:
         async with get_session() as session:
             return await crud.check.get_moders(session)
 
-    async def get_multi_checks_information(self, moders_vk: list[int], time_interval: TimeInterval):
+    async def get_multi_checks_information(self, moders_vk: list[int], time_interval: TimeInterval) -> list[int]:
         """Get checks for moder.
 
         Args:
             moder_vk (int): Moder vk id.
 
         Returns:
-            list[Check]: List of checks.
+            list[int]: List of checks.
         """
         info = []
         async with get_session() as session:

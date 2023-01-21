@@ -1,10 +1,10 @@
-from pendulum import from_timestamp
+from pendulum import DateTime, from_timestamp
 
 from app.core import constants
 from app.core.exceptions import UncorrectDiscord
 
 
-def get_datetime_object(value: int):
+def get_datetime_object(value: int) -> DateTime | int:
     """Validator for datetime fields. Get pendulum.DateTime object from timestamp."""
     try:
         value = from_timestamp(int(value), tz=constants.TIMEZONE)

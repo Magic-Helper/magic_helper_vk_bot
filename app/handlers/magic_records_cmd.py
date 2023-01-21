@@ -20,12 +20,12 @@ labeler.auto_rules = [
 
 
 @labeler.chat_message(MyCommandRule('cc2', args_count=2, prefixes=['/']))
-async def stop_check(message: 'Message', on_check_storage: 'OnCheckController', args) -> None:
+async def stop_check(message: 'Message', on_check_storage: 'OnCheckController', args: list) -> None:
     check_info = args_parser.parse_cc(args)
     on_check_storage.stoping_check(check_info.steamid)
 
 
 @labeler.chat_message(MyCommandRule('cc3', args_count=2, prefixes=['/']))
-async def cancel_check(message: 'Message', on_check_storage: 'OnCheckController', args) -> None:
+async def cancel_check(message: 'Message', on_check_storage: 'OnCheckController', args: list) -> None:
     check_info = args_parser.parse_cc(args)
     on_check_storage.canceling_check(check_info.steamid)

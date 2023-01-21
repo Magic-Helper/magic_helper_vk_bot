@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 class RCCManager:
     def __init__(self) -> None:
         self._rcc_api: RustCheatCheckAPI = RustCheatCheckAPI()
-        self._rcc_data_storage = RCCDataMemoryStorage()
+        self._rcc_data_storage: RCCDataMemoryStorage = RCCDataMemoryStorage()
 
     async def get_rcc_players_and_cache(self, steamids: list['Steamid']) -> list['RCCPlayer']:
         exists_steamids_info = self._rcc_data_storage.get_cached_steamids()

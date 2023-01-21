@@ -124,7 +124,7 @@ class MagicRustAPI(BaseAPI):
         logger.debug('Online new players: {players}', players=new_players)
         return new_players
 
-    async def get_player_stats_by_player_info(self, player_info: Player) -> list[Player]:
+    async def get_player_stats_by_player_info(self, player_info: Player) -> Player:
         """Get player stats by player info.
 
         Args:

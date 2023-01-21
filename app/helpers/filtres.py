@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Any, Callable, Coroutine, Optional
 
 import pendulum
 from loguru import logger
@@ -7,7 +7,6 @@ from app.core import constants
 from app.services.storage.check_controller import ChecksStorageController
 
 if TYPE_CHECKING:
-    from pendulum import DateTime
 
     from app.services.magic_rust.models import Player
     from app.services.RCC.models import RCCBan, RCCPlayer
@@ -29,8 +28,8 @@ class PlayerFilter:
             by_check_on_magic (bool, optional): Filter by check on magic. Defaults to False.
                 If True will intialize ChecksStorageController.
         """
-        self._sync_filters = []
-        self._async_filters = []
+        self._sync_filters: list[Callable] = []
+        self._async_filters: list[Callable[[Player], Coroutine[Any, Any, bool]]] = []
 
         if by_kd:
             self._sync_filters.append(self._filter_by_kd)
@@ -89,7 +88,7 @@ class PlayerFilter:
 class RCCPlayerFilter:
     def __init__(
         self,
-        by_seconds_passed_after_ban: Optional['DateTime'] = None,
+        by_seconds_passed_after_ban: Optional[int] = None,
         by_check_on_magic_after_last_ban: bool = True,
         by_reason: bool = True,
     ):
@@ -163,7 +162,7 @@ class RCCPlayerFilter:
         if not player.checks:
             return True
 
-        last_ban = max(player.bans, key=lambda ban: ban.ban_date)
+        last_ban = max(player.bans, key=lambda ban: ban.ban_date)  # type: ignore [arg-type]
         for check in player.checks:
             if check.server_name == 'MagicRust' or check.server_name == 'MAGIC RUST':
                 if check.date >= last_ban.ban_date:
