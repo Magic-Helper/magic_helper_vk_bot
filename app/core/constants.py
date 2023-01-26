@@ -19,7 +19,7 @@ class VK_FOR_CMD:  # MAGICRUST Отчеты
 class VK_FOR_MESSAGE:  # MAGIC HELPER
     id_: int = 215360486
     magic_records_peer_id: int = 2000000002
-    available_users: list[int] = [-VK_FOR_CMD.id_]
+    available_users: list[int] = [VK_RECORDS_GROUP_ID, VK_REPORT_GROUP_ID]
 
 
 GROUP_IDS = [VK_FOR_CMD.id_, VK_FOR_MESSAGE.id_]
@@ -68,6 +68,7 @@ NOT_AVAILABLE_BAN_REASONS: list[str] = [
     'игра с читером',
     'game with cheater',
     'you had eac ban on your account',
+    'тим чит',
 ]
 
 

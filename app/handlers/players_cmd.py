@@ -83,9 +83,13 @@ async def get_banned_players(
         return await message.answer('Ошибка при получении данных с RCC.')
 
     rcc_players_filter = RCCPlayerFilter(by_seconds_passed_after_ban=time_passed)
+    logger.debug(f'RCC players filter {rcc_players_filter}')
     filtered_rcc_players = rcc_players_filter.execute(rcc_players)
+    logger.debug(f'filted rcc players: {filtered_rcc_players}')
 
     sorted_players = sorted(filtered_rcc_players, key=lambda player: len(player.bans), reverse=True)  # type: ignore[arg-type]
+
+    logger.debug(f'sorted rcc players {sorted_players}')
 
     await message.answer(RCCPlayersView(sorted_players))
 

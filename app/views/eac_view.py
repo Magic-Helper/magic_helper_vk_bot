@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from eac_info.model import EACInfo
+    from app.services.rust_banned.models import RustBannedResponse
 
 
 class EacView:
-    def __init__(self, eac_info: 'EACInfo'):
+    def __init__(self, eac_info: 'RustBannedResponse'):
         self.eac_info = eac_info
 
     def __repr__(self) -> str:
@@ -17,7 +17,7 @@ class EacView:
         Return:
             text for user message
         """
-        if self.eac_info.is_ban:
+        if self.eac_info.is_banned:
             cap = f'{self.eac_info.steamid} - получал EAC блокировку🚫\n'
             body = self._get_body()
             text = cap + body
@@ -26,7 +26,8 @@ class EacView:
         return text
 
     def _get_body(self) -> str:
-        body = f'Прошло {self.eac_info.days_since_ban} дней c бана\n\n'
-        body += f'Твиттер: {self.eac_info.post_link}\n'
-        body += f'Nexus: {self.eac_info.nexus_link}'
+        body = f'Прошло {self.eac_info.days_ago} дней c бана\n'
+        body += f'Steam: https://steamcommunity.com/profiles/{self.eac_info.steamid}\n'
+        body += f'Твиттер: {self.eac_info.twitter_url}\n'
+        body += f'RustBanned: https://rustbanned.com/profile/{self.eac_info.steamid}'
         return body

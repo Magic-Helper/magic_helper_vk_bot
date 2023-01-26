@@ -20,6 +20,8 @@ class Settings(BaseSettings):
 
     RCC_API_KEY: str
 
+    RUST_BANNED_API_KEY: str
+
     @validator('SQLALCHEMY_DATABASE_URI', pre=True)
     def assemble_db_connection(cls, v: str | None, values: dict[str, Any]) -> PostgresDsn | str:
         if isinstance(v, str):
@@ -34,6 +36,7 @@ class Settings(BaseSettings):
         )
 
     VK_TOKEN: Token
+    VK_MAGIC_HELPER_TOKEN: Token
     VERSION: str = '2.0'
     SERVER_URL: str = 'https://localhost:8000/v2/vkbot'
     SERVER_TITLE: str = 'Magic Helper VK-Bot (Test)'
