@@ -64,6 +64,12 @@ async def get_banned_players(
     magic_rust_api: 'MagicRustAPI',
     args: list = None,  # type: ignore
 ) -> None:
+    # temporary kostil'
+    if args is not None and len(args) == 2:
+        filter_by_active_ban = bool(args[1])
+    else:
+        filter_by_active_ban = False
+
     try:
         time_passed = args_parser.parse_time_passed(args)
     except CantGetTimePassed:
@@ -82,7 +88,7 @@ async def get_banned_players(
         logger.exception(e)
         return await message.answer('Ошибка при получении данных с RCC.')
 
-    rcc_players_filter = RCCPlayerFilter(by_seconds_passed_after_ban=time_passed)
+    rcc_players_filter = RCCPlayerFilter(by_seconds_passed_after_ban=time_passed, by_active_ban=filter_by_active_ban)
     logger.debug(f'RCC players filter {rcc_players_filter}')
     filtered_rcc_players = rcc_players_filter.execute(rcc_players)
     logger.debug(f'filted rcc players: {filtered_rcc_players}')
