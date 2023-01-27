@@ -2,15 +2,15 @@ from vkbottle import API
 from vkbottle.bot import rules
 
 from app.core import settings
-
-# from app.services.discord.discord_api import DiscordAPI
-# from app.services.discord.discord_client import DiscordClient
+from app.services.discord.discord_api import DiscordAPI
+from app.services.discord.discord_client import DiscordClient
 from app.services.magic_rust.MR_api import MagicRustAPI
 from app.services.RCC.RCC_api import RustCheatCheckAPI
 from app.services.storage.check_controller import (
     ChecksStorageController,
     OnCheckController,
 )
+from app.services.storage.check_discord_controller import CheckDiscordController
 from app.services.storage.memory_storage import RCCDataMemoryStorage
 
 
@@ -46,11 +46,16 @@ class GetRCCDataMemoryStorageRule(rules.ABCRule[rules.BaseMessageMin]):
         return {'rcc_data_storage': RCCDataMemoryStorage()}
 
 
-# class GetDiscordAPIRule(rules.ABCRule[rules.BaseMessageMin]):
-#     async def check(self, *args, **kwargs) -> dict:
-#         return {'discord_api': DiscordAPI()}
+class GetDiscordAPIRule(rules.ABCRule[rules.BaseMessageMin]):
+    async def check(self, *args, **kwargs) -> dict:
+        return {'discord_api': DiscordAPI()}
 
 
-# class GetDiscordClientRule(rules.ABCRule[rules.BaseMessageMin]):
-#     async def check(self, *args, **kwargs) -> dict:
-#         return {'discord_client': DiscordClient()}
+class GetDiscordClientRule(rules.ABCRule[rules.BaseMessageMin]):
+    async def check(self, *args, **kwargs) -> dict:
+        return {'discord_client': DiscordClient()}
+
+
+class GetCheckDiscordControllerRule(rules.ABCRule[rules.BaseMessageMin]):
+    async def check(self, *args, **kwargs) -> dict:
+        return {'check_discord_controller': CheckDiscordController()}

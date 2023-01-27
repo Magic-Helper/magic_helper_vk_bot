@@ -8,15 +8,20 @@ from app.context import AppContext
 from app.core import settings
 from app.handlers import (
     checks_cmd_labeler,
+    discord_cmd_labeler,
     get_logs_labeler,
     magic_records_cmd_labeler,
     magic_records_labeler,
+    magic_reports_labeler,
     other_cmd_labeler,
     owner_cmd_labeler,
     players_cmd_labeler,
 )
 
-message_bot_labelers = (magic_records_labeler,)
+message_bot_labelers = (
+    magic_records_labeler,
+    magic_reports_labeler,
+)
 
 cmd_bot_labelers = (
     checks_cmd_labeler,
@@ -25,6 +30,7 @@ cmd_bot_labelers = (
     players_cmd_labeler,
     owner_cmd_labeler,
     get_logs_labeler,
+    discord_cmd_labeler,
 )
 
 

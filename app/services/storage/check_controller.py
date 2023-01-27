@@ -131,7 +131,7 @@ class OnCheckController:
         """Get steamid by nickname."""
         return self.__on_check_storage.get_data_by_nickname(nickname)
 
-    async def _get_check_or_raise(self, session: 'AsyncSession', db_row: int) -> Check:
+    async def _get_check_or_raise(self, session: 'AsyncSession', db_row: int) -> 'Check':
         check = await crud.check.get(session, id=db_row)
         if not check:
             raise DontFoundCheckByRowID
@@ -198,3 +198,11 @@ class ChecksStorageController:
         """
         async with get_session() as session:
             return await crud.check.is_steamid_exists(session, steamid)
+
+    async def get_steamids_by_check_ids(self, check_ids: list[int]) -> list['Steamid']:
+        steamids = []
+        async with get_session() as session:
+            for check_id in check_ids:
+                check_info = await crud.check.get(session, check_id)
+                steamids.append(check_info.steamid)
+        return steamids

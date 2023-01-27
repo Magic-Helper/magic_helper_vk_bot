@@ -36,7 +36,9 @@ class CRUDCheck(CRUDBase[Check, CheckCreate, CheckUpdate]):
         )
         return await session.scalars(query).all()
 
-    async def get_moder_checks_count(self, db: 'AsyncSession', moder_vk: int, time_interval: 'TimeInterval') -> int:
+    async def get_moder_checks_count(
+        self, session: 'AsyncSession', moder_vk: int, time_interval: 'TimeInterval'
+    ) -> int:
         """Get checks for moder.
 
         Args:
@@ -52,12 +54,12 @@ class CRUDCheck(CRUDBase[Check, CheckCreate, CheckUpdate]):
             self.model.start_time >= time_interval.start,
             self.model.start_time <= time_interval.end,
         )
-        result = await db.execute(query)
+        result = await session.execute(query)
         checks_count = result.first()[0]
         logger.debug(f'Found {checks_count} checks for moder {moder_vk}')
         return checks_count
 
-    async def get_moders(self, db: 'AsyncSession') -> list[int]:
+    async def get_moders(self, session: 'AsyncSession') -> list[int]:
         """Get all moders.
 
         Args:
@@ -67,10 +69,10 @@ class CRUDCheck(CRUDBase[Check, CheckCreate, CheckUpdate]):
             list: List of moders.
         """
         query = select(self.model.moder_vk).distinct()
-        result = await db.execute(query)
+        result = await session.execute(query)
         return result.scalars().all()
 
-    async def is_steamid_exists(self, db: 'AsyncSession', steamid: int) -> bool:
+    async def is_steamid_exists(self, session: 'AsyncSession', steamid: int) -> bool:
         """Check if steamid exists.
 
         Args:
@@ -81,7 +83,7 @@ class CRUDCheck(CRUDBase[Check, CheckCreate, CheckUpdate]):
             bool: True if steamid exists, False otherwise.
         """
         query = select(self.model.id).where(self.model.steamid == steamid)
-        result = await db.execute(query)
+        result = await session.execute(query)
         return result.first() is not None
 
 

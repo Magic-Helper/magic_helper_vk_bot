@@ -24,9 +24,7 @@ class TimeAssistant:
         """
         if date.day <= constants.DAY_WORK_MONTH_END:
             date = date.subtract(months=1)
-        return pendulum.datetime(
-            year=date.year, month=date.month, day=constants.DAY_WORK_MONTH_END + 1
-        )
+        return pendulum.datetime(year=date.year, month=date.month, day=constants.DAY_WORK_MONTH_END + 1)
 
 
 time_assistant = TimeAssistant()

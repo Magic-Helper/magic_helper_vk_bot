@@ -91,6 +91,7 @@ class RCCPlayerFilter:
         by_seconds_passed_after_ban: Optional[int] = None,
         by_check_on_magic_after_last_ban: bool = True,
         by_reason: bool = True,
+        by_active_ban: bool = True,
     ):
         """
         RCCPlayer filter.
@@ -104,9 +105,8 @@ class RCCPlayerFilter:
                 Defaults to False. If True will intialize ChecksStorageController.
             by_reason (bool, optional): Filter if ban reason is 2+ 3+ or some like this. Defaults to False.
         """
-        self._player_filter = []
-        self._ban_filters = [self._filter_by_active_ban]
-
+        self._player_filter: list[Callable] = []
+        self._ban_filters: list[Callable] = []
         if by_seconds_passed_after_ban:
             self._ban_filters.append(self._filter_by_last_ban_time_passed)
             self.seconds_passed_after_ban = by_seconds_passed_after_ban
@@ -116,6 +116,9 @@ class RCCPlayerFilter:
 
         if by_reason:
             self._ban_filters.append(self._filter_by_reason)
+
+        if by_active_ban:
+            self._ban_filters.append(self._filter_by_active_ban)
 
     def execute(self, players: list['RCCPlayer']) -> list['RCCPlayer']:
         """Execute filters.
