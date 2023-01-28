@@ -20,9 +20,9 @@ class RCCBaseResponse(BaseModel):
 
 
 class RCCCheck(BaseModel):
-    moder_steamid: Steamid
+    moder_steamid: Steamid = Field(0, alias='moderSteamID')
     date: DateTime = Field(0, alias='time')
-    server_name: str | None = None
+    server_name: str | None = (None, 'serverName')
 
     # validators
     _get_datetime_object = validator('date', pre=True, allow_reuse=True)(
