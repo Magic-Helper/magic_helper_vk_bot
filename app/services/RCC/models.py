@@ -48,7 +48,7 @@ class RCCBan(BaseModel):
 class RCCPlayer(BaseModel):
     steamid: Steamid
     checks_count: int = Field(0, alias='rcc_checks')
-    checks: list[RCCCheck] | None = None
+    checks: list[RCCCheck] | None = Field(None, alias='last_check')
     another_accs: list[Steamid] | None = None
     bans: list[RCCBan] | None = None
     last_ips: list[str] | None = Field(None, alias='last_ip')
