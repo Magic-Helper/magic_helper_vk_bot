@@ -25,7 +25,7 @@ async def get_debug_logs_bytes_by_dates(first_date: pendulum.DateTime, second_da
 
 
 def add_debug_file_log() -> None:
-    logger.add('logs/debug{time:DD-MM-YY}.log', rotation='1 day', level='DEBUG')
+    logger.add('logs/debug{time:DD-MM-YY}.log', rotation='00:00', level='DEBUG')
 
 
 def add_error_vk_message_log() -> None:
