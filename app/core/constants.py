@@ -36,8 +36,8 @@ class REGEX_PATTERNS:
 
 
 class RUST_REPORT_REGEX:
-    SERVER_NUMBER = r'🤡 (.*)-й'
-    AUTHOR_NICKNAME = r'от игрока (.*).'
+    SERVER_NUMBER = r'(\d+)-й'
+    AUTHOR_NICKNAME = r'от игрока (.*)\.'
     REPORT_STEAMID = r'\.com/profiles/(.*)\)'
 
 
