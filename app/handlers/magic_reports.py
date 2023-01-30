@@ -75,7 +75,7 @@ async def get_discord(
     #     )
 
 
-@labeler.chat_message(TextInMessage(text=['&#129313;', 'Жалоба от игрока']), GetReportControllerRule())
+@labeler.chat_message(TextInMessage(text=['Жалоба от игрока', 'Нарушитель', 'Заголовок']), GetReportControllerRule())
 async def parse_rust_report(message: 'Message', report_controller: 'ReportController') -> None:
     rust_report = reports_message_parser.parse_rust_report(message.text)
     await report_controller.add_report(rust_report)
