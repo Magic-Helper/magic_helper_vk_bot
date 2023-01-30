@@ -10,4 +10,3 @@ class Report(Base):
     report_steamid = Column(BigInteger, nullable=False)
     time = Column(DateTime(timezone=True), nullable=False, default=func.now())
     server_number = Column(Integer)
-    __table_args__ = (UniqueConstraint('author_nickname', 'report_steamid', name='author_nickname_report_steamid_uc'),)
