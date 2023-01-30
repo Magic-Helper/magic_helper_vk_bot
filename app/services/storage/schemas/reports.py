@@ -11,7 +11,7 @@ class ReportsBase(BaseModel):
 
 
 class ReportsCreate(ReportsBase):
-    pass
+    time: datetime | None = None
 
 
 class ReportsUpdate(ReportsBase):

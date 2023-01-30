@@ -15,3 +15,6 @@ if TYPE_CHECKING:
 
 class CRUDReports(CRUDBase[Report, ReportsCreate, ReportsUpdate]):
     pass
+
+
+reports = CRUDReports(Report)
