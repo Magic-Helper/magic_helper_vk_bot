@@ -5,7 +5,7 @@ from loguru import logger
 
 from app.core import constants
 from app.core.cmd_args import BanCheckArgs, GetStatsArgs, StopCheckArgs
-from app.core.constants import REGEX_PATTERNS, RUST_REPORT_REGEX
+from app.core.constants import MAGIC_REPORT_REGEX, REGEX_PATTERNS, RUST_REPORT_REGEX
 from app.core.exceptions import CantGetTimePassed, ParametersCantBeNone
 from app.core.typedefs import GetDiscord, Nickname, ReportMessage, StartedCheck
 from app.core.utils import convert_to_seconds
@@ -83,10 +83,23 @@ class MagicReportsMessageParser(MessageParser):
         author_nickname = self.parse(RUST_REPORT_REGEX.AUTHOR_NICKNAME, message, 'author nickname in rust report')
         report_steamid = self.parse(RUST_REPORT_REGEX.REPORT_STEAMID, message, 'report steamid in rust report')
         self._check_if_params_is_none_raise(server_number, author_nickname, report_steamid)
-        report_steamid, server_number = int(report_steamid), int(server_number)  # type: ignore[arg-type]
+        report_steamid, server_number = self._convert_steamid_and_server_to_int(report_steamid, server_number)  # type: ignore[arg-type]
         return ReportMessage(
             author_nickname=author_nickname, report_steamid=report_steamid, server_number=server_number  # type: ignore[arg-type]
         )
+
+    def parse_magic_report(self, message: str) -> ReportMessage:
+        server_number = self.parse(MAGIC_REPORT_REGEX.SERVER_NUMBER, message, 'server number in magic report')
+        author_nickname = self.parse(MAGIC_REPORT_REGEX.AUTHOR_NICKNAME, message, 'author_nickname in magic report')
+        report_steamid = self.parse(MAGIC_REPORT_REGEX.REPORT_STEAMID, message, 'report steamid in magic report')
+        self._check_if_params_is_none_raise(server_number, author_nickname, report_steamid)
+        report_steamid, server_number = self._convert_steamid_and_server_to_int(report_steamid, server_number)  # type: ignore[arg-type]
+        return ReportMessage(
+            author_nickname=author_nickname, report_steamid=report_steamid, server_number=server_number  # type: ignore[arg-type]
+        )
+
+    def _convert_steamid_and_server_to_int(self, steamid: str, server_number: str) -> tuple[int, int]:
+        return int(steamid), int(server_number)
 
 
 class ArgsParser:
