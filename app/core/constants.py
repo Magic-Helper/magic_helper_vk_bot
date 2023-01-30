@@ -35,6 +35,12 @@ class REGEX_PATTERNS:
     NICKNAME_IN_REPORT = r'Игрок (.+) предоставил '
 
 
+class RUST_REPORT_REGEX:
+    SERVER_NUMBER = r'🤡 (.*)-й'
+    AUTHOR_NICKNAME = r'от игрока (.*).'
+    REPORT_STEAMID = r'\.com/profiles/(.*)\)'
+
+
 USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0'
 
 

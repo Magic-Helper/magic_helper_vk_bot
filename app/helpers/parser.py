@@ -5,9 +5,9 @@ from loguru import logger
 
 from app.core import constants
 from app.core.cmd_args import BanCheckArgs, GetStatsArgs, StopCheckArgs
-from app.core.constants import REGEX_PATTERNS
+from app.core.constants import REGEX_PATTERNS, RUST_REPORT_REGEX
 from app.core.exceptions import CantGetTimePassed, ParametersCantBeNone
-from app.core.typedefs import GetDiscord, Nickname, StartedCheck
+from app.core.typedefs import GetDiscord, Nickname, ReportMessage, StartedCheck
 from app.core.utils import convert_to_seconds
 
 
@@ -28,7 +28,7 @@ class MessageParser:
             logger.error(f'Could not find match {parser_name_} in {message}')
         return (match[0]) if len(match) != 0 else None
 
-    def check_if_params_is_none_raise(*args: Any) -> None:
+    def _check_if_params_is_none_raise(*args: Any) -> None:
         for arg in args:
             if arg is None:
                 raise ParametersCantBeNone(arg)
@@ -47,7 +47,7 @@ class MagicRecordMessageParser(MessageParser):
         nickname = self.parse(REGEX_PATTERNS.NICKNAME, message, 'Nickname')
         str_server = self.parse(REGEX_PATTERNS.SERVER_NUMBER, message, 'Server number')
         str_steamid = self.parse(REGEX_PATTERNS.STEAMID, message, 'SteamID')
-        self.check_if_params_is_none_raise(str_moder_vk, str_server, str_steamid, nickname)
+        self._check_if_params_is_none_raise(str_moder_vk, str_server, str_steamid, nickname)
         moder_vk, server, steamid = int(str_moder_vk), int(str_server), int(str_steamid)  # type: ignore[arg-type]
         return StartedCheck(moder_vk=moder_vk, nickname=nickname, server=server, steamid=steamid)  # type: ignore[arg-type]
 
@@ -61,7 +61,7 @@ class MagicRecordMessageParser(MessageParser):
         logger.debug(f'Parsing stoped check from {message}')
 
         nickname = self.parse(REGEX_PATTERNS.NICKNAME, message, 'Nickname')
-        self.check_if_params_is_none_raise(nickname)
+        self._check_if_params_is_none_raise(nickname)
         return nickname  # type: ignore[return-value]
 
 
@@ -77,6 +77,16 @@ class MagicReportsMessageParser(MessageParser):
             moder_vk_id = int(moder_vk_id)
         logger.debug(f'nickname = {nickname}, discord = {discord}, moder_vk_id = {moder_vk_id}')
         return GetDiscord(nickname=nickname, discord=discord, moder_vk_id=moder_vk_id)
+
+    def parse_rust_report(self, message: str) -> ReportMessage:
+        server_number = self.parse(RUST_REPORT_REGEX.SERVER_NUMBER, message, 'server number in rust report')
+        author_nickname = self.parse(RUST_REPORT_REGEX.AUTHOR_NICKNAME, message, 'author nickname in rust report')
+        report_steamid = self.parse(RUST_REPORT_REGEX.REPORT_STEAMID, message, 'report steamid in rust report')
+        self._check_if_params_is_none_raise(server_number, author_nickname, report_steamid)
+        report_steamid, server_number = int(report_steamid), int(server_number)  # type: ignore[arg-type]
+        return ReportMessage(
+            author_nickname=author_nickname, report_steamid=report_steamid, server_number=server_number  # type: ignore[arg-type]
+        )
 
 
 class ArgsParser:
