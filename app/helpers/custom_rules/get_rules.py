@@ -12,6 +12,7 @@ from app.services.storage.check_controller import (
 )
 from app.services.storage.check_discord_controller import CheckDiscordController
 from app.services.storage.memory_storage import RCCDataMemoryStorage
+from app.services.storage.report_controller import ReportController
 
 
 class GetVKAPIRule(rules.ABCRule[rules.BaseMessageMin]):
@@ -59,3 +60,8 @@ class GetDiscordClientRule(rules.ABCRule[rules.BaseMessageMin]):
 class GetCheckDiscordControllerRule(rules.ABCRule[rules.BaseMessageMin]):
     async def check(self, *args, **kwargs) -> dict:
         return {'check_discord_controller': CheckDiscordController()}
+
+
+class GetReportControllerRule(rules.ABCRule[rules.BaseMessageMin]):
+    async def check(self, *args, **kwargs) -> dict:
+        return {'report_controller': ReportController()}

@@ -104,6 +104,21 @@ class ModerChecksInformation:
     checks_count: int
 
 
+@dataclass
+class ReportMessage:
+    """Dataclass for report information
+
+    Args:
+        author_nickname (str): Report author nickname
+        report_steamid (int): Steamid of suspectaed player
+        server_number (int): Server number
+    """
+
+    author_nickname: str
+    report_steamid: int
+    server_number: int
+
+
 class GetDiscord(BaseModel):
     """Pydantic model for get discord message.
 

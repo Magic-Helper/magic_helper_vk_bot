@@ -12,6 +12,7 @@ from app.helpers.custom_rules import (
     GetChecksStorageControllerRule,
     GetDiscordClientRule,
     GetOnCheckControllerRule,
+    GetReportControllerRule,
     TextInMessage,
 )
 from app.services.discord.exceptions import DiscordTagNotFound, FriendRequestDisabled, Unauthorized
@@ -23,17 +24,22 @@ if TYPE_CHECKING:
     from app.services.discord.discord_client import DiscordClient
     from app.services.storage.check_controller import ChecksStorageController, OnCheckController
     from app.services.storage.check_discord_controller import CheckDiscordController
+    from app.services.storage.report_controller import ReportController
 
 labeler = BotLabeler()
 labeler.auto_rules = [
     FromUserIdRule(constants.VK_REPORT_GROUP_ID),
-    GetOnCheckControllerRule(),
     GetCheckDiscordControllerRule(),
-    GetChecksStorageControllerRule(),
 ]
 
 
-@labeler.chat_message(TextInMessage('предоставил контакты для связи на проверку.'), GetDiscordClientRule())
+@labeler.chat_message(
+    TextInMessage('предоставил контакты для связи на проверку.'),
+    GetDiscordClientRule(),
+    GetOnCheckControllerRule(),
+    GetChecksStorageControllerRule(),
+    GetCheckDiscordControllerRule(),
+)
 async def get_discord(
     message: 'Message',
     on_check_storage: 'OnCheckController',
@@ -67,6 +73,20 @@ async def get_discord(
     #     return await message.reply(
     #         PlayerDiscordsView(discord_id, discord_tag=get_discord_info.discord, banned_steamids=banned_steamids)
     #     )
+
+
+@labeler.chat_message(TextInMessage(text=['&#129313;', 'Жалоба от игрока']), GetReportControllerRule())
+async def parse_rust_report(message: 'Message', report_controller: 'ReportController') -> None:
+    rust_report = reports_message_parser.parse_rust_report(message.text)
+    await report_controller.add_report(rust_report)
+
+
+@labeler.chat_message(
+    TextInMessage(text=['сервер', 'на игрока', 'https://steamcommunity.com/']), GetReportControllerRule()
+)
+async def parse_magic_report(message: 'Message', report_controller: 'ReportController') -> None:
+    magic_report = reports_message_parser.parse_magic_report(message.text)
+    await report_controller.add_report(magic_report)
 
 
 def _try_get_discord_info_from_message_or_none(message: 'Message') -> Optional['GetDiscord']:
