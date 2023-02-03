@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import TYPE_CHECKING
 
 from sqlalchemy import select
@@ -14,7 +15,14 @@ if TYPE_CHECKING:
 
 
 class CRUDReports(CRUDBase[Report, ReportsCreate, ReportsUpdate]):
-    pass
+    async def get_unique_author_and_steamid_by_time(self, session: 'AsyncSession', time_start: datetime) -> list[int]:
+        query = (
+            select(self.model.report_steamid)
+            .where(self.model.time >= time_start)
+            .group_by(self.model.report_steamid, self.model.author_nickname)
+        )
+        result = await session.scalars(query)
+        return result.all()
 
 
 reports = CRUDReports(Report)
