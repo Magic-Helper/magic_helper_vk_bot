@@ -32,4 +32,4 @@ class ReportsView:
         return body
 
     def _get_report_text(self, steamid: int, report_count: int) -> str:
-        return f'{steamid}: {report_count}'
+        return f'{steamid}: {report_count}\n'
