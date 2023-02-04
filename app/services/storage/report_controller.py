@@ -23,7 +23,7 @@ class ReportController:
         async with get_session() as session:
             await crud.reports.create(session, obj_in=obj_in_report_message)
 
-    async def get_report_count_per_steamid(self, start_time: datetime) -> dict[int, int]:
+    async def get_report_count_per_steamid(self, start_time: 'datetime') -> dict[int, int]:
         async with get_session() as session:
             reports_steamids = await crud.reports.get_unique_author_and_steamid_by_time(session, time_start=start_time)
         steamid_reports_count = self._calculate_unique_steamid(reports_steamids)
