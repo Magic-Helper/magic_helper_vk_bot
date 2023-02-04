@@ -1,10 +1,13 @@
+from __future__ import annotations
+
 import re
 from typing import Any
 
+import pendulum
 from loguru import logger
 
 from app.core import constants
-from app.core.cmd_args import BanCheckArgs, GetStatsArgs, StopCheckArgs
+from app.core.cmd_args import BanCheckArgs, GetReportsArgs, GetStatsArgs, StopCheckArgs
 from app.core.constants import MAGIC_REPORT_REGEX, REGEX_PATTERNS, RUST_REPORT_REGEX
 from app.core.exceptions import CantGetTimePassed, ParametersCantBeNone
 from app.core.typedefs import GetDiscord, Nickname, ReportMessage, StartedCheck
@@ -123,7 +126,7 @@ class ArgsParser:
     def parse_time_passed(self, args: list[str] | None) -> int:
         try:
             if args is None:
-                return convert_to_seconds(constants.DEFAULT_TIME_PASSED)
+                return convert_to_seconds(constants.DEFAULT_TIME_PASSED_AFTER_BAN)
             return convert_to_seconds(args[0])
         except Exception as e:
             raise CantGetTimePassed(e) from e
@@ -135,6 +138,32 @@ class ArgsParser:
             server=int(server),
             steamid=int(steamid),
         )
+
+    def parse_get_reports(self, args: list[str] | None) -> GetReportsArgs:
+        if not args:
+            return self._default_reports_args()
+
+        seconds_passed = self._parse_seconds_passed_report(args[0])
+        report_start_time = self._get_now_substructed_datetime(seconds=seconds_passed)
+        min_reports = int(args[1]) if len(args) == 2 else constants.DEAFULT_MIN_REPORTS  # noqa: PLR2004
+        return GetReportsArgs(report_start_time=report_start_time, min_reports=min_reports)
+
+    def _parse_seconds_passed_report(self, time: str) -> int:
+        try:
+            return convert_to_seconds(time=time)
+        except Exception as e:
+            logger.warning(e)
+            raise CantGetTimePassed(e) from e
+
+    def _default_reports_args(self) -> GetReportsArgs:
+        return GetReportsArgs(
+            report_start_time=self._get_now_substructed_datetime(constants.DEFAULT_SECONDS_PASSED),
+            min_reports=constants.DEAFULT_MIN_REPORTS,
+        )
+
+    def _get_now_substructed_datetime(self, seconds: int) -> pendulum.DateTime:
+        now = pendulum.now()
+        return now.subtract(seconds=seconds)
 
 
 record_message_parser = MagicRecordMessageParser()
