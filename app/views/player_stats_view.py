@@ -27,6 +27,9 @@ class PlayerStatsView:
 
     def _get_body(self) -> str:
         body = f'Убийств: {self.player_stats.kills} ({self.player_stats.headshot})\n'
+        body += f'-- Огнестрел: {self.player_stats.kills_shot}\n'
+        body += f'-- Лук/Арбалет: {self.player_stats.kills_arrow}\n'
+        body += f'-- Ближний бой: {self.player_stats.kills_melee}\n'
         body += f'Смертей: {self.player_stats.death}\n'
         body += f'КД: {self.player_stats.kd:.1f}'
         return body

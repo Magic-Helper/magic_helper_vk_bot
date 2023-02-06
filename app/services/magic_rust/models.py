@@ -9,6 +9,9 @@ from app.core.validators import get_datetime_object
 class PlayerStats(BaseModel):
     steamid: int
     kills: int = Field(0, alias='kp_total')
+    kills_arrow = Field(0, alias='kp_arrow')
+    kills_shot = Field(0, alias='kp_shot')
+    kills_melee = Field(0, alias='kp_melee')
     death: int = Field(0, alias='d_player')
     headshot: int = Field(0, alias='kp_head')
     kd: float
