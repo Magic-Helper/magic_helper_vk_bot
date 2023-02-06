@@ -26,12 +26,12 @@ labeler = BotLabeler()
 )
 async def get_new_players(message: 'Message', magic_rust_api: 'MagicRustAPI') -> None:
     """Handle /new command and send new players to chat"""
-    new_players = await magic_rust_api.get_online_new_players()
+    new_players = await magic_rust_api.get_online_new_players(days=60)
     if not new_players:
         return await message.answer('Новых игроков не найдено')
     new_players_with_stats = await magic_rust_api.fill_stats_for_players(new_players)
 
-    player_filter = PlayerFilter(by_kd=1.0, by_check_on_magic=True)
+    player_filter = PlayerFilter(by_kd=1, by_check_on_magic=True)
 
     filtered_players = await player_filter.execute(new_players_with_stats)
     sorted_players = sorted(filtered_players, key=lambda player: player.stats.kd, reverse=True)
