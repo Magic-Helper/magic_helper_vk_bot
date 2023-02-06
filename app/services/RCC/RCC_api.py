@@ -20,7 +20,7 @@ class RustCheatCheckAPI(BaseAPI):
 
     def __init__(self) -> None:
         self._session = ClientSession(
-            connector=TCPConnector(limit=4, limit_per_host=4), timeout=ClientTimeout(total=30 * 60)
+            connector=TCPConnector(limit=5, limit_per_host=5), timeout=ClientTimeout(total=30 * 60)
         )
 
     async def api_request(
