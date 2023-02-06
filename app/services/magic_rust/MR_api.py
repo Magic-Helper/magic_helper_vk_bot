@@ -41,7 +41,7 @@ class MagicRustAPI(BaseAPI):
     STATS_API_LINK: str = settings.MAGIC_STATS_API_LINK
     MODERS_API_LINK: str = settings.MAGIC_MODERS_API_LINK
 
-    async def api_request(
+    async def api_request(  # noqa: PLR0913
         self,
         api_url: str,
         api_method: str | None = None,

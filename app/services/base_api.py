@@ -14,7 +14,7 @@ class BaseAPI(ABC):
     """Represents a base API."""
 
     def __init__(self) -> None:
-        self._session = ClientSession(connector=TCPConnector(limit=14))
+        self._session = ClientSession(connector=TCPConnector(limit=10))
         self._session.headers.update({'User-Agent': settings.SERVER_TITLE})
 
     async def request_json(
