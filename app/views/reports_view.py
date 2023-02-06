@@ -1,8 +1,9 @@
-from app.core.cmd_args import GetReportsArgs
+from app.core.cmd_args import GetReportCount, GetReportsArgs
+from app.core.typedefs import ReportShow
 
 
 class ReportsView:
-    def __init__(self, reports: dict[int, int], get_report_args: GetReportsArgs):
+    def __init__(self, reports: list[ReportShow], get_report_args: GetReportsArgs):
         self.reports = reports
         self._sort_reports()
 
@@ -13,7 +14,7 @@ class ReportsView:
         return self._get_reports_view()
 
     def _sort_reports(self) -> None:
-        self.reports = dict(sorted(self.reports.items(), key=lambda item: item[1], reverse=True))
+        self.reports = sorted(self.reports, key=lambda item: item.report_count, reverse=True)
 
     def _get_reports_view(self) -> str:
         cap_text = self._get_cap_text()
@@ -23,13 +24,31 @@ class ReportsView:
 
     def _get_cap_text(self) -> str:
         time_start = self.report_start_time.strftime('%d.%m.%Y')
-        return f'Количество жалоб c {time_start} на игроков (>= {self.min_reports}): '
+        return f'Жалобы c {time_start} на игроков (>= {self.min_reports}): '
 
     def _get_body_text(self) -> str:
         body = ''
-        for steamid, report_count in self.reports.items():
-            body += self._get_report_text(steamid, report_count)
+        for report in self.reports:
+            body += self._get_report_text(report)
         return body
 
-    def _get_report_text(self, steamid: int, report_count: int) -> str:
-        return f'{steamid}: {report_count}\n'
+    def _get_report_text(self, report: ReportShow) -> str:
+        return f'{"*" if report.is_player_new else ""} { report.steamid}: {report.report_count}\n'
+
+
+class ReportCountView:
+    def __init__(self, report_count: int, get_report_count_args: GetReportCount) -> None:
+        self.report_count = report_count
+        self.steamid = get_report_count_args.steamid
+        self.report_start_time = get_report_count_args.report_start_time
+
+    def __repr__(self) -> str:
+        return self._get_report_count_view()
+
+    def _get_report_count_view(self) -> str:
+        text = self._get_text()
+        return text
+
+    def _get_text(self) -> str:
+        time_start = self.report_start_time.strftime('%d.%m.%Y')
+        return f'{self.report_count} жалоб с {time_start} у {self.steamid}'

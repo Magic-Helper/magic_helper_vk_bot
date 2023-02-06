@@ -7,7 +7,7 @@ import pendulum
 from loguru import logger
 
 from app.core import constants
-from app.core.cmd_args import BanCheckArgs, GetReportsArgs, GetStatsArgs, StopCheckArgs
+from app.core.cmd_args import BanCheckArgs, GetReportCount, GetReportsArgs, GetStatsArgs, StopCheckArgs
 from app.core.constants import MAGIC_REPORT_REGEX, REGEX_PATTERNS, RUST_REPORT_REGEX
 from app.core.exceptions import CantGetTimePassed, ParametersCantBeNone
 from app.core.typedefs import GetDiscord, Nickname, ReportMessage, StartedCheck
@@ -148,6 +148,19 @@ class ArgsParser:
         min_reports = int(args[1]) if len(args) == 2 else constants.DEAFULT_MIN_REPORTS  # noqa: PLR2004
         return GetReportsArgs(report_start_time=report_start_time, min_reports=min_reports)
 
+    def parse_get_report_count(self, args: list[str]) -> GetReportCount:
+        steamid = int(args[0])
+        if len(args) == 2:  # noqa: PLR2004
+            seconds_passed = self._parse_seconds_passed_report(args[1])
+        else:
+            seconds_passed = self._parse_seconds_passed_report(constants.DEFAULT_TIME_PASSED_AFTER_BAN)
+
+        report_start_time = self._get_now_substructed_datetime(seconds=seconds_passed)
+        return GetReportCount(
+            steamid=steamid,
+            report_start_time=report_start_time,
+        )
+
     def _parse_seconds_passed_report(self, time: str) -> int:
         try:
             return convert_to_seconds(time=time)
@@ -157,7 +170,7 @@ class ArgsParser:
 
     def _default_reports_args(self) -> GetReportsArgs:
         return GetReportsArgs(
-            report_start_time=self._get_now_substructed_datetime(constants.DEFAULT_SECONDS_PASSED),
+            report_start_time=self._get_now_substructed_datetime(constants.DEFAULT_SECONDS_PASSED_AFTER_REPORT),
             min_reports=constants.DEAFULT_MIN_REPORTS,
         )
 

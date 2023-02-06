@@ -4,6 +4,7 @@ import pendulum
 from loguru import logger
 
 from app.core import constants
+from app.core.typedefs import ReportShow
 from app.services.storage.check_controller import ChecksStorageController
 
 if TYPE_CHECKING:
@@ -216,3 +217,27 @@ class RCCPlayerFilter:
         """
         logger.debug(f'Filter by active ban: {ban.active}')
         return ban.active
+
+
+class ReportsFilter:
+    def __init__(self, min_reports: int, already_checked: bool = True) -> None:
+        self.min_reports = min_reports
+        self.by_already_checked = already_checked
+        if already_checked:
+            self._checks_storage = ChecksStorageController()
+
+    async def execute(self, reports: list[ReportShow]) -> list[ReportShow]:
+        filtred_by_min_reports = self._filter_by_min_reports(reports)
+        if self.by_already_checked:
+            return await self._filter_by_already_checked(filtred_by_min_reports)
+        return filtred_by_min_reports
+
+    def _filter_by_min_reports(self, reports: list[ReportShow]) -> list[ReportShow]:
+        return list(filter(lambda report: report.report_count > self.min_reports, reports))
+
+    async def _filter_by_already_checked(self, reports: list[ReportShow]) -> list[ReportShow]:
+        return [report_show for report_show in reports if await self._is_not_already_checked(report_show.steamid)]
+
+    async def _is_not_already_checked(self, steamid: int) -> bool:
+        after_time = pendulum.now().subtract(days=constants.HOW_DAYS_DONT_SHOW_PLAYER_IN_REPORTS)
+        return not await self._checks_storage.is_steamid_checked_after_time(steamid, after_time=after_time)

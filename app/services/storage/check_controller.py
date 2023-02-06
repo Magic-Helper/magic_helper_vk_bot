@@ -199,6 +199,11 @@ class ChecksStorageController:
         async with get_session() as session:
             return await crud.check.is_steamid_exists(session, steamid)
 
+    async def is_steamid_checked_after_time(self, steamid: 'Steamid', after_time: pendulum.DateTime) -> bool:
+        async with get_session() as session:
+            result = await crud.check.is_checked_after_time(session, steamid, after_time)
+            return result
+
     async def get_steamids_by_check_ids(self, check_ids: list[int]) -> list['Steamid']:
         steamids = []
         async with get_session() as session:

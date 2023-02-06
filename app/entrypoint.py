@@ -16,6 +16,7 @@ from app.handlers import (
     other_cmd_labeler,
     owner_cmd_labeler,
     players_cmd_labeler,
+    reports_cmd_labeler,
 )
 
 message_bot_labelers = (
@@ -31,6 +32,7 @@ cmd_bot_labelers = (
     owner_cmd_labeler,
     get_logs_labeler,
     discord_cmd_labeler,
+    reports_cmd_labeler,
 )
 
 
