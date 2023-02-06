@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from pendulum import DateTime
+
 
 @dataclass
 class StopCheckArgs:
@@ -27,3 +29,25 @@ class GetStatsArgs:
 
     server: int
     steamid: int
+
+
+@dataclass
+class GetReportsArgs:
+    """
+    report_start_time: pendelum.DateTime
+    min_reports: int
+    """
+
+    report_start_time: DateTime
+    min_reports: int
+
+
+@dataclass
+class GetReportCount:
+    """
+    steamid: int
+    report_start_time: pendelum.DateTime
+    """
+
+    steamid: int
+    report_start_time: DateTime

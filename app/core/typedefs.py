@@ -134,3 +134,18 @@ class GetDiscord(BaseModel):
 
     # validators
     _validate_discord = validator('discord', pre=True, allow_reuse=True)(validate_discord)
+
+
+@dataclass
+class ReportShow:
+    """
+    Dataclass
+
+    steamid: int
+    report_count: int
+    is_player_new: bool
+    """
+
+    steamid: int
+    report_count: int
+    is_player_new: bool = False

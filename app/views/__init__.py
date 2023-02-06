@@ -5,6 +5,7 @@ from app.views.new_players_view import NewPlayersView
 from app.views.player_discords_view import PlayerDiscordsView
 from app.views.player_stats_view import PlayerStatsView
 from app.views.rcc_players_view import RCCPlayersView
+from app.views.reports_view import ReportCountView, ReportsView
 
 __all__ = [
     'EacView',
@@ -14,4 +15,6 @@ __all__ = [
     'RCCPlayersView',
     'PlayerStatsView',
     'PlayerDiscordsView',
+    'ReportsView',
+    'ReportCountView',
 ]

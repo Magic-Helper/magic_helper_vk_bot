@@ -7,6 +7,7 @@ from .magic_reports import labeler as magic_reports_labeler
 from .other_cmd import labeler as other_cmd_labeler
 from .owner_cmd import labeler as owner_cmd_labeler
 from .players_cmd import labeler as players_cmd_labeler
+from .reports_cmd import reports_cmd_labeler
 
 __all__ = [
     'magic_records_labeler',
@@ -18,4 +19,5 @@ __all__ = [
     'magic_reports_labeler',
     'get_logs_labeler',
     'discord_cmd_labeler',
+    'reports_cmd_labeler',
 ]

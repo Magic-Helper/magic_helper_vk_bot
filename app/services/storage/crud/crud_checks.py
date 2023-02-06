@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import TYPE_CHECKING
 
 from loguru import logger
@@ -8,6 +9,7 @@ from app.services.storage.models import Check
 from app.services.storage.schemas import CheckCreate, CheckUpdate
 
 if TYPE_CHECKING:
+    from sqlalchemy.engine.result import Result
     from sqlalchemy.ext.asyncio import AsyncSession
 
     from app.core.typedefs import TimeInterval
@@ -85,6 +87,11 @@ class CRUDCheck(CRUDBase[Check, CheckCreate, CheckUpdate]):
         query = select(self.model.id).where(self.model.steamid == steamid)
         result = await session.execute(query)
         return result.first() is not None
+
+    async def is_checked_after_time(self, session: 'AsyncSession', steamid: int, after_time: datetime) -> bool:
+        query = select(self.model.id).where(self.model.steamid == steamid, self.model.start_time >= after_time)
+        result: 'Result' = await session.execute(query)
+        return result.one_or_none() is not None
 
 
 check = CRUDCheck(Check)

@@ -1,4 +1,4 @@
-from sqlalchemy import BigInteger, Column, DateTime, Integer, Text, UniqueConstraint
+from sqlalchemy import BigInteger, Column, DateTime, Integer, Text
 from sqlalchemy.sql import func
 
 from app.services.storage.base_class import Base

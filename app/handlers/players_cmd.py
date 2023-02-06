@@ -38,7 +38,7 @@ async def get_new_players(message: 'Message', magic_rust_api: 'MagicRustAPI') ->
     return await message.answer(NewPlayersView(sorted_players))
 
 
-@labeler.message(CommandListRule(['кд', 'kd', 'лв'], prefixes=['/', '.'], args_count=1), GetMagicRustAPIRule())
+@labeler.message(CommandListRule(['kd', 'лв'], prefixes=['/', '.'], args_count=1), GetMagicRustAPIRule())
 async def get_big_kd_players(message: 'Message', magic_rust_api: 'MagicRustAPI', args: list | None = None) -> None:
     if args:
         kd = float(args[0])
