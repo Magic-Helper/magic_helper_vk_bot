@@ -149,3 +149,5 @@ class ReportShow:
     steamid: int
     report_count: int
     is_player_new: bool = False
+    is_player_online: bool = False
+

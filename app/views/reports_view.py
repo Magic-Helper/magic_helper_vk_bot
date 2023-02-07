@@ -3,6 +3,11 @@ from app.core.typedefs import ReportShow
 
 
 class ReportsView:
+    emojies = {
+            'online': '🍏',
+            'offline': '🍎',
+            }
+
     def __init__(self, reports: list[ReportShow], get_report_args: GetReportsArgs):
         self.reports = reports
         self._sort_reports()
@@ -33,7 +38,14 @@ class ReportsView:
         return body
 
     def _get_report_text(self, report: ReportShow) -> str:
-        return f'{"*" if report.is_player_new else ""} { report.steamid}: {report.report_count}\n'
+        online_status = self._get_online_emoji(report)
+        return f'{online_status}{report.steamid}: {report.report_count}\n'
+    
+    def _get_online_emoji(self, report: ReportShow) -> str:
+        if report.is_player_online:
+            return self.emojies['online']
+        else:
+            return self.emojies['offline']
 
 
 class ReportCountView:

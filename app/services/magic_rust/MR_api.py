@@ -6,6 +6,7 @@ from loguru import logger
 from pydantic import parse_obj_as
 
 from app.core import constants, settings
+from app.core.typedefs import ReportShow
 from app.services.base_api import BaseAPI
 from app.services.magic_rust.models import Player, PlayerStats
 
@@ -153,3 +154,11 @@ class MagicRustAPI(BaseAPI):
             tasks.append(task)
         players = await asyncio.gather(*tasks)
         return players
+
+    async def mark_online_players_in_report(self, reports: list[ReportShow]) -> list[ReportShow]:
+        online_players = await self.get_online_players()
+        online_players_steamids = [player.steamid for player in online_players]
+        for report in reports:
+            if report.steamid in online_players_steamids:
+                report.is_player_online = True
+        return reports

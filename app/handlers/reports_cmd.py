@@ -29,19 +29,20 @@ reports_cmd_labeler.auto_rules = [GetReportControllerRule()]
     CommandListRule(['reportlist', 'кузщкедшые', 'rl', 'кд'], prefixes=['.', '/'], args_count=2), GetMagicRustAPIRule()
 )
 async def get_reports(
-    message: 'Message', report_controller: 'ReportController', magic_rust_api: 'MagicRustAPI', args: list = None
+    message: 'Message', report_controller: 'ReportController', magic_rust_api: 'MagicRustAPI', args: list | None = None
 ) -> None:
     logger.debug('in get reports')
     get_reports_args = args_parser.parse_get_reports(args)
     reports = await report_controller.get_report_count_per_steamid(get_reports_args.report_start_time)
     report_filter = ReportsFilter(min_reports=get_reports_args.min_reports)
     filtred_reports = await report_filter.execute(reports)
-    await message.answer(ReportsView(filtred_reports, get_report_args=get_reports_args))
+    marked_online_players = await magic_rust_api.mark_online_players_in_report(filtred_reports)
+    await message.answer(ReportsView(marked_online_players, get_report_args=get_reports_args))
 
 
 @reports_cmd_labeler.message(CommandListRule(['reports', 'кузщкеы', 'r', 'к'], prefixes=['.', '/'], args_count=2))
 async def get_reports_count_by_steamid(
-    message: 'Message', report_controller: 'ReportController', args: list = None
+    message: 'Message', report_controller: 'ReportController', args: list | None = None
 ) -> None:
     if args is None:
         return await message.answer(f'/reports [steamid] [time_passed={constants.DEFAULT_TIME_PASSED_AFTER_REPORT}]')
