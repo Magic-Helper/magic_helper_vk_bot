@@ -20,7 +20,7 @@ class DiscordAPI(BaseAPI):
 
     API_URL = 'https://discord.com/api/v9/'
 
-    def __init__(self, token: str = None) -> None:
+    def __init__(self, token: str = 'None') -> None:
         super().__init__()
         self._token = token
         headers = {
