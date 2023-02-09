@@ -23,7 +23,7 @@ labeler = BotLabeler()
 )
 async def get_new_players(message: 'Message', magic_rust_api: 'MagicRustAPI') -> None:
     """Handle /new command and send new players to chat"""
-    new_players = await magic_rust_api.get_online_new_players(days=60)
+    new_players = await magic_rust_api.get_online_new_players(days=constants.DEFAULT_DAYS_WHILE_PLAYER_NEW)
     if not new_players:
         return await message.answer('Новых игроков не найдено')
     new_players_with_stats = await magic_rust_api.fill_stats_for_players(new_players)

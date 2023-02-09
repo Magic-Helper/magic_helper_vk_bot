@@ -8,7 +8,7 @@ from loguru import logger
 
 from app.core import constants
 from app.core.cmd_args import BanCheckArgs, GetReportCount, GetReportsArgs, GetStatsArgs, StopCheckArgs
-from app.core.constants import MAGIC_REPORT_REGEX, REGEX_PATTERNS, RUST_REPORT_REGEX
+from app.core.constants import CHECK_MESSAGE_REGEX, MAGIC_REPORT_REGEX, RUST_REPORT_REGEX
 from app.core.exceptions import CantGetTimePassed, ParametersCantBeNone
 from app.core.typedefs import GetDiscord, Nickname, ReportMessage, StartedCheck
 from app.core.utils import convert_to_seconds
@@ -46,10 +46,10 @@ class MagicRecordMessageParser(MessageParser):
 
         """
         logger.debug(f'Parsing started check from {message}')
-        str_moder_vk = self.parse(REGEX_PATTERNS.VK_ID, message, 'Moder VK ID')
-        nickname = self.parse(REGEX_PATTERNS.NICKNAME, message, 'Nickname')
-        str_server = self.parse(REGEX_PATTERNS.SERVER_NUMBER, message, 'Server number')
-        str_steamid = self.parse(REGEX_PATTERNS.STEAMID, message, 'SteamID')
+        str_moder_vk = self.parse(CHECK_MESSAGE_REGEX.VK_ID, message, 'Moder VK ID')
+        nickname = self.parse(CHECK_MESSAGE_REGEX.NICKNAME, message, 'Nickname')
+        str_server = self.parse(CHECK_MESSAGE_REGEX.SERVER_NUMBER, message, 'Server number')
+        str_steamid = self.parse(CHECK_MESSAGE_REGEX.STEAMID, message, 'SteamID')
         self._check_if_params_is_none_raise(str_moder_vk, str_server, str_steamid, nickname)
         moder_vk, server, steamid = int(str_moder_vk), int(str_server), int(str_steamid)  # type: ignore[arg-type]
         return StartedCheck(moder_vk=moder_vk, nickname=nickname, server=server, steamid=steamid)  # type: ignore[arg-type]
@@ -63,7 +63,7 @@ class MagicRecordMessageParser(MessageParser):
         """
         logger.debug(f'Parsing stoped check from {message}')
 
-        nickname = self.parse(REGEX_PATTERNS.NICKNAME, message, 'Nickname')
+        nickname = self.parse(CHECK_MESSAGE_REGEX.NICKNAME, message, 'Nickname')
         self._check_if_params_is_none_raise(nickname)
         return nickname  # type: ignore[return-value]
 
@@ -71,9 +71,9 @@ class MagicRecordMessageParser(MessageParser):
 class MagicReportsMessageParser(MessageParser):
     def parse_get_discord(self, message: str) -> GetDiscord:
         logger.debug(f'Parsing get discord message from {message}')
-        nickname = self.parse(REGEX_PATTERNS.NICKNAME_IN_REPORT, message, 'Nickname')
+        nickname = self.parse(CHECK_MESSAGE_REGEX.NICKNAME_IN_REPORT, message, 'Nickname')
         discord = message.split('\n')[1].strip()
-        moder_vk_id = self.parse(REGEX_PATTERNS.VK_ID, message, 'Moder VK ID')
+        moder_vk_id = self.parse(CHECK_MESSAGE_REGEX.VK_ID, message, 'Moder VK ID')
         if not moder_vk_id:
             moder_vk_id = 0
         else:
