@@ -3,9 +3,9 @@ from typing import TYPE_CHECKING
 from vkbottle.bot import BotLabeler
 
 from app.core import constants
-from app.helpers.custom_rules import CommandListRule, GetMagicRustAPIRule
-from app.helpers.filtres import PlayerFilter
-from app.helpers.parser import args_parser
+from app.tools.custom_rules import CommandListRule, GetMagicRustAPIRule
+from app.tools.filtres import PlayerFilter
+from app.tools.parser import args_parser
 from app.views import KDPlayersView, NewPlayersView, PlayerStatsView
 
 if TYPE_CHECKING:

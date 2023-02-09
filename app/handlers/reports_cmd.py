@@ -4,10 +4,10 @@ from loguru import logger
 from vkbottle.bot import BotLabeler
 
 from app.core import constants
-from app.helpers import args_parser
-from app.helpers.custom_rules.filter_rules import CommandListRule
-from app.helpers.custom_rules.get_rules import GetMagicRustAPIRule, GetReportControllerRule
-from app.helpers.filtres import ReportsFilter
+from app.tools import args_parser
+from app.tools.custom_rules.filter_rules import CommandListRule
+from app.tools.custom_rules.get_rules import GetMagicRustAPIRule, GetReportControllerRule
+from app.tools.filtres import ReportsFilter
 from app.views import ReportCountView, ReportsView
 
 if TYPE_CHECKING:

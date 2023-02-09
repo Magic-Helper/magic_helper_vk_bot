@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING
 from loguru import logger
 from vkbottle.bot import BotLabeler
 
-from app.helpers import data_collector, time_assistant
-from app.helpers.custom_rules import (
+from app.tools import data_collector, time_assistant
+from app.tools.custom_rules import (
     CommandListRule,
     GetChecksStorageControllerRule,
     GetVKAPIRule,

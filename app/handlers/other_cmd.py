@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING
 from loguru import logger
 from vkbottle.bot import BotLabeler
 
-from app.helpers.custom_rules import CommandListRule
 from app.services.rust_banned.rust_banned_api import get_eac_info
+from app.tools.custom_rules import CommandListRule
 from app.views import EacView
 
 if TYPE_CHECKING:

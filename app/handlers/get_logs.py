@@ -5,7 +5,7 @@ from vkbottle import DocMessagesUploader
 from vkbottle.bot import BotLabeler
 
 from app.core import constants, logs
-from app.helpers.custom_rules.filter_rules import CommandListRule
+from app.tools.custom_rules.filter_rules import CommandListRule
 
 if TYPE_CHECKING:
     from vkbottle.bot import Message

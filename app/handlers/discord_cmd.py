@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING
 from loguru import logger
 from vkbottle.bot import BotLabeler
 
-from app.helpers.custom_rules import CommandListRule
-from app.helpers.custom_rules.get_rules import GetDiscordClientRule
+from app.tools.custom_rules import CommandListRule
+from app.tools.custom_rules.get_rules import GetDiscordClientRule
 
 if TYPE_CHECKING:
     from vkbottle.bot import Message

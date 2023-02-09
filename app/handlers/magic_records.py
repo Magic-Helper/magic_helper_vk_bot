@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING
 from vkbottle.bot import BotLabeler
 
 from app.core import constants
-from app.helpers import record_message_parser
-from app.helpers.custom_rules import (
+from app.tools import record_message_parser
+from app.tools.custom_rules import (
     FromUserIdRule,
     GetOnCheckControllerRule,
     TextInMessage,

@@ -5,8 +5,8 @@ from pympler import asizeof
 from vkbottle.bot import BotLabeler, rules
 
 from app.core import constants
-from app.helpers.custom_rules import GetRCCDataMemoryStorageRule
 from app.services.storage.memory_storage import OnCheckMemoryStorage
+from app.tools.custom_rules import GetRCCDataMemoryStorageRule
 
 if TYPE_CHECKING:
     from vkbottle.bot import Message
