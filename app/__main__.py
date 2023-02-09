@@ -17,7 +17,6 @@ from loguru import logger
 from app.core import settings
 from app.core.logs import add_debug_file_log, add_error_vk_message_log
 from app.entrypoint import create_app, create_cmd_bot, create_message_bot
-from app.services.storage.check_controller import OnCheckController
 from app.services.storage.memory_storage import (
     OnCheckMemoryStorage,
     RCCDataMemoryStorage,
@@ -25,7 +24,6 @@ from app.services.storage.memory_storage import (
 
 # Создано просто чтобы чистилщик мусора не удалил, скорее всего это и не нужно
 memory_storage = OnCheckMemoryStorage()
-check_storage = OnCheckController()
 rcc_data_storage = RCCDataMemoryStorage()
 
 

@@ -32,17 +32,3 @@ def convert_to_seconds(time: str) -> int:
 def clear_none_from_list(list_: list) -> list:
     """Clear None from list."""
     return [item for item in list_ if item is not None]
-
-
-def split_messages_with_lines(message: str, delimiter: str = '\n', one_message_max_length: int = 4000) -> list[str]:
-    """Split message to list of messages."""
-    splited_message = message.split(delimiter)
-    max_line_length = len(max(splited_message, key=len))
-    one_message_length = one_message_max_length // max_line_length
-    messages = []
-    for i in range(0, len(splited_message), one_message_length):
-        message = delimiter.join(splited_message[i : i + one_message_length])
-        if not message:
-            continue
-        messages.append(message)
-    return messages
