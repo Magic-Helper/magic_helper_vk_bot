@@ -1,6 +1,6 @@
 from aiohttp import web
 from loguru import logger
-from vkbottle import Bot
+from vkbottle import Bot, LoopWrapper
 from vkbottle.callback import BotCallback
 
 from app import routes
@@ -9,6 +9,7 @@ from app.core import settings
 from app.handlers import (
     checks_cmd_labeler,
     discord_cmd_labeler,
+    get_bans_labeler,
     get_logs_labeler,
     magic_records_cmd_labeler,
     magic_records_labeler,
@@ -33,7 +34,11 @@ cmd_bot_labelers = (
     get_logs_labeler,
     discord_cmd_labeler,
     reports_cmd_labeler,
+    get_bans_labeler,
 )
+
+
+loop_wrapper = LoopWrapper()
 
 
 async def create_app(cmd_bot: Bot, message_bot: Bot) -> web.Application:

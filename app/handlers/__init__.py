@@ -1,5 +1,6 @@
 from .checks_cmd import labeler as checks_cmd_labeler
 from .discord_cmd import labeler as discord_cmd_labeler
+from .get_bans import get_bans_labeler
 from .get_logs import labeler as get_logs_labeler
 from .magic_records import labeler as magic_records_labeler
 from .magic_records_cmd import labeler as magic_records_cmd_labeler
@@ -20,4 +21,5 @@ __all__ = [
     'get_logs_labeler',
     'discord_cmd_labeler',
     'reports_cmd_labeler',
+    'get_bans_labeler',
 ]
