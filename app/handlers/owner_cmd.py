@@ -44,7 +44,7 @@ async def clear_rcc_data(message: 'Message', rcc_data_storage: 'RCCDataMemorySto
     await message.answer('РЦЦ Хранлище очищено')
 
 
-@labeler.message(rules.CommandRule('on_checks_plaeyrs'))
+@labeler.message(rules.CommandRule('on_check_players'))
 async def get_on_checks_players(message: 'Message') -> None:
     """Handle /on_checks_players command and send all players on checks to chat"""
     on_check_storage = OnCheckMemoryStorage()
