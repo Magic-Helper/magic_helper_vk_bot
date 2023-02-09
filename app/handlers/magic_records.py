@@ -20,7 +20,7 @@ labeler = BotLabeler()
 labeler.auto_rules = [FromUserIdRule(constants.VK_RECORDS_GROUP_ID), GetOnCheckControllerRule()]
 
 
-@labeler.chat_message(TextInMessage('вызван на проверку.'))
+@labeler.chat_message(TextInMessage(['вызван на проверку.', '/cc2']))
 async def start_check(message: 'Message', on_check_storage: 'OnCheckController') -> None:
     check_info = record_message_parser.parse_started_check(message.text)
     await on_check_storage.new_check(check_info)
