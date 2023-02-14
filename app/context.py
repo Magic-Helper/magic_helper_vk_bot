@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+from app.delayed_task import run_delayed_tasks
+
 if TYPE_CHECKING:
     from vkbottle import Bot
 
@@ -10,7 +12,7 @@ class AppContext:
         self.message_bot: Bot = None
 
     async def on_startup(self, app=None) -> None:  # noqa
-        pass
+        await run_delayed_tasks()
 
     async def on_shutdown(self, app=None) -> None:  # noqa
         pass
