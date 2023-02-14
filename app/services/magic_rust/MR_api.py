@@ -111,6 +111,10 @@ class MagicRustAPI(BaseAPI):
         logger.debug('Online players: {players}', players=players)
         return players
 
+    async def get_online_players_steamids(self) -> list[int]:
+        online_players = await self.get_online_players()
+        return [player.steamid for player in online_players]
+
     async def get_online_new_players(self, days: int = 7) -> list[Player]:
         """Get online new players from Magic Rust moders API.
 

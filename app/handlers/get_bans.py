@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING
 from loguru import logger
 from vkbottle.bot import BotLabeler
 
-from app.core import constants
 from app.core.exceptions import CantGetTimePassed
 from app.services.magic_rust.MR_api import MagicRustAPI
 from app.tools.custom_rules import CommandListRule, GetMagicRustAPIRule
@@ -40,7 +39,7 @@ async def get_banned_players(
         return await message.answer('Неправильно указано время. Используйте формат 30s, 30m, 30h, 30d, 30w, 2y.')
 
     try:
-        online_players_steamids = await _get_online_players_steamids(magic_rust_api)
+        online_players_steamids = await magic_rust_api.get_online_players_steamids()
     except Exception as e:
         logger.exception(e)
         return await message.answer('Ошибка при получении игроков на сервере.')
@@ -61,8 +60,3 @@ async def get_banned_players(
     logger.debug(f'sorted rcc players {sorted_players}')
 
     await message.answer(RCCPlayersView(sorted_players))
-
-
-async def _get_online_players_steamids(mr_api: MagicRustAPI) -> list[int]:
-    online_players = await mr_api.get_online_players()
-    return [player.steamid for player in online_players]
