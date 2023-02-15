@@ -36,17 +36,17 @@ class BaseAPI(ABC):
         Returns:
             dict: JSON response.
         """
-        response = await self._session.request(http_method, url, params=params, data=data, json=json)
+        response = await self.raw_request(http_method=http_method, url=url, params=params, data=data, json=json)
         try:
             return await response.json(content_type=None)
         except Exception as e:
-            message = str(e) + str(params) + str(response)
+            message = str(e) + str(params) + str(response) + await response.text()
             logger.error(message)
             return None
 
     async def raw_request(
         self,
-        url: str,
+        url: Union[str, 'URL'],
         http_method: str = 'GET',
         params: dict | None = None,
         data: dict | None = None,

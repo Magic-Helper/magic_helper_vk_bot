@@ -4,15 +4,16 @@ from loguru import logger
 from vkbottle.bot import BotLabeler
 
 from app.core.exceptions import CantGetTimePassed
-from app.services.magic_rust.MR_api import MagicRustAPI
-from app.tools.custom_rules import CommandListRule, GetMagicRustAPIRule
+from app.tools.custom_rules import CommandListRule, GetMagicRustAPIRule, GetRustCheatCheckAPIRule
 from app.tools.filtres import RCCPlayerFilter
 from app.tools.parser import args_parser
-from app.tools.rcc_manager import rcc_manager
 from app.views import RCCPlayersView
 
 if TYPE_CHECKING:
     from vkbottle.bot import Message
+
+    from app.services.magic_rust.MR_api import MagicRustAPI
+    from app.services.RCC.RCC_api import RustCheatCheckAPI
 
 
 get_bans_labeler = BotLabeler()
@@ -21,10 +22,12 @@ get_bans_labeler = BotLabeler()
 @get_bans_labeler.message(
     CommandListRule(['bans', 'баны', 'ифты'], prefixes=['/', '.'], args_count=1),
     GetMagicRustAPIRule(),
+    GetRustCheatCheckAPIRule(),
 )
 async def get_banned_players(
     message: 'Message',
     magic_rust_api: 'MagicRustAPI',
+    rcc_api: 'RustCheatCheckAPI',
     args: list = None,  # type: ignore
 ) -> None:
     # temporary kostil'
@@ -45,7 +48,7 @@ async def get_banned_players(
         return await message.answer('Ошибка при получении игроков на сервере.')
 
     try:
-        rcc_players = await rcc_manager.get_rcc_players_and_cache(online_players_steamids)
+        rcc_players = await rcc_api.get_rcc_players(online_players_steamids)
     except Exception as e:
         logger.exception(e)
         return await message.answer('Ошибка при получении данных с RCC.')
