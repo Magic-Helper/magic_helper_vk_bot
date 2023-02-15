@@ -34,7 +34,8 @@ add_debug_file_log()
 
 cmd_bot = event_loop.run_until_complete(create_cmd_bot())
 message_bot = event_loop.run_until_complete(create_message_bot())
-app = event_loop.run_until_complete(create_app(cmd_bot, message_bot))
+app = event_loop.run_until_complete(create_app(event_loop, cmd_bot, message_bot))
+
 
 logger.info('Starting server...')
 web.run_app(app, port=settings.PORT, loop=event_loop)

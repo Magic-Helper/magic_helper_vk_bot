@@ -7,6 +7,10 @@ from app.core.typedefs import Steamid
 from app.core.validators import get_datetime_object
 
 
+class RCCErrorMessages(Enum):
+    NO_RCC_DATA = 'Игрок не вызывался на проверку и баны отсутствуют'
+
+
 class RCCResponseStatus(Enum):
     """RCC response status enum."""
 
@@ -16,7 +20,7 @@ class RCCResponseStatus(Enum):
 
 class RCCBaseResponse(BaseModel):
     status: RCCResponseStatus
-    error_message: str | None = Field(None, alias='errorreason')
+    error_message: RCCErrorMessages | None = Field(None, alias='errorreason')
 
 
 class RCCCheck(BaseModel):
@@ -45,7 +49,7 @@ class RCCBan(BaseModel):
     )
 
 
-class RCCPlayer(BaseModel):
+class RCCPlayer(RCCBaseResponse):
     steamid: Steamid
     checks_count: int = Field(0, alias='rcc_checks')
     checks: list[RCCCheck] | None = Field(None, alias='last_check')

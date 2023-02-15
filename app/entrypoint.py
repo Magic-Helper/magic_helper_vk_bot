@@ -1,3 +1,5 @@
+from asyncio import AbstractEventLoop
+
 from aiohttp import web
 from loguru import logger
 from vkbottle import Bot
@@ -38,11 +40,11 @@ cmd_bot_labelers = (
 )
 
 
-async def create_app(cmd_bot: Bot, message_bot: Bot) -> web.Application:
+async def create_app(loop: AbstractEventLoop, cmd_bot: Bot, message_bot: Bot) -> web.Application:
     logger.debug('Creating app...')
     app = web.Application()
 
-    ctx = AppContext()
+    ctx = AppContext(loop)
     ctx.cmd_bot = cmd_bot
     ctx.message_bot = message_bot
 
