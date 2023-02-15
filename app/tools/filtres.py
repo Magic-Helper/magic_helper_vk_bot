@@ -5,6 +5,7 @@ from loguru import logger
 
 from app.core import constants
 from app.core.typedefs import ReportShow
+from app.services.magic_rust.MR_api import MagicRustAPI
 from app.services.storage.check_controller import ChecksStorageController
 
 if TYPE_CHECKING:
@@ -220,17 +221,23 @@ class RCCPlayerFilter:
 
 
 class ReportsFilter:
-    def __init__(self, min_reports: int, already_checked: bool = True) -> None:
+    def __init__(self, min_reports: int, already_checked: bool = True, by_banned_on_magic: bool = True) -> None:
         self.min_reports = min_reports
         self.by_already_checked = already_checked
         if already_checked:
             self._checks_storage = ChecksStorageController()
 
+        self.by_banned_on_magic = by_banned_on_magic
+        if by_banned_on_magic:
+            self._mr_api = MagicRustAPI()
+
     async def execute(self, reports: list[ReportShow]) -> list[ReportShow]:
-        filtred_by_min_reports = self._filter_by_min_reports(reports)
+        reports = self._filter_by_min_reports(reports)
         if self.by_already_checked:
-            return await self._filter_by_already_checked(filtred_by_min_reports)
-        return filtred_by_min_reports
+            reports = await self._filter_by_already_checked(reports)
+        if self.by_banned_on_magic:
+            reports = await self._filter_by_players_banned(reports)
+        return reports
 
     def _filter_by_min_reports(self, reports: list[ReportShow]) -> list[ReportShow]:
         return list(filter(lambda report: report.report_count > self.min_reports, reports))
@@ -241,3 +248,7 @@ class ReportsFilter:
     async def _is_not_already_checked(self, steamid: int) -> bool:
         after_time = pendulum.now().subtract(days=constants.HOW_DAYS_DONT_SHOW_PLAYER_IN_REPORTS)
         return not await self._checks_storage.is_steamid_checked_after_time(steamid, after_time=after_time)
+
+    async def _filter_by_players_banned(self, reports: list[ReportShow]) -> list[ReportShow]:
+        banned_steamids = await self._mr_api.get_banned_steamids()
+        return [report_show for report_show in reports if not report_show.steamid in banned_steamids]
