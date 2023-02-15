@@ -11,10 +11,11 @@ DEFAULT_TIME_PASSED_AFTER_REPORT = '7d'  # Для количества пров�
 DEAFULT_MIN_REPORTS = 3  # Для отображения
 
 # Аргументы, которые нельзя указать
+WIPE_TIME = 14
 HOW_DAYS_DONT_SHOW_PLAYER_IN_REPORTS = 30  # После проверки
 MINUTES_TO_UPDATE_RCC_CACHE = 5
 DEFAULT_DAYS_WHILE_PLAYER_NEW = 60
-MINUTES_CHECKS_JOINED_PLAEYRS = 5
+MINUTES_CHECKS_JOINED_PLAEYRS = 10
 
 OWNER_VK_ID = 163811405
 
