@@ -39,3 +39,11 @@ class Player(BaseModel):
     _get_datetime_object = validator('first_join', pre=True, allow_reuse=True)(
         get_datetime_object,
     )
+
+
+class BanInfo(BaseModel):
+    ban_id: int = Field(0, alias='banID')
+    nickname: str
+    steamid: int
+    reason: str
+    time: int
