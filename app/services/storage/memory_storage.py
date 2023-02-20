@@ -77,11 +77,17 @@ class RCCDataMemoryStorage:
     def get_player(self, steamid: 'Steamid') -> Optional['RCCPlayer']:
         return self._players.get(steamid)
 
+    def is_steamid_cached(self, steamid: 'Steamid') -> bool:
+        if steamid in self._cached_steamids:
+            return True
+        return False
+
     def get_players(self, steamids: list['Steamid']) -> list['RCCPlayer']:
         return [self._players.get(steamid) for steamid in steamids]  # type: ignore [misc]
 
     def add_player(self, player: 'RCCPlayer') -> None:
         self._players[player.steamid] = player
+        self._cached_steamids.add(player.steamid)
 
     def add_players(self, players: list['RCCPlayer']) -> None:
         for player in players:
@@ -95,6 +101,9 @@ class RCCDataMemoryStorage:
 
     def add_cached_steamids(self, steamids: list['Steamid']) -> None:
         self._cached_steamids.update(steamids)
+
+    def add_cache_steamid(self, steamid: 'Steamid') -> None:
+        self._cached_steamids.add(steamid)
 
     def clear_data(self) -> None:
         self._players.clear()

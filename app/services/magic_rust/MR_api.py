@@ -8,7 +8,7 @@ from pydantic import parse_obj_as
 from app.core import constants, settings
 from app.core.typedefs import ReportShow
 from app.services.base_api import BaseAPI
-from app.services.magic_rust.models import Player, PlayerStats
+from app.services.magic_rust.models import Player, PlayerStats, BanInfo
 
 if TYPE_CHECKING:
     from app.core.typedefs import Steamid
@@ -41,6 +41,7 @@ class MagicRustAPI(BaseAPI):
 
     STATS_API_LINK: str = settings.MAGIC_STATS_API_LINK
     MODERS_API_LINK: str = settings.MAGIC_MODERS_API_LINK
+    SITE_API_LINK: str = "https://api.mrust.ru/"
 
     async def api_request(  # noqa: PLR0913
         self,
@@ -110,6 +111,20 @@ class MagicRustAPI(BaseAPI):
         players = parse_obj_as(list[Player], response)
         logger.debug('Online players: {players}', players=players)
         return players
+
+    async def get_banned_players(self) -> list[BanInfo]:
+        api_method = 'players/getBanList.php'
+        response = await self.api_request(self.SITE_API_LINK, api_method=api_method)
+        bans = parse_obj_as(list[BanInfo], response)
+        return bans
+
+    async def get_banned_steamids(self) -> list[int]:
+        all_bans = await self.get_banned_players()
+        return [ban.steamid for ban in all_bans]
+
+    async def is_player_banned(self, steamid: int) -> bool:
+        banned_steamids = await self.get_banned_steamids()
+        return steamid in banned_steamids
 
     async def get_online_players_steamids(self) -> list[int]:
         online_players = await self.get_online_players()

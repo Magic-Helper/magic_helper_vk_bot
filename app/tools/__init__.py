@@ -6,4 +6,4 @@ from app.tools.parser import (
 )
 from app.tools.time_assistant import time_assistant
 
-__all = ['args_parser', 'record_message_parser', 'time_assistant', 'data_collector', 'reports_message_parser']
+__all__ = ['args_parser', 'record_message_parser', 'time_assistant', 'data_collector', 'reports_message_parser']
