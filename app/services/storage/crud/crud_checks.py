@@ -91,7 +91,7 @@ class CRUDCheck(CRUDBase[Check, CheckCreate, CheckUpdate]):
     async def is_checked_after_time(self, session: 'AsyncSession', steamid: int, after_time: datetime) -> bool:
         query = select(self.model.id).where(self.model.steamid == steamid, self.model.start_time >= after_time)
         result: 'Result' = await session.execute(query)
-        return result.one_or_none() is not None
+        return result.first() is not None
 
 
 check = CRUDCheck(Check)

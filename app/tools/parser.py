@@ -153,7 +153,7 @@ class ArgsParser:
         if len(args) == 2:  # noqa: PLR2004
             seconds_passed = self._parse_seconds_passed_report(args[1])
         else:
-            seconds_passed = self._parse_seconds_passed_report(constants.DEFAULT_TIME_PASSED_AFTER_BAN)
+            seconds_passed = self._parse_seconds_passed_report(constants.DEFAULT_TIME_PASSED_AFTER_REPORT)
 
         report_start_time = self._get_now_substructed_datetime(seconds=seconds_passed)
         return GetReportCount(
