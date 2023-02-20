@@ -59,4 +59,4 @@ def wrap_handler(handler, context: 'AppContext'):  # noqa
     async def wrapper(request: web.Request):  # noqa
         return await handler(request, context)
 
-g   return wrapper
+    return wrapper
