@@ -20,7 +20,7 @@ class PlayerStats(BaseModel):
     @root_validator(pre=True)
     def get_kd(cls, values: dict) -> dict:
         if values.get('d_player') == 0:
-            values['kd'] = 0
+            values['kd'] = values.get('kp_total', 0)
         else:
             values['kd'] = values.get('kp_total', 0) / values.get('d_player', 1)
         return values
