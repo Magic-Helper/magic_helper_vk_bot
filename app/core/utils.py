@@ -13,11 +13,6 @@ def singleton(class_):  # noqa
     return getinstance
 
 
-def get_dict_from_model(model: Any) -> dict:  # noqa ANN401
-    """Get dict from sqlalchemy model."""
-    return {c.name: getattr(model, c.name) for c in model.__table__.columns}
-
-
 seconds_per_unit = {'s': 1, 'm': 60, 'h': 3600, 'd': 86400, 'w': 604800, 'y': 31536000}
 
 

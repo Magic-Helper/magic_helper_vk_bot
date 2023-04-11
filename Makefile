@@ -1,10 +1,7 @@
-build-d:
-	docker compose -f "docker-compose.dev.yml" -p "vk-bot" up --build -d
-	make python-dev
-build-p:
+build:
 	docker compose -f "docker-compose.prod.yml" -p "vk-bot" up --build -d
 
-python-dev:
+dev:
 	py -m app --test 1
 
 start:
@@ -15,9 +12,7 @@ stop:
 
 restart: stop start
 
-up-d:
-	docker compose -f "docker-compose.dev.yml" -p "vk-bot" up -d
-up-p:
+up:
 	docker compose -f "docker-compose.prod.yml" -p "vk-bot" up -d
 
 clean-data:
