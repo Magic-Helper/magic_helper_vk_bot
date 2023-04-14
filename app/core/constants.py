@@ -1,3 +1,5 @@
+from enum import Enum
+
 DAY_WORK_MONTH_END = 8
 TIMEZONE = 'Europe/Moscow'
 STRING_DATE_FORMAT = 'DD.MM.YYYY'
@@ -26,17 +28,17 @@ VK_REPORT_GROUP_ID = -179043503
 VK_RECORDS_GROUP_ID = -166700992
 
 
-class VK_FOR_CMD:  # MAGICRUST Отчеты
+class VK_MAGIC_RECORDS:  # MAGICRUST Отчеты
     id_: int = 166700992
 
 
-class VK_FOR_MESSAGE:  # MAGIC HELPER
+class VK_MAGIC_HELPER:  # MAGIC HELPER
     id_: int = 215360486
     magic_records_peer_id: int = 2000000002
     available_users: list[int] = [VK_RECORDS_GROUP_ID, VK_REPORT_GROUP_ID]
 
 
-GROUP_IDS = [VK_FOR_CMD.id_, VK_FOR_MESSAGE.id_]
+GROUP_IDS = [VK_MAGIC_RECORDS.id_, VK_MAGIC_HELPER.id_]
 
 
 # Паттерны для парсинга информация из сообщений от бота магик отчетов
@@ -59,6 +61,11 @@ class MAGIC_REPORT_REGEX:
     SERVER_NUMBER = r'(\d+)-й'
     AUTHOR_NICKNAME = r'от игрока (.*) на'
     REPORT_STEAMID = r'profiles/(\d+)'
+
+
+class BotTypes(Enum):
+    MAGIC_RECORDS_BOT = 'magic_records_bot'
+    MAGIC_HELPER_BOT = 'magic_helper_bot'
 
 
 AVAILABLE_BAN_REASONS: list[str] = [

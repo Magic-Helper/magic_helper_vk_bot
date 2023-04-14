@@ -11,11 +11,13 @@ python = "^3.10"
 vkbottle = {git = "https://github.com/vkbottle/vkbottle.git"}
 pydantic = "^1.10.7"
 aiohttp = "^3.8.4"
+loguru = "^0.7.0"
 
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.3.0"
 ruff = "^0.0.261"
+python-dotenv = "^1.0.0"
 
 [build-system]
 requires = ["poetry-core"]
