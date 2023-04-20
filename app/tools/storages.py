@@ -10,19 +10,19 @@ ValueType = TypeVar('ValueType')
 
 class BaseStorage(ABCStorage, Generic[KeyType, ValueType]):
     def __init__(self):
-        self.__storage = {}
+        self._storage = {}
 
     def get(self, key: KeyType) -> ValueType | None:
-        return self.__storage.get(key)
+        return self._storage.get(key)
 
     def set(self, key: KeyType, value: ValueType) -> None:
-        self.__storage[key] = value
+        self._storage[key] = value
 
     def delete(self, key: KeyType) -> None:
-        self.__storage.pop(key)
+        self._storage.pop(key)
 
     def contains(self, key: KeyType) -> bool:
-        return key in self.__storage
+        return key in self._storage
 
 
 class OnCheckStorage(BaseStorage[int, OnCheck]):
@@ -31,7 +31,3 @@ class OnCheckStorage(BaseStorage[int, OnCheck]):
 
 class NicknamesToSteamidStorage(BaseStorage[str, int]):
     pass
-
-
-on_check_storage = OnCheckStorage()
-nickname_to_steamid_storage = NicknamesToSteamidStorage()

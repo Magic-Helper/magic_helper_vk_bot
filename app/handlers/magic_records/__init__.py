@@ -1,0 +1,1 @@
+from app.handlers.magic_records.checks_cmds import check_cmds_labeler

@@ -1,1 +1,1 @@
-from app.tools.storages import NicknamesToSteamidStorage, OnCheckStorage, nickname_to_steamid_storage, on_check_storage
+from app.tools.storages import NicknamesToSteamidStorage, OnCheckStorage

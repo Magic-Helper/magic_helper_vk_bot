@@ -1,20 +1,28 @@
-import asyncio
 
 from aiohttp import web
 from loguru import logger
-from vkbottle import Bot
+from vkbottle import Bot, CtxStorage
 
 from app.core import constants, settings
 from app.handlers import magic_helper_labelers, magic_records_labelers
 from app.routes import setup_handlers
+from app.services.magic_helper_api import CheckAPI
+from app.tools import NicknamesToSteamidStorage, OnCheckStorage
 
 
-def create_app(loop: asyncio.AbstractEventLoop) -> web.Application:
+def load_ctx_storage() -> None:
+    ctx = CtxStorage()
+    ctx.set('check_api', CheckAPI())
+    ctx.set('on_check_storage', OnCheckStorage())
+    ctx.set('nicknames_to_steamid_storage', NicknamesToSteamidStorage())
+
+
+def create_app() -> web.Application:
     logger.debug('Create web application...')
-    app = web.Application(loop=loop)
+    app = web.Application()
 
-    app[constants.BotTypes.MAGIC_RECORDS_BOT] = create_magic_records_bot()
-    app[constants.BotTypes.MAGIC_HELPER_BOT] = create_magic_helper_bot()
+    app[constants.BotTypes.MAGIC_RECORDS_BOT.value] = create_magic_records_bot()
+    app[constants.BotTypes.MAGIC_HELPER_BOT.value] = create_magic_helper_bot()
 
     setup_handlers(app)
     return app

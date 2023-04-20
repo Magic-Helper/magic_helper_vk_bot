@@ -5,23 +5,30 @@ from vkbottle import Bot
 from app.core import constants, settings
 
 
-async def vk_callback_handler(request: web.Request) -> web.Response:
+async def magic_helper_vk_callback_handler(request: web.Request) -> web.Response:
     data = await _try_get_request_data(request)
     _check_secret_key(data)
-    group_id, from_id = _get_group_and_from_ids_or_raise(data)
+    from_id = _get_from_id(data)
+    if from_id not in constants.VK_MAGIC_HELPER.available_users:
+        return web.Response(text='ok', status=200)
+    loop = request._loop
+    bot = _get_bot(request.app, constants.BotTypes.MAGIC_HELPER_BOT)
+    loop.create_task(bot.process_event(data))
+    return web.Response(text='ok', status=200)
 
-    loop = request.app.loop
-    if group_id == constants.VK_MAGIC_RECORDS:
-        bot = _get_bot(request.app, constants.BotTypes.MAGIC_RECORDS_BOT)
-        loop.create_task(bot.process_event(data))
-    elif group_id == constants.VK_MAGIC_HELPER.id_ and from_id in constants.VK_MAGIC_HELPER.available_users:
-        bot = _get_bot(request.app, constants.BotTypes.MAGIC_HELPER_BOT)
-        loop.create_task(bot.process_event(data))
+
+async def magic_record_vk_callback_handler(request: web.Request) -> web.Response:
+    data = await _try_get_request_data(request)
+    _check_secret_key(data)
+    loop = request._loop
+    bot = _get_bot(request.app, constants.BotTypes.MAGIC_RECORDS_BOT)
+    loop.create_task(bot.process_event(data))
     return web.Response(text='ok', status=200)
 
 
 def setup_handlers(app: web.Application) -> None:
-    app.router.add_post('v3/vk_bot', vk_callback_handler)
+    app.router.add_post('/v3/bots/vk/helper', magic_helper_vk_callback_handler)
+    app.router.add_post('/v3/bots/vk/records', magic_record_vk_callback_handler)
 
 
 async def _try_get_request_data(request: web.Request) -> dict:
@@ -37,14 +44,6 @@ async def _try_get_request_data(request: web.Request) -> dict:
 def _check_secret_key(data: dict) -> None:
     if data.get('secret') != settings.SECRET_KEY:
         raise web.HTTPForbidden()
-
-
-def _get_group_and_from_ids_or_raise(data: dict) -> tuple[int, int | None]:
-    group_id = data.get('group_id')
-    if not (group_id and group_id in constants.GROUP_IDS):
-        raise web.HTTPBadRequest()
-    from_id = _get_from_id(data)
-    return group_id, from_id
 
 
 def _get_from_id(data: dict) -> str:

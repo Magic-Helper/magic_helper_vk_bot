@@ -1,17 +1,15 @@
 from vbml import Pattern
 
-check_start = Pattern(
-    """@id<moder_id:int> твоя команда выполнена.
-Ответ: <nickname:str> вызван на проверку. Напишите /cc2 <server_number: int> <steamid:str> для отмены проверки.
-<trash>"""
+check_start_msg = Pattern(
+    '[id<moder_id:int>|<any>] твоя команда выполнена. \nОтвет: <nickname> вызван на проверку. Напишите /cc2 <server_number:int> <steamid> для отмены проверки. \n<trash>'
 )
 
-check_end = Pattern(
-    """@id<moder_id:int> твоя команда выполнена.
-Ответ: <nickname:str> больше не проверяется."""
+check_end_msg = Pattern('[id<moder_id:int>|<any>] твоя команда выполнена. \nОтвет: <nickname> больше не проверяется.')
+
+check_ban_msg = Pattern(
+    '[id<moder_id:int>|<any>] твоя команда выполнена. \nОтвет: <nickname> забанен с причиной <trash>'
 )
 
-check_ban = Pattern(
-    """@id<moder_id: int> твоя команда выполнена.
-Ответ: <nickname:str> забанен с причиной <reason:str> ."""
-)
+
+check_end_cmd = Pattern('/cc <server_number:int> <steamid>')
+cancel_check_cmd = Pattern('/cc3 <server_number:int> <steamid>')

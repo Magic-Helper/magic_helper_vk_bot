@@ -1,8 +1,8 @@
 build:
-	docker compose -f "docker-compose.prod.yml" -p "vk-bot" up --build -d
+	docker compose -f "docker-compose.yml" -p "vk-bot" up --build -d
 
 dev:
-	py -m app --test 1
+	py -m app
 
 start:
 	docker compose -p "vk-bot" start
@@ -13,7 +13,7 @@ stop:
 restart: stop start
 
 up:
-	docker compose -f "docker-compose.prod.yml" -p "vk-bot" up -d
+	docker compose -f "docker-compose.yml" -p "vk-bot" up -d
 
 clean-data:
 	docker system prune -a --volumes
