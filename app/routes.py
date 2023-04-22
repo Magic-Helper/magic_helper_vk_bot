@@ -7,6 +7,8 @@ from app.core import constants, settings
 
 async def magic_helper_vk_callback_handler(request: web.Request) -> web.Response:
     data = await _try_get_request_data(request)
+    if _confirmation(data, constants.VK_MAGIC_HELPER.id_):
+        return settings.HELPER_CONFIRMATION_CODE
     _check_secret_key(data)
     from_id = _get_from_id(data)
     if from_id not in constants.VK_MAGIC_HELPER.available_users:
@@ -19,6 +21,8 @@ async def magic_helper_vk_callback_handler(request: web.Request) -> web.Response
 
 async def magic_record_vk_callback_handler(request: web.Request) -> web.Response:
     data = await _try_get_request_data(request)
+    if _confirmation(data, constants.VK_MAGIC_RECORDS.id_):
+        return settings.RECORD_CONFIRMATION_CODE
     _check_secret_key(data)
     loop = request._loop
     bot = _get_bot(request.app, constants.BotTypes.MAGIC_RECORDS_BOT)
@@ -27,8 +31,8 @@ async def magic_record_vk_callback_handler(request: web.Request) -> web.Response
 
 
 def setup_handlers(app: web.Application) -> None:
-    app.router.add_post('/v3/bots/vk/helper', magic_helper_vk_callback_handler)
-    app.router.add_post('/v3/bots/vk/records', magic_record_vk_callback_handler)
+    app.router.add_post('/bots/v3/vk/helper', magic_helper_vk_callback_handler)
+    app.router.add_post('/bots/v3/vk/records', magic_record_vk_callback_handler)
 
 
 async def _try_get_request_data(request: web.Request) -> dict:
@@ -39,6 +43,12 @@ async def _try_get_request_data(request: web.Request) -> dict:
         raise web.HTTPBadRequest() from e
     else:
         return data
+
+
+def _confirmation(data: dict, group_id: int):
+    if data.get('type') == 'confirmation' and data.get('group_id') == group_id:
+        return True
+    return False
 
 
 def _check_secret_key(data: dict) -> None:

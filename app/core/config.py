@@ -13,5 +13,8 @@ class Settings(BaseSettings):
     VERSION: str = '3.0'
     SECRET_KEY: str = 'secret'
 
+    HELPER_CONFIRMATION_CODE: str
+    RECORD_CONFIRMATION_CODE: str
+
 
 settings = Settings()
