@@ -1,7 +1,7 @@
 from vkbottle import CtxStorage
 from vkbottle.bot import rules
 
-from app.services.magic_helper_api import CheckAPI
+from app.services.api.check_api import CheckAPI
 from app.tools import NicknamesToSteamidStorage, OnCheckStorage
 
 

@@ -1,4 +1,4 @@
-from typing import TypeVar, Union
+from typing import Any, TypeVar, Union
 
 import aiohttp
 from pydantic import parse_obj_as
@@ -28,8 +28,9 @@ class APIClient:
         payload: dict | None = None,
         body: str | None = None,
         response_model: RT | None = None,
+        **kwargs: Any,
     ) -> RT:
-        response = await self.http_client.request_post(url, query=query, payload=payload, body=body)
+        response = await self.http_client.request_post(url, query=query, payload=payload, body=body, **kwargs)
         return await self._parse_response(response, response_model)
 
     async def api_PUT_request(
@@ -61,9 +62,4 @@ class APIClient:
             return
 
         response_json = await response.json()
-        if isinstance(response_json, dict):
-            return response_model.parse_obj(response_json)
-        elif isinstance(response_json, list):
-            return parse_obj_as(list[response_model], response_json)
-        else:
-            raise TypeError('Not supported response_json type')
+        return parse_obj_as(response_model, response_json)

@@ -4,7 +4,7 @@ from vkbottle.bot import BotLabeler, Message, rules
 from app.core import constants, patterns
 from app.core.custom_rules import FromUserIdRule, GetCheckAPI, GetNicknamesToSteamidStorage, GetOnCheckStorage
 from app.entities import CheckStage, OnCheck
-from app.services.magic_helper_api import CheckAPI
+from app.services.api.check_api import CheckAPI
 from app.tools import NicknamesToSteamidStorage, OnCheckStorage
 
 check_msgs_labeler = BotLabeler()

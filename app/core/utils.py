@@ -1,18 +1,3 @@
-from typing import Any
-
-
-def singleton(class_):  # noqa
-    """Singleton decorator."""
-    instances = {}
-
-    def getinstance(*args, **kwargs) -> Any:  # noqa:
-        if class_ not in instances:
-            instances[class_] = class_(*args, **kwargs)
-        return instances[class_]
-
-    return getinstance
-
-
 seconds_per_unit = {'s': 1, 'm': 60, 'h': 3600, 'd': 86400, 'w': 604800, 'y': 31536000}
 
 

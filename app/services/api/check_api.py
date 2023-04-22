@@ -1,12 +1,8 @@
-from app.core import settings
 from app.entities import CheckInDB, CreateCheck
-from app.services.api_client import APIClient
+from app.services.api.base import BaseAPI
 
 
-class CheckAPI:
-    def __init__(self) -> None:
-        self.client = APIClient(authorization_token=settings.API_TOKEN, base_url=settings.API_URL)
-
+class CheckAPI(BaseAPI):
     async def create_check(self, steamid: str, moderator_vk_id: int, server_number: int) -> int:
         request_body = CreateCheck(steamid=steamid, moderator_vk_id=moderator_vk_id, server_number=server_number).dict(
             exclude_none=True

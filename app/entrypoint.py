@@ -6,7 +6,7 @@ from vkbottle import Bot, CtxStorage
 from app.core import constants, settings
 from app.handlers import magic_helper_labelers, magic_records_labelers
 from app.routes import setup_handlers
-from app.services.magic_helper_api import CheckAPI
+from app.services.api.check_api import CheckAPI
 from app.tools import NicknamesToSteamidStorage, OnCheckStorage
 
 
