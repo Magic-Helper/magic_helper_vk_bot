@@ -6,8 +6,6 @@ services:
       dockerfile: ./docker/bot/Dockerfile
     container_name: bot
     env_file: .env
-    depends_on:
-      - postgres
     networks:
       - magic_helper_network
 
@@ -27,8 +25,3 @@ networks:
   magic_helper_network:
     driver: bridge
     name: magic_helper_network
-
-volumes:
-  pg-data:
-
-

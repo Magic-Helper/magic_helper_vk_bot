@@ -4,7 +4,6 @@ version = "3.0.0"
 description = ""
 authors = ["MaHryCT3 <mahryct123@gmail.com>"]
 readme = "README.md"
-packages = [{include = "vk_bot"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"

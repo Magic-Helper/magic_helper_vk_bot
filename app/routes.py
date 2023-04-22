@@ -8,7 +8,7 @@ from app.core import constants, settings
 async def magic_helper_vk_callback_handler(request: web.Request) -> web.Response:
     data = await _try_get_request_data(request)
     if _confirmation(data, constants.VK_MAGIC_HELPER.id_):
-        return settings.HELPER_CONFIRMATION_CODE
+        return web.Response(text=settings.HELPER_CONFIRMATION_CODE)
     _check_secret_key(data)
     from_id = _get_from_id(data)
     if from_id not in constants.VK_MAGIC_HELPER.available_users:
@@ -22,7 +22,7 @@ async def magic_helper_vk_callback_handler(request: web.Request) -> web.Response
 async def magic_record_vk_callback_handler(request: web.Request) -> web.Response:
     data = await _try_get_request_data(request)
     if _confirmation(data, constants.VK_MAGIC_RECORDS.id_):
-        return settings.RECORD_CONFIRMATION_CODE
+        return web.Response(text=settings.RECORD_CONFIRMATION_CODE)
     _check_secret_key(data)
     loop = request._loop
     bot = _get_bot(request.app, constants.BotTypes.MAGIC_RECORDS_BOT)

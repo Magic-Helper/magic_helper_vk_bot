@@ -12,18 +12,15 @@ ENV PROJECT_HOME=/home/MagicHelper/vk_bot
 RUN mkdir -p ${PROJECT_HOME}
 WORKDIR ${PROJECT_HOME}
 
-COPY ./alembic/ ./alembic/
 COPY ./docker/ ./docker/
 COPY ./app/ ./app/
 COPY ./poetry.lock .
 COPY ./pyproject.toml .
 COPY ./Makefile .
-COPY ./alembic.ini .
 
 RUN chmod +x ${PROJECT_HOME}/docker/bot/entrypoint.sh
 
 RUN apt update
-RUN apt install make
 RUN python -m pip install --upgrade pip
 RUN python -m pip install --no-cache-dir poetry
 RUN python -m poetry config virtualenvs.create false
