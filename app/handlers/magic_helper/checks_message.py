@@ -1,13 +1,14 @@
 from loguru import logger
 from vkbottle.bot import BotLabeler, Message, rules
 
-from app.core import constants, patterns
+from app.core import constants, middlewares, patterns
 from app.core.custom_rules import FromUserIdRule, GetCheckAPI, GetNicknamesToSteamidStorage, GetOnCheckStorage
 from app.entities import CheckStage, OnCheck
 from app.services.api.check_api import CheckAPI
 from app.tools import NicknamesToSteamidStorage, OnCheckStorage
 
 check_msgs_labeler = BotLabeler()
+check_msgs_labeler.message_view.register_middleware(middlewares.ClearSpaceBeforeLineMiddleware)
 check_msgs_labeler.auto_rules = [
     FromUserIdRule(constants.VK_RECORDS_GROUP_ID),
     GetCheckAPI(),
@@ -27,7 +28,6 @@ async def start_check_message(
     on_check_storage: OnCheckStorage,
     nicknames_to_steamid_storage: NicknamesToSteamidStorage,
 ) -> None:
-    print(type(moder_id))
     db_row = await check_api.create_check(steamid, moder_id, server_number)
     on_check = OnCheck(
         nickname=nickname,
