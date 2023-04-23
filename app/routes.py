@@ -45,7 +45,7 @@ async def _try_get_request_data(request: web.Request) -> dict:
         return data
 
 
-def _confirmation(data: dict, group_id: int):
+def _confirmation(data: dict, group_id: int) -> bool:
     if data.get('type') == 'confirmation' and data.get('group_id') == group_id:
         return True
     return False

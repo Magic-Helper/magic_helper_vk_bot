@@ -15,3 +15,9 @@ class CheckAPI(BaseAPI):
 
     async def cancel_check(self, check_id: int) -> CheckInDB:
         return await self.client.api_DELETE_request(f'/v1/checks/{check_id}')
+
+    async def add_check(self, create_check: CreateCheck) -> int:
+        result = await self.client.api_POST_request(
+            '/v1/checks', body=create_check.dict(exclude_none=True), response_model=CheckInDB
+        )
+        return result.id

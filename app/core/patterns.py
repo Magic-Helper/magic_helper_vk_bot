@@ -11,5 +11,5 @@ check_ban_msg = Pattern(
 )
 
 
-check_end_cmd = Pattern('/cc <server_number:int> <steamid>')
+check_end_cmd = Pattern('/cc2 <server_number:int> <steamid>')
 cancel_check_cmd = Pattern('/cc3 <server_number:int> <steamid>')
