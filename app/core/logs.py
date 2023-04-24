@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import datetime
+
 import loguru
 from loguru import logger
 from vkbottle import API, DocMessagesUploader
@@ -42,5 +44,6 @@ async def _send_error_log(vk_api: API, message: loguru.Message) -> None:
 
 def _get_exception_file_name(message: loguru.Message) -> str:
     record = message.record
-    module, name = record.get('module'), record.get('name')
-    return 'ex_' + module + '_' + name + '.log'
+    time: datetime = record.get('time', datetime.now())
+    str_time = time.strftime('%H-%M-%S')
+    return 'exception' + str_time + '.log'

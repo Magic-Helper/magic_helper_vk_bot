@@ -21,7 +21,7 @@ async def get_logs(message: Message, type: str) -> None:
 
 @owner_cmds_labeler.private_message(rules.VBMLRule(patterns.on_check_get), GetCheckCollector())
 async def get_on_check(message: Message, check_collector: CheckCollector) -> None:
-    await message.answer(OnCheckView(check_collector.on_check).render())
+    await message.answer(OnCheckView(check_collector.on_check._storage).render())
 
 
 @owner_cmds_labeler.private_message(rules.VBMLRule(patterns.on_check_clear), GetCheckCollector())
