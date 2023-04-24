@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar
+from typing import Generic, TypeAlias, TypeVar
 
 from vkbottle.tools import ABCStorage
 
@@ -6,6 +6,8 @@ from app.entities import OnCheck
 
 KeyType = TypeVar('KeyType')
 ValueType = TypeVar('ValueType')
+
+Steamid: TypeAlias = str
 
 
 class BaseStorage(ABCStorage, Generic[KeyType, ValueType]):
@@ -18,16 +20,19 @@ class BaseStorage(ABCStorage, Generic[KeyType, ValueType]):
     def set(self, key: KeyType, value: ValueType) -> None:
         self._storage[key] = value
 
-    def delete(self, key: KeyType) -> None:
-        self._storage.pop(key)
+    def delete(self, key: KeyType) -> ValueType:
+        return self._storage.pop(key)
 
     def contains(self, key: KeyType) -> bool:
         return key in self._storage
 
+    def clear(self) -> None:
+        self._storage.clear()
 
-class OnCheckStorage(BaseStorage[int, OnCheck]):
+
+class OnCheckStorage(BaseStorage[Steamid, OnCheck]):
     pass
 
 
-class NicknamesToSteamidStorage(BaseStorage[str, int]):
+class NicknamesToSteamidStorage(BaseStorage[str, Steamid]):
     pass

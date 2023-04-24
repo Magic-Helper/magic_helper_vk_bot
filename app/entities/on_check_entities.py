@@ -13,3 +13,6 @@ class OnCheck:
     nickname: str
     db_row: int
     stage: CheckStage = CheckStage.PROCESS
+
+    def __repr__(self) -> str:
+        return f'{self.nickname} in stage: {self.stage.value}'
