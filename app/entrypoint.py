@@ -3,6 +3,7 @@ from loguru import logger
 from vkbottle import Bot, CtxStorage
 
 from app.core import constants, middlewares, settings
+from app.core.logs import add_debug_file_log, add_error_vk_message_log, add_info_file_log
 from app.handlers import magic_helper_labelers, magic_records_labelers
 from app.routes import setup_handlers
 from app.services.api.check_api import CheckAPI
@@ -13,6 +14,12 @@ def load_ctx_storage() -> None:
     ctx = CtxStorage()
     ctx.set('check_api', CheckAPI())
     ctx.set('on_check_contoller', CheckCollector())
+
+
+def add_logs_sinks() -> None:
+    add_debug_file_log()
+    add_info_file_log()
+    add_error_vk_message_log()
 
 
 def create_app() -> web.Application:
