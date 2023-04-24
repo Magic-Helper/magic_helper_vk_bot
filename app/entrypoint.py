@@ -16,7 +16,8 @@ def load_ctx_storage() -> None:
     ctx.set('check_collector', CheckCollector())
 
 
-def add_logs_sinks() -> None:
+def configure_logs() -> None:
+    logger.disable('vkbottle')
     add_debug_file_log()
     add_info_file_log()
     add_error_vk_message_log()
