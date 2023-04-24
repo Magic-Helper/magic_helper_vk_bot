@@ -13,7 +13,7 @@ from app.tools.on_check import CheckCollector
 def load_ctx_storage() -> None:
     ctx = CtxStorage()
     ctx.set('check_api', CheckAPI())
-    ctx.set('on_check_contoller', CheckCollector())
+    ctx.set('check_collector', CheckCollector())
 
 
 def add_logs_sinks() -> None:
