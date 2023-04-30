@@ -8,15 +8,12 @@ class ClearSpaceBeforeLineMiddleware(BaseMiddleware[Message]):
         self.event.text = self.event.text.replace(' \n', '\n')
 
 
-class LogMiddleware(BaseMiddleware[Message]):
-    async def pre(self) -> None:
-        logger.debug('Пришел ивент:', self.event)
-
+class PostLogMiddleware(BaseMiddleware[Message]):
     async def post(self) -> None:
         if not self.handlers:
             return
 
         msg = ''
         for handler in self.handlers:
-            msg += f'Отработал {handler}. \n. Текст: {self.event.text}'
+            msg += f'Отработал {handler}. \n. Эвент: {self.event.dict(exclude_none=True)}'
         logger.info(msg)
