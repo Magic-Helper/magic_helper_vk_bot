@@ -13,28 +13,6 @@ from app.services.magic_rust.models import Player, PlayerStats, BanInfo
 if TYPE_CHECKING:
     from app.core.typedefs import Steamid
 
-SERVERS_ID = {
-    1: 1655,
-    2: 41,
-    3: 39,
-    4: 1930,
-    5: 2011,
-    6: 2098,
-    7: 2342,
-    8: 2343,
-    9: 3558,
-    10: 3771,
-    11: 4265,
-    12: 4663,
-    13: 4721,
-    14: 5088,
-    15: 7773,
-    16: 9096,
-    17: 9097,
-    18: 9360,
-    20: 1655,
-}
-
 
 class MagicRustAPI(BaseAPI):
     """Respresents a Magic Rust API."""
@@ -76,8 +54,7 @@ class MagicRustAPI(BaseAPI):
         Returns:
             PlayerStats: Player stats.
         """
-        server_id = SERVERS_ID[server_number]
-        params = {'server': server_id, 'steamid': steamid}
+        params = {'server': server_number, 'steamid': steamid}
         method = 'getPlayerStat.php'
         response = await self.api_request(self.STATS_API_LINK, method, params=params)
         logger.debug('Player {steamid} stats answer: {answer}', steamid=steamid, answer=response)
@@ -94,8 +71,7 @@ class MagicRustAPI(BaseAPI):
         Returns:
             list[PlayerStats]: Server players stats.
         """
-        server_id = SERVERS_ID[server_number]
-        params = {'server': server_id}
+        params = {'server': server_number}
         api_method = 'getServerPlayers_2.php'
         response = await self.api_request(self.STATS_API_LINK, api_method, params=params)
         return parse_obj_as(list[PlayerStats], response)
