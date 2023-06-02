@@ -82,7 +82,7 @@ class MagicRustAPI(BaseAPI):
         Returns:
             list[PlayerInfo]: Online players.
         """
-        api_method = 'getPlayersList.php'
+        api_method = 'getOnlinePlayers.php'
         response = await self.api_request(self.MODERS_API_LINK, api_method)
         players = parse_obj_as(list[Player], response)
         logger.debug('Online players: {players}', players=players)
