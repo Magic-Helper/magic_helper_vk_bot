@@ -49,5 +49,9 @@ class ReportView(ABCUserView):
         body = f'{self.report.count} жалоб за последнию неделю у {self.report.steamid}'
         if self.check_info:
             last_check_spend = datetime.now().timestamp() - self.check_info.start
-            body += f'\nПоследняя проверка была {human_time(last_check_spend)} назад'
+            human_time_spend = human_time(last_check_spend)
+            if self.check_info.is_ban:
+                body += f'Забанен {human_time_spend} назад'
+            else:
+                body += f'Последняя проверка была {human_time_spend} назад'
         return body

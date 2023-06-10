@@ -50,7 +50,7 @@ class PlayerStatsView(ABCUserView):
 
     def render(self) -> str:
         if self.player_stats.nickname is None:
-            return f'Для {self.player_stats.steamid} не было найдено статистики.'
+            return 'Для игрока не было найдено статистики.'
 
         return self.cap + '\n\n' + self.body
 
