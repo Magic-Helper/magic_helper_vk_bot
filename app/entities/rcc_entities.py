@@ -39,3 +39,11 @@ class RCCPlayer(RCCBaseResponse):
     bans: list[RCCBan] | None = None
     last_ips: list[str] | None = Field(None, alias='last_ip')
     last_nick: str | None = None
+
+
+class BanInfo(BaseModel):
+    banID: int
+    nickname: str
+    steamid: str
+    reason: str
+    time: int

@@ -21,3 +21,9 @@ class CheckAPI(BaseAPI):
             '/v1/checks', body=create_check.dict(exclude_none=True), response_model=CheckInDB
         )
         return result.id
+
+    async def get_checked_players(self, steamids: list[int]) -> dict[str, int]:
+        return await self.client.api_POST_request('/v1/checks/get_checked', body=steamids, response_model=dict)
+
+    async def get_last_check(self, steamid: str) -> CheckInDB:
+        return await self.client.api_GET_request(f'/v1/checks/steamid/{steamid}', response_model=CheckInDB)

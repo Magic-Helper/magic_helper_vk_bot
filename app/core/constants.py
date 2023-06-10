@@ -4,21 +4,20 @@ DAY_WORK_MONTH_END = 8
 TIMEZONE = 'Europe/Moscow'
 STRING_DATE_FORMAT = 'DD.MM.YYYY'
 
+# Bans
+DEFAULT_DAYS_PASSED_AFTER_BAN = 60
 
-# Агрументы по дефолту если не указаны
-DEFAULT_TIME_PASSED_AFTER_BAN = '30d'
-DEFAULT_BIG_KD = 10.0
-DEFAULT_SECONDS_PASSED_AFTER_REPORT = 60 * 60 * 24  # Для списка репортов
-DEFAULT_TIME_PASSED_AFTER_REPORT = '7d'  # Для количества проверок одного игрока
+# Stats
+DAYS_WHILE_PLAYER_NEW = 60
+MIN_STATS_FOR_NEW_PLAYER = 1.0
+MIN_STATS_FOR_PLAYER = 10.0
+
+# Reports
+HOW_DAYS_DONT_SHOW_PLAYER_IN_REPORTS = 30  # После проверки
 DEAFULT_MIN_REPORTS = 3  # Для отображения
 
-# Аргументы, которые нельзя указать
-WIPE_TIME = 14
-HOW_DAYS_DONT_SHOW_PLAYER_IN_REPOS = 30  # После проверки
-MINUTES_TO_UPDATE_RCC_CACHE = 5
-DEFAULT_DAYS_WHILE_PLAYER_NEW = 60
-MINUTES_CHECKS_JOINED_PLAEYRS = 10
 
+# Аргументы, которые нельзя указать
 
 VK_REPORT_GROUP_ID = -179043503
 VK_RECORDS_GROUP_ID = -166700992

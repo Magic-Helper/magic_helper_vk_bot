@@ -59,7 +59,9 @@ class APIClient:
         response_model: RT | None = None,
     ) -> Union[RT, list[RT], None]:
         if response_model is None:
-            return
+            return 
+        elif response_model is dict:
+            return await response.json()
 
         response_json = await response.json()
         return parse_obj_as(response_model, response_json)
