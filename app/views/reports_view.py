@@ -51,7 +51,7 @@ class ReportView(ABCUserView):
             last_check_spend = datetime.now().timestamp() - self.check_info.start
             human_time_spend = human_time(last_check_spend)
             if self.check_info.is_ban:
-                body += f'Забанен {human_time_spend} назад'
+                body += f'\nЗабанен {human_time_spend} назад'
             else:
-                body += f'Последняя проверка была {human_time_spend} назад'
+                body += f'\nПоследняя проверка была {human_time_spend} назад'
         return body

@@ -71,5 +71,9 @@ class PlayerStatsView(ABCUserView):
         """
         if self.player_check:
             last_check_spend = datetime.now().timestamp() - self.player_check.start
-            body += f'Последняя проверка была {human_time(last_check_spend)} назад'
+            human_time_spend = human_time(last_check_spend)
+            if self.player_check.is_ban:
+                body += f'Забанен {human_time_spend} назад'
+            else:
+                body += f'Последняя проверка была {human_time_spend} назад'
         return body
