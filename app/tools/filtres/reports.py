@@ -31,7 +31,7 @@ class ReportFilter(ABCFilter):
         return list(filter(self._filter_reports, reports))
 
     def _filter_reports(self, report: ReportShow) -> bool:
-        if self.min_reports and report.count > self.min_reports:
+        if self.min_reports and report.count < self.min_reports:
             return False
         if self.check_on_magic and self._is_player_checked(report.steamid):
             return False
