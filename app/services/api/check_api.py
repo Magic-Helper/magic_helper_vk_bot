@@ -1,4 +1,4 @@
-from app.entities import CheckInDB, CreateCheck
+from app.entities import CheckInDB, CreateCheck, ModeratorsCheck, ModeratorsCheckQuery
 from app.services.api.base import BaseAPI
 
 
@@ -27,3 +27,11 @@ class CheckAPI(BaseAPI):
 
     async def get_last_check(self, steamid: str) -> CheckInDB:
         return await self.client.api_GET_request(f'/v1/checks/steamid/{steamid}', response_model=CheckInDB)
+
+    async def get_moderator_checks(self, time_start: float, time_end: float) -> list[ModeratorsCheck]:
+        query = ModeratorsCheckQuery(time_start=time_start, time_end=time_end).dict(exclude_none=True)
+        return await self.client.api_GET_request(
+            '/v1/checks/moderators_count',
+            query=query,
+            response_model=list[ModeratorsCheck],
+        )

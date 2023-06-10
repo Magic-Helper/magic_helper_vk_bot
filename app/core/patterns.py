@@ -41,3 +41,5 @@ stats_cmd = [Pattern('/stats <server:int> <steamid:int>')]
 
 reports_help_cmd = [Pattern('/reports')]
 reports_cmd = [Pattern('/reports <steamid>')]
+
+checks_cmd = [Pattern('/checks')]

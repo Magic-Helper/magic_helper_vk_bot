@@ -17,3 +17,14 @@ class CreateCheck(Check):
 
 class CheckInDB(Check):
     id: int
+
+
+class ModeratorsCheckQuery(BaseModel):
+    time_start: float
+    time_end: float
+
+
+class ModeratorsCheck(BaseModel):
+    moderator_id: int
+    name: str
+    count: int

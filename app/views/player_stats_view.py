@@ -1,12 +1,12 @@
 from datetime import datetime
 
+from app.core.constants import EMPTY_SYM
 from app.core.utils import human_time
 from app.entities import CheckInDB, Player, PlayerStats
 from app.views import ABCUserView
 
 
 class _PlayersStatsView(ABCUserView):
-    EMPTY_SYM = '⠀'
     KILLS_LEN = 24
 
     def __init__(self, players: list[Player], min_kd: float) -> None:
@@ -18,9 +18,9 @@ class _PlayersStatsView(ABCUserView):
             return 'Ничего не найдено'
         text = self.message_cap + '\n'
         for player in self.players:
-            current_line = f'{player.steamid}{self.EMPTY_SYM} {player.stats.kd}'
+            current_line = f'{player.steamid}{EMPTY_SYM} {player.stats.kd}'
             kills = f'{player.stats.kills}/{player.stats.death}\n'
-            current_line += kills.rjust(self.KILLS_LEN - len(current_line) + (len(kills)), self.EMPTY_SYM)
+            current_line += kills.rjust(self.KILLS_LEN - len(current_line) + (len(kills)), EMPTY_SYM)
 
             text += current_line
         print(text)

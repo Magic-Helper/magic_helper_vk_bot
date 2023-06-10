@@ -3,6 +3,7 @@ from enum import Enum
 DAY_WORK_MONTH_END = 8
 TIMEZONE = 'Europe/Moscow'
 STRING_DATE_FORMAT = 'DD.MM.YYYY'
+EMPTY_SYM = '⠀'
 
 # Bans
 DEFAULT_DAYS_PASSED_AFTER_BAN = 60
