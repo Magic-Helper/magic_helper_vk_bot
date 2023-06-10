@@ -1,20 +1,6 @@
-from app.views.checks_view import CheckView
-from app.views.eac_view import EacView
-from app.views.kd_view import KDPlayersView
-from app.views.new_players_view import NewPlayersView
-from app.views.player_discords_view import PlayerDiscordsView
-from app.views.player_stats_view import PlayerStatsView
+from app.views.abc import ABCUserView
+from app.views.moderators_check_view import ModeratorChecksView
+from app.views.on_check_view import OnCheckView
+from app.views.player_stats_view import BigKdStatsView, NewPlayerStatsView, PlayerStatsView
 from app.views.rcc_players_view import RCCPlayersView
-from app.views.reports_view import ReportCountView, ReportsView
-
-__all__ = [
-    'EacView',
-    'CheckView',
-    'NewPlayersView',
-    'KDPlayersView',
-    'RCCPlayersView',
-    'PlayerStatsView',
-    'PlayerDiscordsView',
-    'ReportsView',
-    'ReportCountView',
-]
+from app.views.reports_view import ReportsView, ReportView

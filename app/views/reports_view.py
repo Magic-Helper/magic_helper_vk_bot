@@ -1,66 +1,53 @@
-from app.core.cmd_args import GetReportCount, GetReportsArgs
-from app.core.typedefs import ReportShow
+from datetime import datetime
+
+from app.core.utils import human_time
+from app.entities import CheckInDB, ReportShow
+from app.views.abc import ABCUserView
+
+EMOJIES = {
+    'online': '🟩',
+    'offline': '🟥',
+}
 
 
-class ReportsView:
-    emojies = {
-        'online': '🟩',
-        'offline': '🟥',
-    }
+class ReportsView(ABCUserView):
+    cap = 'Жалобы на игроков за последний день (>=3)'
 
-    def __init__(self, reports: list[ReportShow], get_report_args: GetReportsArgs):
+    def __init__(self, reports: list[ReportShow]):
         self.reports = reports
-        self._sort_reports()
 
-        self.report_start_time = get_report_args.report_start_time
-        self.min_reports = get_report_args.min_reports
+    def render(self) -> str:
+        if not self.reports:
+            return 'Жалоб за последний день не найдено'
+        return self.cap + '\n\n' + self.body
 
-    def __repr__(self) -> str:
-        return self._get_reports_view()
-
-    def _sort_reports(self) -> None:
-        self.reports = sorted(self.reports, key=lambda item: item.report_count, reverse=True)
-
-    def _get_reports_view(self) -> str:
-        cap_text = self._get_cap_text()
-        body_text = self._get_body_text()
-        text = cap_text + '\n\n' + body_text
-        return text
-
-    def _get_cap_text(self) -> str:
-        time_start = self.report_start_time.strftime('%d.%m.%Y')
-        return f'Жалобы c {time_start} на игроков (>= {self.min_reports}): '
-
-    def _get_body_text(self) -> str:
+    @property
+    def body(self) -> str:
         body = ''
         for report in self.reports:
-            body += self._get_report_text(report)
+            online_status_emoji = self._get_online_emoji(report)
+            body += f'{report.steamid}: {report.count} {online_status_emoji}\n'
         return body
 
-    def _get_report_text(self, report: ReportShow) -> str:
-        online_status_emoji = self._get_online_emoji(report)
-        return f'{report.steamid}: {report.report_count} {online_status_emoji}\n'
-
     def _get_online_emoji(self, report: ReportShow) -> str:
-        if report.is_player_online:
-            return self.emojies['online']
+        if report.is_online:
+            return EMOJIES['online']
         else:
-            return self.emojies['offline']
+            return EMOJIES['offline']
 
 
-class ReportCountView:
-    def __init__(self, report_count: int, get_report_count_args: GetReportCount) -> None:
-        self.report_count = report_count
-        self.steamid = get_report_count_args.steamid
-        self.report_start_time = get_report_count_args.report_start_time
+class ReportView(ABCUserView):
+    def __init__(self, report: ReportShow, check_info: CheckInDB | None = None):
+        self.report = report
+        self.check_info = check_info
 
-    def __repr__(self) -> str:
-        return self._get_report_count_view()
+    def render(self) -> str:
+        return self.body
 
-    def _get_report_count_view(self) -> str:
-        text = self._get_text()
-        return text
-
-    def _get_text(self) -> str:
-        time_start = self.report_start_time.strftime('%d.%m.%Y')
-        return f'{self.report_count} жалоб с {time_start} у {self.steamid}'
+    @property
+    def body(self) -> str:
+        body = f'{self.report.count} жалоб за последнию неделю у {self.report.steamid}'
+        if self.check_info:
+            last_check_spend = datetime.now().timestamp() - self.check_info.start
+            body += f'\nПоследняя проверка была {human_time(last_check_spend)} назад'
+        return body

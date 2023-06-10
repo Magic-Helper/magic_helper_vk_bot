@@ -1,63 +1,43 @@
-from typing import TYPE_CHECKING
-
-import pendulum
+from datetime import datetime
 
 from app.core import constants
+from app.entities import RCCBan, RCCPlayer
+from app.views import ABCUserView
 
-if TYPE_CHECKING:
-    from app.services.RCC.models import RCCBan, RCCPlayer
 
-
-class RCCPlayersView:
-    def __init__(self, rcc_players: list['RCCPlayer']):
+class RCCPlayersView(ABCUserView):
+    def __init__(self, rcc_players: list[RCCPlayer]) -> None:
         self.rcc_players = rcc_players
 
-    def __repr__(self) -> str:
-        return self._get_rcc_players_view()
+        self._now_time = datetime.now().timestamp()
 
-    def _get_rcc_players_view(self) -> str:
-        cap_text = self._get_cap_text()
-        body_text = self._get_body_text()
-        text = cap_text + '\n\n' + body_text
+    def render(self) -> str:
+        if not self.rcc_players:
+            return 'Список игрков с банами пуст'
+        text = 'Игроки с банами\n'
+        for player in self.rcc_players:
+            bans_info = self._get_bans_info(player.bans)
+            text += f'{player.steamid}: {bans_info}\n'
         return text
 
-    def _get_cap_text(self) -> str:
-        return 'Список игркоов с банами: '
-
-    def _get_body_text(self) -> str:
-        body = ''
-        for rcc_player in self.rcc_players:
-            body += self._get_rcc_player_text(rcc_player)
-        return body
-
-    def _get_rcc_player_text(self, rcc_player: 'RCCPlayer') -> str:
-        bans_text = self._get_rcc_player_bans_text(rcc_player)
-        return f'{rcc_player.steamid}: {bans_text}\n'
-
-    def _get_rcc_player_bans_text(self, rcc_player: 'RCCPlayer') -> str:
+    def _get_bans_info(self, bans: list[RCCBan]) -> str:
         text = ''
-        for ban in rcc_player.bans:
-            text += self._get_rcc_player_ban_text(ban)
-        return text[:-2]
+        for ban in bans:
+            after_ban_time = self._get_after_ban_time(ban)
+            server_name = self._short_server_name(ban.server_name)
+            text += f'{server_name}({after_ban_time})'
+        return text
 
-    def _get_rcc_player_ban_text(self, ban: 'RCCBan') -> str:
-        after_ban_text = self._get_time_after_ban_text(ban)
-        server_name_text = self._get_server_name_text(ban)
-        return f'{server_name_text} - {after_ban_text}, '
+    def _get_after_ban_time(self, ban: RCCBan) -> str:
+        time_passed = self._now_time - ban.ban_date
+        return str(int(time_passed // 86400))
 
-    def _get_server_name_text(self, ban: 'RCCBan') -> str:
-        server_name = ban.server_name
-        for server in constants.RUST_SERVERS_NAME:
-            if server.lower() in server_name.lower():
-                return server
+    def _short_server_name(self, full_server_name: str) -> str:
+        lower_server_name = full_server_name.lower()
+        for short_server_name in constants.RUST_SERVERS_NAME:
+            if short_server_name.lower() in lower_server_name:
+                return short_server_name
 
-        if 'GLOBAL' in server_name:
-            return server_name.replace('[GLOBAL]', '')[0:15]
-        return server_name[:15]
-
-    def _get_time_after_ban_text(self, ban: 'RCCBan') -> str:
-        ban_date = ban.ban_date
-        today = pendulum.today()
-        time_after_ban = today.diff(ban_date)
-        days_after_ban = time_after_ban.days
-        return f'{days_after_ban} д'
+        if 'GLOBAL' in full_server_name:
+            return full_server_name.replace('[GLOBAL]', '')[0:15]
+        return full_server_name[:15]

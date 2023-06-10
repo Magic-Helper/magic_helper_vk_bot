@@ -1,74 +1,59 @@
-from asyncio import AbstractEventLoop
-
 from aiohttp import web
 from loguru import logger
-from vkbottle import Bot
-from vkbottle.callback import BotCallback
+from vkbottle import Bot, CtxStorage, Token
+from vkbottle.bot import BotLabeler
 
-from app import routes
-from app.context import AppContext
-from app.core import settings
-from app.handlers import (
-    checks_cmd_labeler,
-    discord_cmd_labeler,
-    get_bans_labeler,
-    get_logs_labeler,
-    magic_records_cmd_labeler,
-    magic_records_labeler,
-    magic_reports_labeler,
-    other_cmd_labeler,
-    owner_cmd_labeler,
-    players_cmd_labeler,
-    reports_cmd_labeler,
-)
-
-message_bot_labelers = (
-    magic_records_labeler,
-    magic_reports_labeler,
-)
-
-cmd_bot_labelers = (
-    checks_cmd_labeler,
-    other_cmd_labeler,
-    magic_records_cmd_labeler,
-    players_cmd_labeler,
-    owner_cmd_labeler,
-    get_logs_labeler,
-    discord_cmd_labeler,
-    reports_cmd_labeler,
-    get_bans_labeler,
-)
+from app.core import constants, middlewares, settings
+from app.core.logs import add_debug_file_log, add_error_vk_message_log, add_info_file_log
+from app.handlers import magic_helper_labelers, magic_records_labelers
+from app.routes import setup_handlers
+from app.services.api import RCCAPI, CheckAPI, MagicRustAPI, ReportAPI
+from app.tools.on_check import CheckCollector
 
 
-async def create_app(loop: AbstractEventLoop, cmd_bot: Bot, message_bot: Bot) -> web.Application:
-    logger.debug('Creating app...')
+def load_ctx_storage() -> None:
+    ctx = CtxStorage()
+    ctx.set('check_api', CheckAPI())
+    ctx.set('rcc_api', RCCAPI())
+    ctx.set('mr_api', MagicRustAPI())
+    ctx.set('check_collector', CheckCollector())
+    ctx.set('report_api', ReportAPI())
+
+
+def configure_logs() -> None:
+    add_debug_file_log()
+    add_info_file_log()
+    add_error_vk_message_log()
+
+
+def create_app() -> web.Application:
+    logger.debug('Create web application...')
     app = web.Application()
 
-    ctx = AppContext(loop)
-    ctx.cmd_bot = cmd_bot
-    ctx.message_bot = message_bot
+    app[constants.BotTypes.MAGIC_RECORDS_BOT.value] = create_magic_records_bot()
+    app[constants.BotTypes.MAGIC_HELPER_BOT.value] = create_magic_helper_bot()
 
-    app.on_startup.append(ctx.on_startup)
-    app.on_shutdown.append(ctx.on_shutdown)
-
-    routes.setup_webhook(app, ctx)
-
+    setup_handlers(app)
     return app
 
 
-async def create_cmd_bot() -> Bot:
-    logger.debug('Creating cmd bot...')
-    callback = BotCallback(url=settings.SERVER_URL, title=settings.SERVER_TITLE)
-    bot = Bot(token=settings.VK_TOKEN, callback=callback)
-    for custom_labeler in cmd_bot_labelers:
-        bot.labeler.load(custom_labeler)
+def create_magic_helper_bot() -> Bot:
+    logger.debug('Create magic helper bot...')
+    return _create_bot(settings.VK_MAGIC_HELPER_TOKEN, magic_helper_labelers)
+
+
+def create_magic_records_bot() -> Bot:
+    logger.debug('Create magic records bot...')
+    return _create_bot(settings.VK_MAGIC_RECORDS_TOKEN, magic_records_labelers)
+
+
+def _create_bot(token: Token, labelers: list[BotLabeler]) -> Bot:
+    bot = Bot(token=token)
+    bot.labeler.message_view.register_middleware(middleware=middlewares.PostLogMiddleware)
+    _load_labelers(bot, labelers)
     return bot
 
 
-async def create_message_bot() -> Bot:
-    logger.debug('Creating message bot...')
-    callback = BotCallback(url=settings.SERVER_URL, title=settings.SERVER_TITLE)
-    bot = Bot(token=settings.VK_MAGIC_HELPER_TOKEN, callback=callback)
-    for custom_labeler in message_bot_labelers:
-        bot.labeler.load(custom_labeler)
-    return bot
+def _load_labelers(bot: Bot, labelers: list[BotLabeler]) -> None:
+    for labeler in labelers:
+        bot.labeler.load(labeler)

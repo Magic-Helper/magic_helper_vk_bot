@@ -1,62 +1,64 @@
-import asyncio
-from typing import TYPE_CHECKING
-
 from aiohttp import web
 from loguru import logger
+from vkbottle import Bot
 
 from app.core import constants, settings
 
-if TYPE_CHECKING:
-    from app.context import AppContext
 
-
-async def handler(request: web.Request, ctx: 'AppContext') -> web.Response:
-    try:
-        data: dict = await request.json()
-    except Exception:
-        logger.error(f'Error when trying to get event data {await request.text()}')
-        return web.Response(text='Nice try :)', status=403)
-
-    if not (data.get('secret') == settings.SECRET_KEY):
-        logger.debug('Bad secret key')
-        return web.Response(text='Nice try :)', status=403)
-
-    group_id = data.get('group_id')
-    if group_id is None:
-        logger.debug('No group_id')
-        return web.Response(text='Nice try :)', status=403)
-
-    if group_id not in constants.GROUP_IDS:
-        logger.debug('Bad group_id')
-        return web.Response(text='Nice try :)', status=403)
-
-    from_id = data.get('object', {}).get('message', {}).get('from_id')  # )))))))))))))))))))))
-
-    if group_id == constants.VK_FOR_CMD.id_:  # MAGICRUST Отчеты
-        logger.debug('Got event for cmd bot')
-        asyncio.get_running_loop().create_task(ctx.cmd_bot.process_event(data))
-
-    elif (
-        group_id == constants.VK_FOR_MESSAGE.id_ and from_id in constants.VK_FOR_MESSAGE.available_users
-    ):  # MAGIC HELPER
-        logger.debug('Got event for message bot')
-        asyncio.get_running_loop().create_task(ctx.message_bot.process_event(data))
-
+async def magic_helper_vk_callback_handler(request: web.Request) -> web.Response:
+    data = await _try_get_request_data(request)
+    if _confirmation(data, constants.VK_MAGIC_HELPER.id_):
+        return web.Response(text=settings.HELPER_CONFIRMATION_CODE)
+    _check_secret_key(data)
+    from_id = _get_from_id(data)
+    if from_id not in constants.VK_MAGIC_HELPER.available_users:
+        return web.Response(text='ok', status=200)
+    loop = request._loop
+    bot = _get_bot(request.app, constants.BotTypes.MAGIC_HELPER_BOT)
+    loop.create_task(bot.process_event(data))
     return web.Response(text='ok', status=200)
 
 
-def setup_webhook(app: web.Application, ctx: 'AppContext') -> None:
-    app.router.add_post(
-        '/v2/vkbot',
-        wrap_handler(
-            handler,
-            ctx,
-        ),
-    )
+async def magic_record_vk_callback_handler(request: web.Request) -> web.Response:
+    data = await _try_get_request_data(request)
+    if _confirmation(data, constants.VK_MAGIC_RECORDS.id_):
+        return web.Response(text=settings.RECORD_CONFIRMATION_CODE)
+    _check_secret_key(data)
+    loop = request._loop
+    bot = _get_bot(request.app, constants.BotTypes.MAGIC_RECORDS_BOT)
+    loop.create_task(bot.process_event(data))
+    return web.Response(text='ok', status=200)
 
 
-def wrap_handler(handler, context: 'AppContext'):  # noqa
-    async def wrapper(request: web.Request):  # noqa
-        return await handler(request, context)
+def setup_handlers(app: web.Application) -> None:
+    app.router.add_post('/bots/v3/vk/helper', magic_helper_vk_callback_handler)
+    app.router.add_post('/bots/v3/vk/records', magic_record_vk_callback_handler)
 
-    return wrapper
+
+async def _try_get_request_data(request: web.Request) -> dict:
+    try:
+        data = await request.json()
+    except Exception as e:
+        logger.error(f'Error to parse event data {await request.text()}. Error: {e}')
+        raise web.HTTPBadRequest() from e
+    else:
+        return data
+
+
+def _confirmation(data: dict, group_id: int) -> bool:
+    if data.get('type') == 'confirmation' and data.get('group_id') == group_id:
+        return True
+    return False
+
+
+def _check_secret_key(data: dict) -> None:
+    if data.get('secret') != settings.SECRET_KEY:
+        raise web.HTTPForbidden()
+
+
+def _get_from_id(data: dict) -> str:
+    return data.get('object', {}).get('message', {}).get('from_id')
+
+
+def _get_bot(app: web.Application, bot_type: constants.BotTypes) -> Bot:
+    return app[bot_type.value]

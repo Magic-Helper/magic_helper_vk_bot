@@ -1,41 +1,23 @@
-import argparse
-import asyncio
+import os
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--test', type=bool, default=False)
-
-args = parser.parse_args()
-if args.test:
+if not os.getenv('PROD'):
     from dotenv import load_dotenv
 
     load_dotenv('.env.dev')
 
+import asyncio
 
 from aiohttp import web
 from loguru import logger
 
 from app.core import settings
-from app.core.logs import add_debug_file_log, add_error_vk_message_log
-from app.entrypoint import create_app, create_cmd_bot, create_message_bot
-from app.services.storage.memory_storage import (
-    OnCheckMemoryStorage,
-    RCCDataMemoryStorage,
-)
-
-# Создано просто чтобы чистилщик мусора не удалил, скорее всего это и не нужно
-memory_storage = OnCheckMemoryStorage()
-rcc_data_storage = RCCDataMemoryStorage()
-
+from app.entrypoint import configure_logs, create_app, load_ctx_storage
 
 event_loop = asyncio.get_event_loop()
 
-add_error_vk_message_log()
-add_debug_file_log()
+configure_logs()
+load_ctx_storage()
+app = create_app()
 
-cmd_bot = event_loop.run_until_complete(create_cmd_bot())
-message_bot = event_loop.run_until_complete(create_message_bot())
-app = event_loop.run_until_complete(create_app(event_loop, cmd_bot, message_bot))
-
-
-logger.info('Starting server...')
+logger.info('Starting web application')
 web.run_app(app, port=settings.PORT, loop=event_loop)
