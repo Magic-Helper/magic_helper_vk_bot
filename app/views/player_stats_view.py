@@ -7,7 +7,7 @@ from app.views import ABCUserView
 
 
 class _PlayersStatsView(ABCUserView):
-    KILLS_LEN = 24
+    KILLS_LEN = 23
 
     def __init__(self, players: list[Player], min_kd: float) -> None:
         self.players = players
@@ -62,12 +62,12 @@ class PlayerStatsView(ABCUserView):
     @property
     def body(self) -> str:
         body = f"""
-        Убийств {self.player_stats.kills} ({self.player_stats.headshot}) 
-        -- Огнестрел: {self.player_stats.kills_shot}
-        -- Лук/Арбалет: {self.player_stats.kills_arrow}
-        -- Ближний бой: {self.player_stats.kills_melee}
-        Смертей: {self.player_stats.death}
-        КД: {self.player_stats.kd:.1f}
+Убийств {self.player_stats.kills} ({self.player_stats.headshot}) 
+-- Огнестрел: {self.player_stats.kills_shot}
+-- Лук/Арбалет: {self.player_stats.kills_arrow}
+-- Ближний бой: {self.player_stats.kills_melee}
+Смертей: {self.player_stats.death}
+КД: {self.player_stats.kd:.1f}
         """
         if self.player_check:
             last_check_spend = datetime.now().timestamp() - self.player_check.start
