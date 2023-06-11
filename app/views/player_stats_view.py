@@ -70,7 +70,7 @@ class PlayerStatsView(ABCUserView):
 КД: {self.player_stats.kd:.1f}
         """
         if self.player_check:
-            last_check_spend = datetime.now().timestamp() - self.player_check.start
+            last_check_spend = datetime.now().timestamp() - self.player_check.end
             human_time_spend = human_time(last_check_spend)
             if self.player_check.is_ban:
                 body += f'Забанен {human_time_spend} назад'
