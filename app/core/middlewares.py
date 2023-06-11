@@ -10,7 +10,6 @@ class CutReportMessageMiddleware(BaseMiddleware[Message]):
         if self.REPORT_SIGN in self.event.text.lower():
             splitted = self.event.text.split('\n')
             self.event.text = '\n'.join(splitted[:3])
-            print(self.event.text)
 
 
 class ClearSpaceBeforeLineMiddleware(BaseMiddleware[Message]):

@@ -1,13 +1,13 @@
 from aiohttp import web
 from loguru import logger
-from vkbottle import Bot, CtxStorage, Token
+from vkbottle import API, Bot, CtxStorage, Token
 from vkbottle.bot import BotLabeler
 
 from app.core import constants, middlewares, settings
 from app.core.logs import add_debug_file_log, add_error_vk_message_log, add_info_file_log
 from app.handlers import magic_helper_labelers, magic_records_labelers
 from app.routes import setup_handlers
-from app.services.api import RCCAPI, CheckAPI, MagicRustAPI, ReportAPI
+from app.services.api import RCCAPI, CheckAPI, MagicRustAPI, ProfileAPI, ReportAPI
 from app.tools.on_check import CheckCollector
 
 
@@ -18,6 +18,8 @@ def load_ctx_storage() -> None:
     ctx.set('mr_api', MagicRustAPI())
     ctx.set('check_collector', CheckCollector())
     ctx.set('report_api', ReportAPI())
+    ctx.set('profile_api', ProfileAPI())
+    ctx.set('record_vk_api', API(settings.VK_MAGIC_RECORDS_TOKEN))
 
 
 def configure_logs() -> None:

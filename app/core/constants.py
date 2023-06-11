@@ -26,11 +26,12 @@ VK_RECORDS_GROUP_ID = -166700992
 
 class VK_MAGIC_RECORDS:  # MAGICRUST Отчеты
     id_: int = 166700992
+    chat_peer_id = 2000000005
 
 
 class VK_MAGIC_HELPER:  # MAGIC HELPER
     id_: int = 215360486
-    magic_records_peer_id: int = 2000000002
+    chat_peer_id: int = 2000000002
     available_users: list[int] = [VK_RECORDS_GROUP_ID, VK_REPORT_GROUP_ID]
 
 

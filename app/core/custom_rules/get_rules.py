@@ -1,7 +1,7 @@
-from vkbottle import CtxStorage
+from vkbottle import API, CtxStorage
 from vkbottle.bot import rules
 
-from app.services.api import RCCAPI, CheckAPI, MagicRustAPI, ReportAPI
+from app.services.api import RCCAPI, CheckAPI, MagicRustAPI, ProfileAPI, ReportAPI
 from app.tools import OnCheckStorage
 
 
@@ -28,3 +28,13 @@ class GetMRAPI(rules.ABCRule[rules.BaseMessageMin]):
 class GetReportAPI(rules.ABCRule[rules.BaseMessageMin]):
     async def check(self, event: rules.BaseMessageMin) -> ReportAPI:
         return {'report_api': CtxStorage().get('report_api')}
+
+
+class GetRecordVKAPI(rules.ABCRule[rules.BaseMessageMin]):
+    async def check(self, event: rules.BaseMessageMin) -> API:
+        return {'record_vk_api': CtxStorage().get('record_vk_api')}
+
+
+class GetProfileAPI(rules.ABCRule[rules.BaseMessageMin]):
+    async def check(self, event: rules.BaseMessageMin) -> ProfileAPI:
+        return {'profile_api': CtxStorage().get('profile_api')}
