@@ -1,4 +1,4 @@
-from vkbottle import API, Callback, Keyboard
+from vkbottle import API, Callback, DelayedTask, Keyboard
 from vkbottle.bot import BotLabeler, Message, rules
 
 from app.core import constants, middlewares, patterns
@@ -32,6 +32,9 @@ async def start_check_message(
         keyboard=_start_check_keyboard(steamid),
         conversation_message_id=message.conversation_message_id,
     )
+    DelayedTask(seconds=constants.REMOVE_GIVE_ACCCESS_PAYLOAD_DELAY, handler=_try_remove_keyboard, do_break=True)(
+        message, record_vk_api
+    )
 
 
 @check_msgs_labeler.chat_message(rules.VBMLRule(patterns.check_end_msg))
@@ -58,3 +61,18 @@ def _start_check_keyboard(steamid: int) -> str:
         .add(Callback('Выдать доступ', GiveCheckerAccessPayload(give_checker_steamid=steamid).dict()))
         .get_json()
     )
+
+
+async def _try_remove_keyboard(
+    message: Message,
+    record_vk_api: API,
+) -> None:
+    try:
+        await record_vk_api.messages.edit(
+            peer_id=message.peer_id,
+            message=message.text,
+            conversation_message_id=message.conversation_message_id,
+            keyboard=None,
+        )
+    except Exception:
+        pass

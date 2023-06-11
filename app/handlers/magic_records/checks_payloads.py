@@ -22,3 +22,11 @@ async def give_checker_access(
     moder_steamid = moderator.steamid if moderator else None
     await rcc_api.give_access(payload.give_checker_steamid, moder_steamid)
     await event.show_snackbar('Доступ выдан!')
+    await _try_remove_keyboard(event)
+
+
+async def _try_remove_keyboard(event: MessageEvent) -> None:
+    try:
+        await event.edit_message(keyboard=None)
+    except Exception:
+        pass

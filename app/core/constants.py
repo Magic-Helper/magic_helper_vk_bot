@@ -17,6 +17,8 @@ MIN_STATS_FOR_PLAYER = 10.0
 HOW_DAYS_DONT_SHOW_PLAYER_IN_REPORTS = 30  # После проверки
 DEAFULT_MIN_REPORTS = 3  # Для отображения
 
+# Checks
+REMOVE_GIVE_ACCCESS_PAYLOAD_DELAY = 60 * 30
 
 # Аргументы, которые нельзя указать
 
