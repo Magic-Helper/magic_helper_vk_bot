@@ -28,9 +28,7 @@ async def get_online_new_players_with_stats(
         kd=min_stats, check_on_magic=True, checked_players=checked_players, check_on_magic_days=days + 1
     )
     filtred_players = mr_players_filter.execute(online_players_with_stats)
-    sorted_players = sorted(
-        filtred_players, key=lambda player: (player.stats.kills - player.stats.death) * player.stats.kd, reverse=True
-    )
+    sorted_players = sorted(filtred_players, key=lambda player: player.stats.kd, reverse=True)
 
     await message.answer(NewPlayerStatsView(sorted_players, min_kd=min_stats).render())
 
@@ -49,8 +47,6 @@ async def get_online_players_with_stats(
         kd=min_stats, check_on_magic=True, checked_players=checked_players, check_on_magic_days=180
     )
     filtred_players = mr_players_filter.execute(online_players_with_stats)
-    sorted_players = sorted(
-        filtred_players, key=lambda player: (player.stats.kills - player.stats.death) * player.stats.kd, reverse=True
-    )
+    sorted_players = sorted(filtred_players, key=lambda player: player.stats.kd, reverse=True)
 
     await message.answer(BigKdStatsView(sorted_players, min_kd=min_stats).render())
