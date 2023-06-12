@@ -7,7 +7,7 @@ from app.views import ABCUserView
 
 
 class _PlayersStatsView(ABCUserView):
-    KILLS_LEN = 23
+    KILLS_LEN = 25
 
     def __init__(self, players: list[Player], min_kd: float) -> None:
         self.players = players
