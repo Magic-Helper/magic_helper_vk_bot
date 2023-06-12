@@ -24,7 +24,8 @@ async def get_online_players_with_bans(
 ) -> None:
     online_players = await _get_online_players_or_error(mr_api, message)
     rcc_players = await _try_get_rcc_players_or_log(rcc_api, online_players)
-    checked_players_online = await try_get_checked_players(check_api, [player.steamid for player in rcc_players])
+    rcc_players_steamids = [player.steamid for player in rcc_players if player.steamid]
+    checked_players_online = await try_get_checked_players(check_api, rcc_players_steamids)
 
     rcc_filter = RCCPlayersFilter(seconds_passed_after_ban=86400 * days, checked_players=checked_players_online)
     filtered_players = rcc_filter.execute(rcc_players)
