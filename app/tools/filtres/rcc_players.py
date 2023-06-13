@@ -59,7 +59,9 @@ class RCCPlayersFilter(ABCFilter):
         if player.steamid in self._checked_players and self._checked_players[player.steamid] >= last_ban.ban_date:
             return True
         for check in player.checks:
-            if check.server_name.lower in self.MAGIC_RUST_NAMES:
+            if not check.server_name:
+                continue
+            if check.server_name.lower() in self.MAGIC_RUST_NAMES:
                 if check.date >= last_ban.ban_date:
                     return True
         return False
