@@ -18,7 +18,7 @@ class RCCBaseResponse(BaseModel):
 class RCCCheck(BaseModel):
     moder_steamid: str = Field(0, alias='moderSteamID')
     date: int = Field(0, alias='time')
-    server_name: str | None = Field(None, alias='serverName')
+    server_name: str | None = Field('Без названия', alias='serverName')
 
 
 class RCCBan(BaseModel):
