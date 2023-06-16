@@ -2,6 +2,7 @@ from app.handlers.magic_records.checks_cmds import check_cmds_labeler
 from app.handlers.magic_records.checks_payloads import check_payloads_labeler
 from app.handlers.magic_records.find_bans_cmds import bans_find_labeler
 from app.handlers.magic_records.find_stats_cmds import stats_find_labeler
+from app.handlers.magic_records.other_cmds import other_cmds_labeler
 from app.handlers.magic_records.owner_cmds import owner_cmds_labeler
 from app.handlers.magic_records.reports_cmds import report_cmds_labeler
 from app.handlers.magic_records.stats_cmds import stats_labeler

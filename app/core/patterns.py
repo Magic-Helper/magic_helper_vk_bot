@@ -43,3 +43,5 @@ reports_help_cmd = [Pattern('/reports')]
 reports_cmd = [Pattern('/reports <steamid>')]
 
 checks_cmd = [Pattern('/checks')]
+
+link_cmd = [Pattern('/link <steamid>')]

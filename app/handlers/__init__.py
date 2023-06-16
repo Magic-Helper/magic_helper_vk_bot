@@ -3,6 +3,7 @@ from app.handlers.magic_records import (
     bans_find_labeler,
     check_cmds_labeler,
     check_payloads_labeler,
+    other_cmds_labeler,
     owner_cmds_labeler,
     report_cmds_labeler,
     stats_find_labeler,
@@ -18,4 +19,5 @@ magic_records_labelers = [
     stats_labeler,
     report_cmds_labeler,
     check_payloads_labeler,
+    other_cmds_labeler,
 ]
