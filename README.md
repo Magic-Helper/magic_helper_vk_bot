@@ -12,7 +12,6 @@ The application helps moderators on game server project [MagicRust](https://vk.c
 * vkbottle
 * aiohttp
 * pydantic
-* sqlalchemy + asyncpg + alembic
 * loguru
 
 # Develop 
