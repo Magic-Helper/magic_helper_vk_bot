@@ -20,8 +20,6 @@ DEAFULT_MIN_REPORTS = 3  # Для отображения
 # Checks
 REMOVE_GIVE_ACCCESS_PAYLOAD_DELAY = 60 * 30
 
-# Аргументы, которые нельзя указать
-
 VK_REPORT_GROUP_ID = -179043503
 VK_RECORDS_GROUP_ID = -166700992
 
