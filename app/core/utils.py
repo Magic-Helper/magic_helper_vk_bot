@@ -16,7 +16,7 @@ def get_work_month_interval() -> tuple[float, float]:
         start = now.replace(day=DAY_WORK_MONTH_END)
         end = now + timedelta(days=1)
     else:
-        start = (now - relativedelta(months=1)).replace(day=DAY_WORK_MONTH_END)
+        start = (now - relativedelta(months=1)).replace(day=DAY_WORK_MONTH_END, hour=0, minute=0)
         end = now
     return start.timestamp(), end.timestamp()
 
