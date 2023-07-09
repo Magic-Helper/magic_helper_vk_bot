@@ -13,7 +13,7 @@ ONE_YEAR_SECOND = ONE_MOUNTH_SECOND * 12
 def get_work_month_interval() -> tuple[float, float]:
     now = datetime.now()
     if now.day >= DAY_WORK_MONTH_END:
-        start = now.replace(day=DAY_WORK_MONTH_END)
+        start = now.replace(day=DAY_WORK_MONTH_END, hour=0, minute=0)
         end = now + timedelta(days=1)
     else:
         start = (now - relativedelta(months=1)).replace(day=DAY_WORK_MONTH_END, hour=0, minute=0)
