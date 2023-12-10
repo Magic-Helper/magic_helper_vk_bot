@@ -26,9 +26,12 @@ async def start_check_message(
     record_vk_api: API,
 ) -> None:
     await check_collector.start_check(steamid, server_number, nickname, moder_id)
+    main_message = await record_vk_api.messages.get_by_conversation_message_id(peer_id=VK_MAGIC_RECORDS.chat_peer_id,
+                                                                               conversation_message_ids=message.conversation_message_id)
+    main_message_text = main_message.items[0].text
     await record_vk_api.messages.edit(
         peer_id=VK_MAGIC_RECORDS.chat_peer_id,
-        message=message.text,
+        message=main_message_text,
         keyboard=_start_check_keyboard(steamid),
         conversation_message_id=message.conversation_message_id,
     )
