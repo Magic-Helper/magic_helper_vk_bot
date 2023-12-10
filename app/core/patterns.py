@@ -1,7 +1,7 @@
 from vbml import Pattern
 
 check_start_msg = Pattern(
-    '[id<moder_id:int>|<any>] твоя команда выполнена.\nОтвет: <nickname> вызван на проверку. Напишите /cc2 <server_number:int> <steamid> для отмены проверки.\n<trash>'
+    '[id<moder_id:int>|<any>] твоя команда выполнена.\nОтвет: <nickname> вызван на проверку. Напишите /cc2 <server_number:int> <steamid> для отмены проверки.<trash>'
 )
 
 check_end_msg = Pattern('[id<moder_id:int>|<any>] твоя команда выполнена.\nОтвет: <nickname> больше не проверяется.')
