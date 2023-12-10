@@ -15,6 +15,9 @@ class CutReportMessageMiddleware(BaseMiddleware[Message]):
 class ClearSpaceBeforeLineMiddleware(BaseMiddleware[Message]):
     async def pre(self) -> None:
         self.event.text = self.event.text.replace(' \n', '\n')
+        splitted = self.event.text.split('\n')
+        if len(splitted) > 2:
+            self.event.text = '\n'.join(splitted[:2])
 
 
 class PostLogMiddleware(BaseMiddleware[Message]):
