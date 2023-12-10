@@ -16,7 +16,7 @@ cancel_check_cmd = Pattern('/cc3 <server_number:int> <steamid>')
 
 report_msg = [
     Pattern(
-        '&#129313; <server_number>-й сервер\nЖалоба от игрока <author_nickname>.\nНарушитель: <trash> (https://steamcommunity.com/profiles/<steamid>)'
+        '<trash1> <server_number>-й сервер\nЖалоба от игрока <author_nickname>.\nНарушитель: <trash> (https://steamcommunity.com/profiles/<steamid>)'
     ),
     Pattern(
         '<server_number>-й сервер\nЖалоба от игрока <author_nickname> на игрока <trash>:\nhttps://steamcommunity.com/profiles/<steamid>'
