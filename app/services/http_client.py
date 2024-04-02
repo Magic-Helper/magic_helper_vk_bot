@@ -24,7 +24,9 @@ class HTTPClient:
         **kwargs,
     ) -> aiohttp.ClientResponse:
         logger.debug(f'Make request: {http_method}: {url} | Query: {query} | Payload: {payload} | Body: {body}')
-        response = await self.client.request(http_method, url, params=query, data=payload, json=body, **kwargs)
+        response = await self.client.request(
+            http_method, url, params=query, data=payload, json=body, ssl=False, **kwargs
+        )
         await response.read()
         logger.debug(
             f'Receive response {response.request_info.method} {response.request_info.real_url}: {await response.text()}'
